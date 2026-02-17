@@ -78,7 +78,7 @@ export const Footer = () => {
                             </div>
                             <div className="space-y-2 text-sm font-bold text-gray-500">
                                 <p className="flex items-center gap-2"><MapPin size={16} className="text-athos-orange" /> Cartago, Valle del Cauca</p>
-                                <p className="flex items-center gap-2"><Mail size={16} className="text-athos-orange" /> alejandro@athos.co</p>
+                                <p className="flex items-center gap-2"><Mail size={16} className="text-athos-orange" /> athospro.col@gmail.com</p>
                             </div>
                         </div>
                     </div>
