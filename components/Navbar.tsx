@@ -145,7 +145,7 @@ export const Navbar = () => {
                     onClick={() => setView('home')}
                     className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
                 >
-                    <img src="/logo.png" alt="ATHOS" className="h-12 w-auto object-contain" />
+                    <img src="/logo.png" alt="ATHOS" className="h-14 w-auto object-contain" />
                 </div>
 
                 {/* Right: Actions */}
