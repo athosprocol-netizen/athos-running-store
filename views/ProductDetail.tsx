@@ -158,7 +158,7 @@ export const ProductDetail = () => {
     return (
         <div className="bg-white min-h-screen relative animate-fade-in">
 
-            <div className="pt-36 md:pt-44 px-6 max-w-[1400px] mx-auto">
+            <div className="pt-28 md:pt-44 px-6 max-w-[1400px] mx-auto">
                 <Breadcrumbs items={[
                     { label: 'Inicio', action: () => setView('home') },
                     { label: 'Tienda', action: () => setView('shop') },
