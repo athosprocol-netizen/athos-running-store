@@ -53,9 +53,7 @@ export const Navbar = () => {
                 <div className="max-w-[1400px] mx-auto px-10 flex items-center justify-between">
                     {/* Logo */}
                     <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setView('home')}>
-                        <div className="animate-speed">
-                            <img src="/logo.png" alt="ATHOS" className="h-24 w-auto object-contain animate-burn hover:scale-110 transition-transform duration-300" />
-                        </div>
+                        <img src="/logo.png" alt="ATHOS" className="h-24 w-auto object-contain transition-transform duration-300 transform group-hover:scale-105" />
                     </div>
 
                     {/* Central Nav */}
@@ -64,7 +62,7 @@ export const Navbar = () => {
                             <button
                                 key={item.id}
                                 onClick={() => setView(item.id as any)}
-                                className={`text-sm font-black tracking-widest uppercase transition-all hover:text-athos-orange relative group ${view === item.id ? 'text-athos-orange' : textColorClass
+                                className={`text-sm font-black tracking-widest uppercase transition-all hover:text-athos-orange hover-burn relative group ${view === item.id ? 'text-athos-orange' : textColorClass
                                     }`}
                             >
                                 {item.label}
@@ -133,9 +131,9 @@ export const Navbar = () => {
                 {/* Center: Logo */}
                 <div
                     onClick={() => setView('home')}
-                    className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center animate-speed"
+                    className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
                 >
-                    <img src="/logo.png" alt="ATHOS" className="h-16 w-auto object-contain animate-burn" />
+                    <img src="/logo.png" alt="ATHOS" className="h-16 w-auto object-contain" />
                 </div>
 
                 {/* Right: Actions */}

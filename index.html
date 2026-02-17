@@ -49,17 +49,17 @@
               '100%': { transform: 'translateX(0)' },
             },
             burn: {
-              '0%': { filter: 'drop-shadow(0 0 2px rgba(255, 77, 0, 0.5)) drop-shadow(0 0 5px rgba(255, 77, 0, 0.3))' },
-              '100%': { filter: 'drop-shadow(0 0 15px rgba(255, 77, 0, 0.8)) drop-shadow(0 -5px 20px rgba(255, 123, 0, 0.6))' }
+              '0%': { filter: 'drop-shadow(0 0 1px rgba(255, 77, 0, 0.2))' },
+              '100%': { filter: 'drop-shadow(0 0 8px rgba(255, 77, 0, 0.5))' }
             },
             'shake-aggressive': {
               '0%, 100%': { transform: 'translateX(0)' },
-              '25%': { transform: 'translateX(-2px) skewX(-5deg)' },
-              '75%': { transform: 'translateX(2px) skewX(5deg)' }
+              '25%': { transform: 'translateX(-1px) skewX(-1deg)' },
+              '75%': { transform: 'translateX(1px) skewX(1deg)' }
             },
             'speed-pulse': {
               '0%': { transform: 'scale(1) skewX(0deg)' },
-              '50%': { transform: 'scale(1.05) skewX(-10deg)' },
+              '50%': { transform: 'scale(1.02) skewX(-2deg)' },
               '100%': { transform: 'scale(1) skewX(0deg)' }
             }
           }
@@ -145,6 +145,11 @@
     /* Flame Glow Utility */
     .flame-glow {
       box-shadow: 0 0 15px rgba(255, 77, 0, 0.3);
+    }
+
+    .hover-burn:hover {
+      animation: burn 1.5s infinite alternate;
+      will-change: filter;
     }
 
     /* Smooth Scroll */

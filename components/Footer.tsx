@@ -26,9 +26,7 @@ export const Footer = () => {
                         {/* Brand Column */}
                         <div className="col-span-4">
                             <div className="flex items-center gap-2 mb-6 group cursor-pointer" onClick={() => setView('home')}>
-                                <div className="animate-speed">
-                                    <img src="/logo.png" alt="ATHOS" className="h-32 w-auto object-contain animate-burn hover:brightness-110 transition-all" />
-                                </div>
+                                <img src="/logo.png" alt="ATHOS" className="h-32 w-auto object-contain hover:brightness-110 transition-all" />
                             </div>
                             <p className="text-gray-400 text-sm leading-relaxed mb-8 max-w-sm font-medium">
                                 Diseñado para la élite, accesible para todos. Fusionamos tecnología de impresión 3D, análisis biomecánico y diseño de vanguardia para romper récords.
@@ -101,8 +99,8 @@ export const Footer = () => {
             <footer className="md:hidden bg-athos-black text-white py-12 mt-12 border-t border-gray-900 relative">
                 <div className="px-6 flex flex-col items-center gap-8">
                     {/* Brand Lite */}
-                    <div className="flex items-center gap-2 opacity-90 animate-speed" onClick={() => setView('home')}>
-                        <img src="/logo.png" alt="ATHOS" className="h-20 w-auto object-contain animate-burn" />
+                    <div className="flex items-center gap-2 opacity-90" onClick={() => setView('home')}>
+                        <img src="/logo.png" alt="ATHOS" className="h-20 w-auto object-contain" />
                     </div>
 
                     {/* Social Grid */}
