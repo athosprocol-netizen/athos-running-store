@@ -158,7 +158,7 @@ export const ProductDetail = () => {
     return (
         <div className="bg-white min-h-screen relative animate-fade-in">
 
-            <div className="pt-32 px-6 max-w-[1400px] mx-auto">
+            <div className="pt-36 md:pt-44 px-6 max-w-[1400px] mx-auto">
                 <Breadcrumbs items={[
                     { label: 'Inicio', action: () => setView('home') },
                     { label: 'Tienda', action: () => setView('shop') },
@@ -247,8 +247,8 @@ export const ProductDetail = () => {
                                             key={size}
                                             onClick={() => setActiveSize(size)}
                                             className={`min-w-[45px] h-[45px] rounded-xl text-sm font-bold transition-all border ${activeSize === size
-                                                    ? 'bg-athos-black text-white border-athos-black'
-                                                    : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
+                                                ? 'bg-athos-black text-white border-athos-black'
+                                                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
                                                 }`}
                                         >
                                             {size}
