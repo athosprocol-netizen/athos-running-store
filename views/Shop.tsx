@@ -86,7 +86,7 @@ export const Shop = () => {
     };
 
     return (
-        <div className="pt-24 min-h-screen bg-athos-bg pb-32 animate-fade-in px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="pt-24 md:pt-48 min-h-screen bg-athos-bg pb-32 animate-fade-in px-4 md:px-8 max-w-[1400px] mx-auto">
 
             <Breadcrumbs items={[{ label: 'Inicio', action: () => setView('home') }, { label: 'Tienda' }]} />
 
@@ -150,8 +150,8 @@ export const Shop = () => {
                             key={cat.id}
                             onClick={() => { setActiveCategory(cat.id); setCurrentPage(1); }}
                             className={`whitespace-nowrap px-6 py-3 text-xs font-bold uppercase tracking-wide rounded-[16px] transition-all border ${activeCategory === cat.id
-                                    ? 'bg-athos-black text-white border-athos-black shadow-lg shadow-athos-black/20'
-                                    : 'bg-white text-gray-400 border-transparent hover:bg-gray-50'
+                                ? 'bg-athos-black text-white border-athos-black shadow-lg shadow-athos-black/20'
+                                : 'bg-white text-gray-400 border-transparent hover:bg-gray-50'
                                 }`}
                         >
                             {cat.label}
