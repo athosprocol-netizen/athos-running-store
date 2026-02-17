@@ -179,7 +179,7 @@ export const Home = () => {
                             return (
                                 <div key={product.id} className="group cursor-pointer" onClick={() => selectProduct(product.id)}>
                                     {/* Image Container - Gray Background */}
-                                    <div className="bg-[#F4F4F4] rounded-[24px] md:rounded-[30px] p-4 md:p-6 aspect-[4/5] relative mb-3 md:mb-5 overflow-hidden transition-all group-hover:shadow-[0_0_20px_rgba(255,77,0,0.15)]">
+                                    <div className="bg-[#F4F4F4] rounded-[24px] md:rounded-[30px] aspect-[4/5] relative mb-3 md:mb-5 overflow-hidden transition-all group-hover:shadow-[0_0_20px_rgba(255,77,0,0.15)]">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
                                             className="absolute top-3 right-3 z-10 bg-white p-2 rounded-full shadow-sm hover:scale-110 transition-transform"
@@ -189,7 +189,7 @@ export const Home = () => {
                                         <img
                                             src={product.image}
                                             alt={product.name}
-                                            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                         />
                                         {product.id === 'p1' && (
                                             <span className="absolute bottom-3 left-3 bg-athos-orange text-white text-[10px] font-black uppercase px-2 py-1 rounded-md shadow-lg shadow-athos-orange/30">

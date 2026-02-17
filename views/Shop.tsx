@@ -212,11 +212,11 @@ export const Shop = () => {
                                             </button>
                                         </div>
 
-                                        <div className="aspect-square mb-4 flex items-center justify-center p-2">
+                                        <div className="aspect-square mb-4 relative overflow-hidden rounded-2xl bg-[#F4F4F4]">
                                             <img
                                                 src={product.image}
                                                 alt={product.name}
-                                                className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                             />
                                         </div>
 
