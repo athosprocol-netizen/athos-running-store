@@ -162,9 +162,9 @@ export const Navbar = () => {
                         {/* Visual Accent Strip */}
                         <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-gradient-to-b from-athos-orange via-red-500 to-athos-black z-20"></div>
 
-                        {/* Background Flame Animation */}
-                        <div className="absolute bottom-[-10%] right-[-10%] opacity-[0.05] pointer-events-none z-0 animate-pulse-slow">
-                            <Flame size={400} />
+                        {/* Background Flame Image (Static) */}
+                        <div className="absolute bottom-[-5%] right-[-15%] z-0 pointer-events-none opacity-[0.1]">
+                            <img src="/flames.png" alt="Decorative Flame" className="w-[300px] h-auto object-contain grayscale mix-blend-multiply" />
                         </div>
 
                         {/* 1. HEADER (Profile) */}
