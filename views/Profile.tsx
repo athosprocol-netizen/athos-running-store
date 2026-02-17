@@ -143,26 +143,7 @@ export const Profile = () => {
                 </div>
             </div>
 
-            {/* Services Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                <div className="bg-athos-black text-white p-8 rounded-[30px] relative overflow-hidden group cursor-pointer hover:shadow-2xl transition-all">
-                    <Printer size={32} className="text-athos-orange mb-4" />
-                    <h3 className="text-xl font-black italic uppercase mb-2">Taller de Impresión 3D</h3>
-                    <p className="text-gray-400 text-sm mb-6 max-w-xs leading-relaxed">
-                        Diseña soportes para medallas y accesorios personalizados.
-                    </p>
-                    <span className="bg-white/10 px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm group-hover:bg-athos-orange group-hover:text-white transition-colors">Ingresar</span>
-                </div>
 
-                <div className="bg-[#F4F4F4] text-athos-black p-8 rounded-[30px] relative overflow-hidden group cursor-pointer hover:bg-gray-200 transition-all">
-                    <Shirt size={32} className="text-athos-black mb-4" />
-                    <h3 className="text-xl font-black italic uppercase mb-2">Confección Custom</h3>
-                    <p className="text-gray-500 text-sm mb-6 max-w-xs leading-relaxed">
-                        Crea la camiseta de tu equipo con sublimación de alta calidad.
-                    </p>
-                    <span className="bg-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-sm group-hover:scale-105 transition-transform inline-block">Cotizar</span>
-                </div>
-            </div>
 
             {/* Wishlist Section */}
             <div className="mb-12">

@@ -98,7 +98,7 @@ export const Shop = () => {
                 <div className="flex justify-between items-start mb-6">
                     <h1 className="text-3xl md:text-5xl font-black text-athos-black leading-tight">
                         {searchQuery ? 'Resultados para:' : 'Descubre el mejor'} <br />
-                        <span className="italic text-athos-orange">{searchQuery ? `"${searchQuery}"` : 'Equipo Técnico'}</span>
+                        <span className="italic text-athos-orange">{searchQuery ? `"${searchQuery}"` : 'Equipamiento de Running'}</span>
                     </h1>
 
                 </div>
