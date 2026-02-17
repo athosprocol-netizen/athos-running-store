@@ -131,33 +131,12 @@ export const SizeGuide = () => {
 
                     <div className="flex-grow flex items-center justify-center py-8">
                         {activeTab === 'shoes' ? (
-                            <div className="relative w-full max-w-xs">
-                                {/* Technical Drawing Foot */}
-                                <svg viewBox="0 0 200 320" className="w-full h-auto drop-shadow-sm">
-                                    {/* Grid Background */}
-                                    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#E5E5E5" strokeWidth="1" />
-                                    </pattern>
-                                    <rect width="100%" height="100%" fill="url(#grid)" />
-
-                                    {/* Foot Outline */}
-                                    <path
-                                        d="M80,300 C60,300 50,260 50,220 C50,150 55,100 70,60 C80,40 90,20 100,20 C115,20 125,40 135,60 C145,90 150,150 150,220 C150,260 140,300 120,300 Z"
-                                        fill="white"
-                                        stroke="#111"
-                                        strokeWidth="2"
-                                    />
-
-                                    {/* Measurement Lines */}
-                                    <line x1="50" y1="310" x2="150" y2="310" stroke="#FF4D00" strokeWidth="2" strokeDasharray="4 2" />
-                                    <line x1="160" y1="20" x2="160" y2="300" stroke="#FF4D00" strokeWidth="2" />
-                                    <line x1="155" y1="20" x2="165" y2="20" stroke="#FF4D00" strokeWidth="2" />
-                                    <line x1="155" y1="300" x2="165" y2="300" stroke="#FF4D00" strokeWidth="2" />
-
-                                    {/* Labels */}
-                                    <text x="170" y="160" fontSize="10" fontWeight="bold" fill="#FF4D00" style={{ writingMode: 'vertical-rl' }}>LONGITUD (CM)</text>
-                                </svg>
-
+                            <div className="relative w-full">
+                                <img
+                                    src="/talla-zapatos.png"
+                                    className="w-full h-auto object-contain rounded-2xl shadow-sm mix-blend-multiply"
+                                    alt="Guía de tallas calzado"
+                                />
                                 <div className="mt-6 space-y-3">
                                     <div className="flex items-start gap-3">
                                         <span className="w-5 h-5 rounded-full bg-athos-black text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">1</span>
@@ -174,31 +153,12 @@ export const SizeGuide = () => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="relative w-full max-w-xs">
-                                {/* Technical Drawing Body */}
-                                <svg viewBox="0 0 250 350" className="w-full h-auto drop-shadow-sm">
-                                    <path
-                                        d="M75,60 L50,90 L70,110 L70,300 L180,300 L180,110 L200,90 L175,60 Q125,80 75,60"
-                                        fill="white"
-                                        stroke="#111"
-                                        strokeWidth="2"
-                                    />
-                                    {/* Chest Line */}
-                                    <line x1="60" y1="130" x2="190" y2="130" stroke="#FF4D00" strokeWidth="2" strokeDasharray="5 3" />
-                                    <circle cx="190" cy="130" r="3" fill="#FF4D00" />
-                                    <text x="200" y="133" fontSize="10" fontWeight="bold" fill="#111">PECHO</text>
-
-                                    {/* Waist Line */}
-                                    <line x1="70" y1="200" x2="180" y2="200" stroke="#FF4D00" strokeWidth="2" strokeDasharray="5 3" />
-                                    <circle cx="180" cy="200" r="3" fill="#FF4D00" />
-                                    <text x="190" y="203" fontSize="10" fontWeight="bold" fill="#111">CINTURA</text>
-
-                                    {/* Hip Line */}
-                                    <line x1="70" y1="260" x2="180" y2="260" stroke="#FF4D00" strokeWidth="2" strokeDasharray="5 3" />
-                                    <circle cx="180" cy="260" r="3" fill="#FF4D00" />
-                                    <text x="190" y="263" fontSize="10" fontWeight="bold" fill="#111">CADERA</text>
-                                </svg>
-
+                            <div className="relative w-full">
+                                <img
+                                    src="/talla-camisetas.png"
+                                    className="w-full h-auto object-contain rounded-2xl shadow-sm mix-blend-multiply"
+                                    alt="Guía de tallas ropa"
+                                />
                                 <div className="mt-6 space-y-3 border-t border-gray-200 pt-4">
                                     <div className="flex items-center gap-2">
                                         <CheckCircle2 size={14} className="text-athos-orange" />
