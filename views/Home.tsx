@@ -168,25 +168,7 @@ export const Home = () => {
                     </div>
                 </div>
 
-                {/* 3. CATEGORIES (Circular Brand Style) */}
-                <div className="mt-8 md:mt-16 px-6 md:px-0">
-                    <div className="flex justify-between items-center mb-5 md:mb-8">
-                        <h3 className="text-xl md:text-3xl font-black italic text-athos-black uppercase">Categorías</h3>
-                        <button onClick={() => setView('shop')} className="text-xs md:text-sm font-bold text-athos-orange hover:text-black transition-colors flex items-center gap-1 hover-burn">Ver todo <ArrowRight size={14} /></button>
-                    </div>
 
-                    {/* Grid Layout to prevent cut-off and consistent sizing */}
-                    <div className="grid grid-cols-3 gap-4 md:flex md:justify-start md:gap-16 p-2">
-                        {categories.map((cat) => (
-                            <button key={cat.id} onClick={() => setView('shop')} className="flex flex-col items-center gap-3 group w-full">
-                                <div className="w-16 h-16 md:w-32 md:h-32 bg-[#F4F4F4] rounded-full flex items-center justify-center text-athos-black group-hover:bg-athos-orange group-hover:text-white transition-all shadow-sm group-hover:shadow-[0_0_20px_rgba(255,77,0,0.4)] duration-300">
-                                    <cat.icon size={24} className="md:w-12 md:h-12" strokeWidth={1.5} />
-                                </div>
-                                <span className="text-xs md:text-lg font-bold text-gray-600 group-hover:text-athos-black transition-colors uppercase tracking-wide">{cat.label}</span>
-                            </button>
-                        ))}
-                    </div>
-                </div>
 
                 {/* 4. NEW ARRIVALS (Grid Style) */}
                 <div className="mt-8 md:mt-16 px-6 md:px-0 mb-20">

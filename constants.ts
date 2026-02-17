@@ -10,22 +10,22 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 950000,
     image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop',
     images: [
-        'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1539185441755-769473a23570?q=80&w=1000&auto=format&fit=crop', // Mock alternate angle
-        'https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=1000&auto=format&fit=crop'  // Mock detail
+      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1539185441755-769473a23570?q=80&w=1000&auto=format&fit=crop', // Mock alternate angle
+      'https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=1000&auto=format&fit=crop'  // Mock detail
     ],
     rating: 4.9,
     reviewsCount: 128,
     reviews: [
-        {
-            id: 'r1',
-            userId: 'u2',
-            userName: 'Santiago M.',
-            rating: 5,
-            comment: 'Bajé mis tiempos en la Media Maratón de Bogotá. Increíbles.',
-            date: '2023-10-15',
-            image: 'https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?q=80&w=200&auto=format&fit=crop'
-        }
+      {
+        id: 'r1',
+        userId: 'u2',
+        userName: 'Santiago M.',
+        rating: 5,
+        comment: 'Bajé mis tiempos en la Media Maratón de Bogotá. Increíbles.',
+        date: '2023-10-15',
+        image: 'https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?q=80&w=200&auto=format&fit=crop'
+      }
     ],
     description: 'La cúspide del rendimiento para el día de la carrera. Con nuestra espuma patentada con infusión de nitrógeno y placa de fibra de carbono completa para máxima propulsión.',
     specs: {
@@ -46,8 +46,8 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 680000,
     image: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=1000&auto=format&fit=crop',
     images: [
-        'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=1000&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1454944338482-a69bb95894af?q=80&w=1000&auto=format&fit=crop'
+      'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=1000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1454944338482-a69bb95894af?q=80&w=1000&auto=format&fit=crop'
     ],
     rating: 4.7,
     reviewsCount: 84,
@@ -76,47 +76,85 @@ export const MOCK_PRODUCTS: Product[] = [
     stock: 25
   },
   {
-    id: 'p4',
-    name: 'Soporte Medallas 3D Pro',
-    subtitle: 'Impresión 3D Personalizada',
-    category: 'achievements',
-    price: 150000,
-    image: 'https://images.unsplash.com/photo-1516216628859-9bccecab13ca?q=80&w=1000&auto=format&fit=crop', 
+    id: 'p6',
+    name: 'Garmin Forerunner 965',
+    subtitle: 'GPS Premium',
+    category: 'relojes',
+    price: 3200000,
+    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop',
     rating: 5.0,
-    reviewsCount: 210,
-    description: 'Celebra tu logro con tecnología aditiva. Exhibidor impreso en 3D con biopolímeros de alta resistencia (PLA+), personalizado capa a capa con tu nombre, distancia y tiempo final.',
-    isCustomizable: true,
-    tags: ['Personalizado', 'Impresión 3D', 'Eco-Friendly'],
+    reviewsCount: 15,
+    description: 'Reloj de running con pantalla AMOLED y métricas avanzadas de entrenamiento.',
+    tags: ['GPS', 'Tech'],
+    stock: 5
+  },
+  {
+    id: 'p7',
+    name: 'Cinturón Hidratación Pro',
+    subtitle: 'Almacenamiento Ligero',
+    category: 'cinturones',
+    price: 120000,
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop', // Placeholder
+    rating: 4.5,
+    reviewsCount: 22,
+    description: 'Lleva tus geles y llaves sin rebote.',
+    tags: ['Accesorios'],
+    stock: 30
+  },
+  {
+    id: 'p8',
+    name: 'Gafas Speed Tint',
+    subtitle: 'Protección UV',
+    category: 'gafas',
+    price: 250000,
+    image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1000&auto=format&fit=crop',
+    rating: 4.8,
+    reviewsCount: 40,
+    description: 'Lentes fotocromáticos para cualquier condición de luz.',
+    tags: ['Sol', 'Protección'],
+    stock: 15
+  },
+  {
+    id: 'p9',
+    name: 'Gorra Ventilada Elite',
+    subtitle: 'Transpirable',
+    category: 'gorras',
+    price: 85000,
+    image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89d?q=80&w=1000&auto=format&fit=crop',
+    rating: 4.7,
+    reviewsCount: 55,
+    description: 'Mantén tu cabeza fresca en los días más calurosos.',
+    tags: ['Ropa', 'Cabeza'],
     stock: 50
   },
   {
-    id: 'p5',
-    name: 'Pack Geles Endurance',
-    subtitle: 'Energía & Electrolitos',
-    category: 'accessories',
-    price: 120000,
-    image: 'https://images.unsplash.com/photo-1622602726546-44445851453e?q=80&w=1000&auto=format&fit=crop',
-    rating: 4.6,
-    reviewsCount: 320,
-    description: 'Pack de 12 geles de alta carga de carbohidratos. Fáciles de digerir, formulados para distancias superiores a 21km.',
-    tags: ['Nutrición', 'Pack'],
-    stock: 100
+    id: 'p10',
+    name: 'Medallero Personalizado',
+    subtitle: 'Exhibidor de Logros',
+    category: 'medalleros',
+    price: 140000,
+    image: 'https://images.unsplash.com/photo-1516216628859-9bccecab13ca?q=80&w=1000&auto=format&fit=crop',
+    rating: 4.9,
+    reviewsCount: 10,
+    description: 'Diseño minimalista para colgar tus medallas favoritas.',
+    tags: ['Hogar', 'Decoración'],
+    stock: 20
   }
 ];
 
 export const INITIAL_USER: UserProfile = {
   id: "u123",
   email: "alejandro@athos.co",
-  name: "Alejandro Runner",
-  role: 'admin', 
-  location: "Bogotá, COL",
-  address: "Cra 15 # 124-30, Apto 502",
-  phone: "310 555 1234",
+  name: "Alejandro",
+  role: 'user',
+  location: "Cartago, Valle del Cauca",
+  address: "Cra 4 # 12-34", // Default address for profile, but checkout will ignore it
+  phone: "300 123 4567",
   age: 28,
   avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop",
   coupons: [
-      { code: 'BIENVENIDO10', description: '10% en tu primera compra', discount: 10, expiry: '2024-12-31' },
-      { code: 'MMB2024', description: 'Envío gratis temporada maratón', discount: 100, expiry: '2024-08-01' }
+    { code: 'BIENVENIDO10', description: '10% en tu primera compra', discount: 10, expiry: '2024-12-31' },
+    { code: 'MMB2024', description: 'Envío gratis temporada maratón', discount: 100, expiry: '2024-08-01' }
   ],
   wishlist: ['p1', 'p2']
 };

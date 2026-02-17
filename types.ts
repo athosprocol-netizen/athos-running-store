@@ -24,7 +24,7 @@ export interface Product {
   id: string;
   name: string;
   subtitle: string;
-  category: 'shoes' | 'apparel' | 'accessories' | 'achievements'; 
+  category: 'shoes' | 'apparel' | 'accessories' | 'achievements' | 'relojes' | 'cinturones' | 'gafas' | 'gorras' | 'medalleros';
   price: number;
   image: string;
   images?: string[]; // Multiple images support
@@ -75,11 +75,11 @@ export interface UserProfile {
   location?: string;
   address?: string; // Legacy simple string
   shippingAddresses?: Address[]; // Future proof
-  phone?: string; 
-  age?: number; 
+  phone?: string;
+  age?: number;
   // Shop Data
-  coupons: Coupon[]; 
-  wishlist: string[]; 
+  coupons: Coupon[];
+  wishlist: string[];
   activeChallengeId?: string;
   createdAt?: string;
 }

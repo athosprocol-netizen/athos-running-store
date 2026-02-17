@@ -77,8 +77,8 @@ export const Footer = () => {
                                 </button>
                             </div>
                             <div className="space-y-2 text-sm font-bold text-gray-500">
-                                <p className="flex items-center gap-2"><MapPin size={16} className="text-athos-orange" /> Bogotá, Colombia - Zona T</p>
-                                <p className="flex items-center gap-2"><Mail size={16} className="text-athos-orange" /> contacto@athos.co</p>
+                                <p className="flex items-center gap-2"><MapPin size={16} className="text-athos-orange" /> Cartago, Valle del Cauca</p>
+                                <p className="flex items-center gap-2"><Mail size={16} className="text-athos-orange" /> alejandro@athos.co</p>
                             </div>
                         </div>
                     </div>
@@ -117,10 +117,10 @@ export const Footer = () => {
                     {/* Copyright */}
                     <div className="text-center">
                         <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">
-                            © 2024 ATHOS Running.
+                            © 2026 ATHOS Running.
                         </p>
                         <p className="text-[10px] font-bold text-gray-700 uppercase tracking-widest mt-1">
-                            Bogotá, Colombia
+                            Cartago, Valle del Cauca
                         </p>
                     </div>
                 </div>

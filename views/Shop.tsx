@@ -19,10 +19,13 @@ export const Shop = () => {
 
     const categories = [
         { id: 'all', label: 'Todo' },
-        { id: 'shoes', label: 'Calzado' },
-        { id: 'apparel', label: 'Ropa' },
-        { id: 'achievements', label: '3D Lab' },
-        { id: 'accessories', label: 'Accesorios' },
+        { id: 'shoes', label: 'Zapatillas' },
+        { id: 'apparel', label: 'Camisetas' },
+        { id: 'relojes', label: 'Relojes' },
+        { id: 'cinturones', label: 'Cinturones' },
+        { id: 'gafas', label: 'Gafas' },
+        { id: 'gorras', label: 'Gorras' },
+        { id: 'medalleros', label: 'Medalleros' },
     ];
 
     // Filter Logic
