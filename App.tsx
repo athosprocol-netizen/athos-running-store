@@ -43,12 +43,12 @@ const MainContent = () => {
 
   return (
     <div className="min-h-screen bg-athos-bg text-athos-black font-sans selection:bg-athos-orange selection:text-white flex flex-col relative overflow-hidden">
-      {/* Background Silhouette */}
-      <div className="fixed inset-0 z-0 pointer-events-none flex justify-end items-end">
+      {/* Background Silhouette - Overlay Mode */}
+      <div className="fixed inset-0 z-[50] pointer-events-none flex justify-end items-end overflow-hidden">
         <img
           src="/flames.png"
           alt="Background"
-          className="w-[90vw] md:w-[60vw] opacity-[0.03] grayscale mix-blend-multiply translate-x-[20%] translate-y-[20%]"
+          className="w-[90vw] md:w-[60vw] opacity-[0.15] grayscale mix-blend-multiply translate-x-[20%] translate-y-[20%]"
         />
       </div>
 
