@@ -13,14 +13,14 @@ import { Checkout } from './views/Checkout';
 import { Footer } from './components/Footer';
 
 const Notification = () => {
-    const { notification } = useApp();
-    if (!notification) return null;
-    return (
-        <div className="fixed top-24 right-4 z-[100] bg-athos-black text-white px-6 py-4 shadow-[0_0_20px_rgba(255,77,0,0.4)] animate-fade-in font-bold flex items-center gap-3 max-w-xs md:max-w-md border-l-4 border-athos-orange">
-            <div className="w-2 h-2 bg-athos-orange rounded-full animate-burn"></div>
-            {notification}
-        </div>
-    );
+  const { notification } = useApp();
+  if (!notification) return null;
+  return (
+    <div className="fixed top-24 right-4 z-[100] bg-athos-black text-white px-6 py-4 shadow-[0_0_20px_rgba(255,77,0,0.4)] animate-fade-in font-bold flex items-center gap-3 max-w-xs md:max-w-md border-l-4 border-athos-orange">
+      <div className="w-2 h-2 bg-athos-orange rounded-full animate-burn"></div>
+      {notification}
+    </div>
+  );
 };
 
 const MainContent = () => {
@@ -42,13 +42,25 @@ const MainContent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-athos-bg text-athos-black font-sans selection:bg-athos-orange selection:text-white flex flex-col">
-      <Navbar />
-      <Notification />
-      <main className="w-full flex-grow">
-        {renderView()}
-      </main>
-      <Footer />
+    <div className="min-h-screen bg-athos-bg text-athos-black font-sans selection:bg-athos-orange selection:text-white flex flex-col relative overflow-hidden">
+      {/* Background Silhouette */}
+      <div className="fixed inset-0 z-0 pointer-events-none flex justify-end items-end">
+        <img
+          src="/flames.png"
+          alt="Background"
+          className="w-[90vw] md:w-[60vw] opacity-[0.03] grayscale mix-blend-multiply translate-x-[20%] translate-y-[20%]"
+        />
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <Navbar />
+        <Notification />
+        <main className="w-full flex-grow">
+          {renderView()}
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 };
