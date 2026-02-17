@@ -100,9 +100,7 @@ export const Shop = () => {
                         {searchQuery ? 'Resultados para:' : 'Descubre el mejor'} <br />
                         <span className="italic text-athos-orange">{searchQuery ? `"${searchQuery}"` : 'Equipo Técnico'}</span>
                     </h1>
-                    <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden border-2 border-white shadow-sm hidden md:block">
-                        <img src={user?.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop"} className="w-full h-full object-cover" />
-                    </div>
+
                 </div>
 
                 <div className="flex gap-3">
