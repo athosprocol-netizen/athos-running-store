@@ -101,11 +101,11 @@ export const Home = () => {
                         onMouseLeave={handleMouseLeave}
                         onMouseUp={handleMouseUp}
                         onMouseMove={handleMouseMove}
-                        className={`w-full overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 snap-x snap-proximity ${isDown ? 'cursor-grabbing snap-none' : 'cursor-grab snap-x'} px-0.5`}
+                        className={`w-full overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-0.5`}
                     >
                         {/* Card 1 - Main Promo */}
                         <div
-                            className="snap-center shrink-0 w-[92%] md:w-[850px] relative select-none"
+                            className="shrink-0 w-[90%] md:w-[850px] relative select-none"
                             onClick={() => handleItemClick(() => setView('shop'))}
                         >
                             <div className="bg-athos-black rounded-[24px] md:rounded-[40px] p-5 md:p-14 h-[150px] md:h-[450px] relative overflow-hidden flex items-center shadow-xl shadow-athos-black/20 group transition-transform active:scale-[0.99]">
@@ -137,7 +137,7 @@ export const Home = () => {
 
                         {/* Card 2 - Collection */}
                         <div
-                            className="snap-center shrink-0 w-[92%] md:w-[550px] relative select-none"
+                            className="shrink-0 w-[90%] md:w-[850px] relative select-none"
                             onClick={() => handleItemClick(() => setView('shop'))}
                         >
                             <div className="bg-gray-100 rounded-[24px] md:rounded-[40px] p-5 md:p-14 h-[150px] md:h-[450px] relative overflow-hidden flex items-center border border-gray-200 group transition-transform active:scale-[0.99] hover:shadow-[0_0_20px_rgba(255,77,0,0.1)] hover:border-athos-orange/30">
