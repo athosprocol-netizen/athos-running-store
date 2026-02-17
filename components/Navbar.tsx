@@ -41,6 +41,18 @@ export const Navbar = () => {
         }
     };
 
+    // Scroll Lock Effect
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMobileMenuOpen]);
+
     return (
         <>
             {/* DESKTOP HEADER - FIXED COLOR */}
@@ -131,9 +143,9 @@ export const Navbar = () => {
                 {/* Center: Logo */}
                 <div
                     onClick={() => setView('home')}
-                    className="absolute left-1/2 top-4 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center filter drop-shadow-md"
+                    className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
                 >
-                    <img src="/logo.png" alt="ATHOS" className="h-28 w-auto object-contain" />
+                    <img src="/logo.png" alt="ATHOS" className="h-12 w-auto object-contain" />
                 </div>
 
                 {/* Right: Actions */}
