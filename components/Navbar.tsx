@@ -53,7 +53,9 @@ export const Navbar = () => {
                 <div className="max-w-[1400px] mx-auto px-10 flex items-center justify-between">
                     {/* Logo */}
                     <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setView('home')}>
-                        <img src="/logo.png" alt="ATHOS" className="h-16 w-auto object-contain hover:scale-105 transition-transform duration-300 drop-shadow-sm" />
+                        <div className="animate-speed">
+                            <img src="/logo.png" alt="ATHOS" className="h-24 w-auto object-contain animate-burn hover:scale-110 transition-transform duration-300" />
+                        </div>
                     </div>
 
                     {/* Central Nav */}
@@ -131,9 +133,9 @@ export const Navbar = () => {
                 {/* Center: Logo */}
                 <div
                     onClick={() => setView('home')}
-                    className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
+                    className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center animate-speed"
                 >
-                    <img src="/logo.png" alt="ATHOS" className="h-10 w-auto object-contain" />
+                    <img src="/logo.png" alt="ATHOS" className="h-16 w-auto object-contain animate-burn" />
                 </div>
 
                 {/* Right: Actions */}

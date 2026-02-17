@@ -1,118 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ATHOS Running Store</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              athos: {
-                bg: '#F7F7F7',          
-                card: '#FFFFFF',        
-                border: '#EAEAEA',      
-                black: '#111111',       
-                dark: '#050505',        /* Darker for contrast with flames */
-                muted: '#6B7280',       
-                orange: '#FF4D00',      /* More intense Fire Orange */
-                orangeHover: '#FF7B00', 
-                alert: '#B22222',       
-              }
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATHOS Running Store</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            athos: {
+              bg: '#F7F7F7',
+              card: '#FFFFFF',
+              border: '#EAEAEA',
+              black: '#111111',
+              dark: '#050505',        /* Darker for contrast with flames */
+              muted: '#6B7280',
+              orange: '#FF4D00',      /* More intense Fire Orange */
+              orangeHover: '#FF7B00',
+              alert: '#B22222',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.4s ease-out forwards',
+            'slide-up': 'slideUp 0.5s ease-out forwards',
+            'slide-in-right': 'slideInRight 0.3s ease-out forwards',
+            'burn': 'burn 0.5s infinite alternate',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'speed': 'speed-pulse 2s infinite ease-in-out',
+            'shake': 'shake-aggressive 0.5s infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
             },
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
             },
-            animation: {
-              'fade-in': 'fadeIn 0.4s ease-out forwards',
-              'slide-up': 'slideUp 0.5s ease-out forwards',
-              'slide-in-right': 'slideInRight 0.3s ease-out forwards',
-              'burn': 'burn 3s infinite alternate',
-              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            slideInRight: {
+              '0%': { transform: 'translateX(100%)' },
+              '100%': { transform: 'translateX(0)' },
             },
-            keyframes: {
-              fadeIn: {
-                '0%': { opacity: '0' },
-                '100%': { opacity: '1' },
-              },
-              slideUp: {
-                '0%': { transform: 'translateY(20px)', opacity: '0' },
-                '100%': { transform: 'translateY(0)', opacity: '1' },
-              },
-              slideInRight: {
-                '0%': { transform: 'translateX(100%)' },
-                '100%': { transform: 'translateX(0)' },
-              },
-              burn: {
-                '0%': { boxShadow: '0 0 5px rgba(255, 77, 0, 0.2)' },
-                '100%': { boxShadow: '0 0 20px rgba(255, 77, 0, 0.6), 0 0 10px rgba(255, 123, 0, 0.4)' }
-              }
+            burn: {
+              '0%': { filter: 'drop-shadow(0 0 2px rgba(255, 77, 0, 0.5)) drop-shadow(0 0 5px rgba(255, 77, 0, 0.3))' },
+              '100%': { filter: 'drop-shadow(0 0 15px rgba(255, 77, 0, 0.8)) drop-shadow(0 -5px 20px rgba(255, 123, 0, 0.6))' }
+            },
+            'shake-aggressive': {
+              '0%, 100%': { transform: 'translateX(0)' },
+              '25%': { transform: 'translateX(-2px) skewX(-5deg)' },
+              '75%': { transform: 'translateX(2px) skewX(5deg)' }
+            },
+            'speed-pulse': {
+              '0%': { transform: 'scale(1) skewX(0deg)' },
+              '50%': { transform: 'scale(1.05) skewX(-10deg)' },
+              '100%': { transform: 'scale(1) skewX(0deg)' }
             }
           }
         }
       }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-    <style>
-      body { font-family: 'Inter', sans-serif; background-color: #F7F7F7; color: #111111; antialiased; }
-      
-      /* GLOBAL SCROLLBAR HIDING */
-      ::-webkit-scrollbar {
-          display: none;
-      }
-      * {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-      }
-      
-      .hide-scrollbar::-webkit-scrollbar { display: none; }
-      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      
-      /* Premium Input Styles */
-      input, select, textarea {
-        background-color: #FFFFFF;
-        border: 1px solid #EAEAEA;
-        color: #111111;
-        transition: border-color 0.2s, box-shadow 0.2s;
-      }
-      input:focus, select:focus, textarea:focus {
-        border-color: #FF4D00;
-        outline: none;
-        box-shadow: 0 0 0 1px #FF4D00, 0 0 10px rgba(255, 77, 0, 0.2);
-      }
-      
-      /* Text Stroke Utility for Silhouette Effect */
-      .text-stroke {
-        -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
-        color: transparent;
-      }
-      .text-stroke-black {
-        -webkit-text-stroke: 1px rgba(17, 17, 17, 0.8);
-        color: transparent;
-      }
-      .text-stroke-orange {
-        -webkit-text-stroke: 1px #FF4D00;
-        color: transparent;
-      }
-      .hover-fill-white:hover {
-        color: white;
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-      }
-      .hover-fill-orange:hover {
-        color: #FF4D00;
-        text-shadow: 0 0 20px rgba(255, 77, 0, 0.6);
-      }
-      
-      /* Flame Glow Utility */
-      .flame-glow {
-        box-shadow: 0 0 15px rgba(255, 77, 0, 0.3);
-      }
-      
-      /* Smooth Scroll */
-      html { scroll-behavior: smooth; }
-    </style>
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #F7F7F7;
+      color: #111111;
+      antialiased;
+    }
+
+    /* GLOBAL SCROLLBAR HIDING */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    * {
+      -ms-overflow-style: none;
+      /* IE and Edge */
+      scrollbar-width: none;
+      /* Firefox */
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Premium Input Styles */
+    input,
+    select,
+    textarea {
+      background-color: #FFFFFF;
+      border: 1px solid #EAEAEA;
+      color: #111111;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #FF4D00;
+      outline: none;
+      box-shadow: 0 0 0 1px #FF4D00, 0 0 10px rgba(255, 77, 0, 0.2);
+    }
+
+    /* Text Stroke Utility for Silhouette Effect */
+    .text-stroke {
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+      color: transparent;
+    }
+
+    .text-stroke-black {
+      -webkit-text-stroke: 1px rgba(17, 17, 17, 0.8);
+      color: transparent;
+    }
+
+    .text-stroke-orange {
+      -webkit-text-stroke: 1px #FF4D00;
+      color: transparent;
+    }
+
+    .hover-fill-white:hover {
+      color: white;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .hover-fill-orange:hover {
+      color: #FF4D00;
+      text-shadow: 0 0 20px rgba(255, 77, 0, 0.6);
+    }
+
+    /* Flame Glow Utility */
+    .flame-glow {
+      box-shadow: 0 0 15px rgba(255, 77, 0, 0.3);
+    }
+
+    /* Smooth Scroll */
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -123,10 +162,12 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
+  <link rel="stylesheet" href="/index.css">
 </head>
-  <body>
-    <div id="root"></div>
+
+<body>
+  <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>
+
 </html>
