@@ -309,7 +309,107 @@ export const ProductDetail = () => {
                         </button>
                     )}
                 </div>
-                {/* ... keeping the rest of the reviews implementation strictly as is ... */}
+
+                {showReviewForm && (
+                    <div className="bg-gray-50 p-6 md:p-8 rounded-[30px] mb-12 animate-fade-in border border-gray-100 relative overflow-hidden">
+                        <div className="relative z-10">
+                            <h3 className="text-xl font-black italic text-athos-black uppercase mb-6">Escribe tu Reseña</h3>
+
+                            {/* Rating */}
+                            <div className="mb-8">
+                                <label className="block text-xs font-bold uppercase text-gray-400 mb-3">Calificación</label>
+                                <div className="flex gap-2" onMouseLeave={() => setHoverRating(0)}>
+                                    {[0, 1, 2, 3, 4].map((index) => {
+                                        const rating = hoverRating || newReviewRating;
+                                        const full = rating >= index + 1;
+                                        const half = rating >= index + 0.5 && rating < index + 1;
+
+                                        return (
+                                            <button
+                                                key={index}
+                                                className="relative w-8 h-8 focus:outline-none transition-transform hover:scale-110"
+                                                onClick={(e) => handleStarClick(e, index)}
+                                                onMouseMove={(e) => handleStarHover(e, index)}
+                                            >
+                                                <Star
+                                                    size={32}
+                                                    className={`${full ? "fill-athos-orange text-athos-orange" : "text-gray-300"} transition-colors`}
+                                                />
+                                                {half && (
+                                                    <div className="absolute top-0 left-0 overflow-hidden w-[50%] pointer-events-none">
+                                                        <Star size={32} className="fill-athos-orange text-athos-orange" />
+                                                    </div>
+                                                )}
+                                            </button>
+                                        )
+                                    })}
+                                </div>
+                                <p className="text-sm font-bold text-athos-orange mt-2 ml-1">
+                                    {newReviewRating > 0 ? `${newReviewRating} de 5 estrellas` : 'Toque para calificar'}
+                                </p>
+                            </div>
+
+                            {/* Comment */}
+                            <div className="mb-8">
+                                <label className="block text-xs font-bold uppercase text-gray-400 mb-3">Tu Experiencia</label>
+                                <textarea
+                                    value={newReviewComment}
+                                    onChange={(e) => setNewReviewComment(e.target.value)}
+                                    placeholder="Cuéntanos qué te pareció el producto, calidad, talla, etc..."
+                                    className="w-full p-5 rounded-2xl border-none bg-white shadow-sm ring-1 ring-gray-100 focus:ring-2 focus:ring-athos-orange/20 outline-none font-medium h-32 resize-none placeholder:text-gray-300 text-athos-black"
+                                ></textarea>
+                            </div>
+
+                            {/* Image Upload */}
+                            <div className="mb-8">
+                                <label className="block text-xs font-bold uppercase text-gray-400 mb-3">Foto (Opcional)</label>
+                                <div className="flex items-center gap-4">
+                                    <button
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="flex items-center gap-2 px-5 py-3 bg-white border border-gray-100 rounded-xl font-bold text-gray-600 hover:bg-gray-50 hover:text-athos-black transition-colors shadow-sm"
+                                    >
+                                        <Camera size={20} />
+                                        <span>Subir Foto</span>
+                                    </button>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                    />
+                                    {newReviewImage && (
+                                        <div className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-white shadow-md group">
+                                            <img src={newReviewImage} className="w-full h-full object-cover" />
+                                            <button
+                                                onClick={() => setNewReviewImage(null)}
+                                                className="absolute top-1 right-1 bg-black/50 hover:bg-athos-orange text-white p-1 rounded-full backdrop-blur-sm transition-colors"
+                                            >
+                                                <X size={12} />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-4 pt-2">
+                                <button
+                                    onClick={() => setShowReviewForm(false)}
+                                    className="px-8 py-3 rounded-xl font-bold text-gray-400 hover:bg-gray-200 hover:text-gray-600 transition-colors"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={submitReview}
+                                    className="px-10 py-3 bg-athos-black text-white rounded-xl font-black uppercase tracking-widest hover:bg-athos-orange transition-colors shadow-lg shadow-athos-orange/20"
+                                >
+                                    Publicar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 {/* REVIEWS LIST */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {product.reviews && product.reviews.length > 0 ? (
@@ -353,35 +453,37 @@ export const ProductDetail = () => {
             </div>
 
             {/* SHARE MODAL */}
-            {isShareModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={() => setIsShareModalOpen(false)}>
-                    <div className="bg-white rounded-[32px] p-6 w-full max-w-sm animate-slide-up" onClick={e => e.stopPropagation()}>
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-black italic uppercase">Compartir</h3>
-                            <button onClick={() => setIsShareModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><X size={20} /></button>
-                        </div>
-
-                        <div className="flex items-center gap-4 mb-6 p-3 bg-gray-50 rounded-2xl border border-gray-100">
-                            <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center flex-shrink-0">
-                                <img src={product.image} className="w-12 h-12 object-contain mix-blend-multiply" />
+            {
+                isShareModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={() => setIsShareModalOpen(false)}>
+                        <div className="bg-white rounded-[32px] p-6 w-full max-w-sm animate-slide-up" onClick={e => e.stopPropagation()}>
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="text-xl font-black italic uppercase">Compartir</h3>
+                                <button onClick={() => setIsShareModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><X size={20} /></button>
                             </div>
-                            <div>
-                                <h4 className="font-bold text-sm text-athos-black line-clamp-1">{product.name}</h4>
-                                <p className="text-xs text-athos-orange font-bold">${(product.price / 1000).toFixed(0)}k</p>
-                            </div>
-                        </div>
 
-                        <div className="grid grid-cols-3 gap-4 mb-2">
-                            <button onClick={copyToClipboard} className="flex flex-col items-center gap-2 group col-span-3">
-                                <div className="w-12 h-12 rounded-full bg-gray-100 text-athos-black flex items-center justify-center shadow-md group-hover:bg-gray-200 transition-colors">
-                                    <LinkIcon size={20} />
+                            <div className="flex items-center gap-4 mb-6 p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <img src={product.image} className="w-12 h-12 object-contain mix-blend-multiply" />
                                 </div>
-                                <span className="text-[10px] font-bold text-gray-500 uppercase">Copiar Enlace</span>
-                            </button>
+                                <div>
+                                    <h4 className="font-bold text-sm text-athos-black line-clamp-1">{product.name}</h4>
+                                    <p className="text-xs text-athos-orange font-bold">${(product.price / 1000).toFixed(0)}k</p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4 mb-2">
+                                <button onClick={copyToClipboard} className="flex flex-col items-center gap-2 group col-span-3">
+                                    <div className="w-12 h-12 rounded-full bg-gray-100 text-athos-black flex items-center justify-center shadow-md group-hover:bg-gray-200 transition-colors">
+                                        <LinkIcon size={20} />
+                                    </div>
+                                    <span className="text-[10px] font-bold text-gray-500 uppercase">Copiar Enlace</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
