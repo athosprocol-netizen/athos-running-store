@@ -100,7 +100,7 @@ export const Footer = () => {
                 <div className="px-6 flex flex-col items-center gap-8">
                     {/* Brand Lite */}
                     <div className="flex items-center gap-2 opacity-90" onClick={() => setView('home')}>
-                        <img src="/logo.png" alt="ATHOS" className="h-20 w-auto object-contain" />
+                        <img src="/logo.png" alt="ATHOS" className="h-32 w-auto object-contain" />
                     </div>
 
                     {/* Social Grid */}

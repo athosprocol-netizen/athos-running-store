@@ -43,7 +43,7 @@ export const Home = () => {
         if (!isDown || !sliderRef.current) return;
         e.preventDefault();
         const x = e.pageX - sliderRef.current.offsetLeft;
-        const walk = (x - startX) * 2; // Scroll-fastness
+        const walk = (x - startX) * 3; // Scroll-fastness
         sliderRef.current.scrollLeft = scrollLeft - walk;
 
         // If moved significantly, mark as dragging to prevent click events
