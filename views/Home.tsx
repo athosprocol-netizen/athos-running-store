@@ -89,7 +89,7 @@ export const Home = () => {
             </div>
 
             {/* DESKTOP SPACER */}
-            <div className="hidden md:block h-32"></div>
+            <div className="hidden md:block h-48"></div>
 
             <div className="max-w-[1400px] mx-auto md:px-10">
 

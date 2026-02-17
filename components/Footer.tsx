@@ -24,8 +24,8 @@ export const Footer = () => {
                     <div className="grid grid-cols-12 gap-12 mb-20 border-b border-gray-800 pb-16">
 
                         {/* Brand Column */}
-                        <div className="col-span-4">
-                            <div className="flex items-center gap-2 mb-6 group cursor-pointer" onClick={() => setView('home')}>
+                        <div className="col-span-4 flex flex-col items-center text-center">
+                            <div className="flex items-center justify-center gap-2 mb-6 group cursor-pointer" onClick={() => setView('home')}>
                                 <img src="/logo.png" alt="ATHOS" className="h-32 w-auto object-contain hover:brightness-110 transition-all" />
                             </div>
                             <p className="text-gray-400 text-sm leading-relaxed mb-8 max-w-sm font-medium">
