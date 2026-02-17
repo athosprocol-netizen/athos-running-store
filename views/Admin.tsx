@@ -166,7 +166,7 @@ export const Admin = () => {
             )}
 
             {/* Product Table */}
-            <div className="bg-[#F4F4F4] rounded-[30px] p-2 overflow-hidden">
+            <div className="bg-white rounded-[30px] p-2 overflow-hidden border border-gray-100">
                 <table className="w-full text-left border-collapse">
                     <thead className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">
                         <tr>
