@@ -197,15 +197,15 @@ export const SizeGuide = () => {
                                 <div className="mt-6 space-y-3 border-t border-gray-200 pt-4">
                                     <div className="flex items-center gap-2">
                                         <CheckCircle2 size={14} className="text-athos-orange" />
-                                        <p className="text-xs font-bold text-gray-700 uppercase">Pecho: <span className="text-gray-500 font-normal normal-case">Parte más ancha bajo las axilas.</span></p>
+                                        <p className="text-xs font-bold text-gray-700 uppercase">Pecho: <span className="text-gray-500 font-normal normal-case">Ancho de la prenda a la altura de las axilas.</span></p>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <CheckCircle2 size={14} className="text-athos-orange" />
-                                        <p className="text-xs font-bold text-gray-700 uppercase">Cintura: <span className="text-gray-500 font-normal normal-case">Parte más estrecha del tronco.</span></p>
+                                        <p className="text-xs font-bold text-gray-700 uppercase">Altura: <span className="text-gray-500 font-normal normal-case">Largo total desde el hombro hasta el borde inferior.</span></p>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <CheckCircle2 size={14} className="text-athos-orange" />
-                                        <p className="text-xs font-bold text-gray-700 uppercase">Cadera: <span className="text-gray-500 font-normal normal-case">Parte más ancha de los glúteos.</span></p>
+                                        <p className="text-xs font-bold text-gray-700 uppercase">Mangas: <span className="text-gray-500 font-normal normal-case">Longitud desde el hombro/cuello hasta el final.</span></p>
                                     </div>
                                 </div>
                             </div>
