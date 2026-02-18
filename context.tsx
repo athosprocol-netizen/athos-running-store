@@ -42,41 +42,39 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false); // Start false to prevent initial lockup
-
+  const [isLoading, setIsLoading] = useState<boolean>(true); // Start TRUE to wait for session check
 
   // 1. SUPABASE AUTH & INITIAL LOAD
   useEffect(() => {
     let mounted = true;
 
     const init = async () => {
-      // Opt-out of blocking loading state for initialization.
-      // The app will open immediately. If a session exists, it will populate shortly after.
       try {
+        // Check for active session
         const { data: { session } } = await supabase.auth.getSession();
 
-        if (mounted && session?.user) {
-          console.log("Sesión recuperada:", session.user.email);
-          showNotification(`Sesión recuperada: ${session.user.email}`); // Visible confirmation
-          await loadUserProfile(session.user);
-        } else {
-          console.log("No se encontró sesión previa.");
+        if (mounted) {
+          if (session?.user) {
+            console.log("Sesión activa:", session.user.email);
+            // Load profile but don't block the entire UI if it takes too long
+            await loadUserProfile(session.user);
+          }
         }
       } catch (error) {
-        console.error("Error inicializando sesión:", error);
+        console.error("Error inicializando:", error);
+      } finally {
+        if (mounted) setIsLoading(false);
       }
     };
 
     init();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth Event:", event);
       if (event === 'SIGNED_OUT') {
         setUser(null);
-        setViewWithHistory('home');
         setCart([]);
+        setViewWithHistory('home');
       } else if (event === 'SIGNED_IN' && session?.user) {
-        // If we don't have user yet, load it.
         if (!user) await loadUserProfile(session.user);
       }
     });
@@ -86,6 +84,44 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       subscription.unsubscribe();
     };
   }, []);
+
+  // ... (loadUserProfile stays same)
+
+  // 2. FETCH REVIEWS
+  // ...
+
+  // ...
+
+  const login = async (email: string, password?: string) => {
+    if (!password) {
+      alert("Se requiere contraseña");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Standard Supabase Login
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        showNotification(error.message);
+      } else if (data.session) {
+        showNotification("¡Bienvenido!");
+        setViewWithHistory('home');
+        // Profile will load via onAuthStateChange or we can force it
+        loadUserProfile(data.session.user);
+      }
+    } catch (e: any) {
+      console.error(e);
+      showNotification("Error de conexión");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const loadUserProfile = async (authUser: any) => {
     try {
