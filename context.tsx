@@ -197,7 +197,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       return;
     }
 
-    setIsLoading(true); // Show loading during login
+    setIsLoading(true);
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -207,18 +207,20 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
       if (error) {
         console.error("Login Error:", error);
-        alert("Error de Inicio de Sesión: " + error.message);
-      } else if (data.session?.user) {
-        // Manually load profile to ensure state checks out before redirect
-        await loadUserProfile(data.session.user);
+        alert("Error: " + error.message);
+      } else if (data.session) {
+        // SUCCESS: Redirect immediately. Don't wait for profile.
+        // The onAuthStateChange listener will handle fetching the profile.
+        console.log("Login exitoso, redirigiendo...");
         setViewWithHistory('home');
-        showNotification("¡Bienvenido de nuevo!");
-      } else {
-        alert("No se inició sesión. Posiblemente falta confirmar el correo.");
+        showNotification("¡Bienvenido!");
+
+        // Force profile load in background just in case
+        loadUserProfile(data.session.user);
       }
     } catch (e: any) {
-      console.error("Login fatal error:", e);
-      alert("Error inesperado al iniciar sesión: " + (e.message || e));
+      console.error("Fatal error:", e);
+      alert("Error inesperado: " + (e.message || e));
     } finally {
       setIsLoading(false);
     }
