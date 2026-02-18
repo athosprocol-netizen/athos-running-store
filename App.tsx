@@ -12,6 +12,7 @@ import { Admin } from './views/Admin';
 import { Checkout } from './views/Checkout';
 import { Support } from './views/Support';
 import { Footer } from './components/Footer';
+import { WhatsAppButton } from './components/WhatsAppButton';
 
 const Notification = () => {
   const { notification } = useApp();
@@ -55,6 +56,7 @@ const MainContent = () => {
           {renderView()}
         </main>
         <Footer />
+        <WhatsAppButton />
       </div>
     </div>
   );

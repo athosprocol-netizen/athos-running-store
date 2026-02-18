@@ -149,7 +149,7 @@ export const INITIAL_USER: UserProfile = {
   role: 'user',
   location: "Cartago, Valle del Cauca",
   address: "Cra 4 # 12-34", // Default address for profile, but checkout will ignore it
-  phone: "300 123 4567",
+  phone: "324 267 4234",
   age: 28,
   avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop",
   coupons: [

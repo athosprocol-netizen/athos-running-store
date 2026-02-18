@@ -189,7 +189,7 @@ export const Checkout = () => {
                                         value={shipping.phone}
                                         onChange={e => setShipping({ ...shipping, phone: e.target.value })}
                                         className={`w-full bg-gray-50 border-2 rounded-lg p-4 pl-12 font-bold text-sm focus:bg-white ${errors.phone ? 'border-red-500' : 'border-gray-200'}`}
-                                        placeholder="300 123 4567"
+                                        placeholder="324 267 4234"
                                     />
                                 </div>
                             </div>

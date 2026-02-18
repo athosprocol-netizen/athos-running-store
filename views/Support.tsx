@@ -140,7 +140,7 @@ export const Support = () => {
                                 </div>
                                 <div>
                                     <p className="text-xs text-gray-400 uppercase font-bold tracking-widest">WhatsApp</p>
-                                    <p className="text-lg font-bold">+57 300 123 4567</p>
+                                    <p className="text-lg font-bold">+57 324 267 4234</p>
                                 </div>
                             </div>
                         </div>
