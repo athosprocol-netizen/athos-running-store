@@ -50,35 +50,32 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     let mounted = true;
 
     const init = async () => {
-      setIsLoading(true);
+      try {
+        setIsLoading(true);
+        const { data: { session } } = await supabase.auth.getSession();
 
-      // Get initial session
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (mounted) {
-        if (session?.user) {
+        if (mounted && session?.user) {
+          console.log("Sesión recuperada:", session.user.email);
           await loadUserProfile(session.user);
-        } else {
-          setUser(null);
         }
-        await fetchReviews();
-        setIsLoading(false);
+      } catch (error) {
+        console.error("Error inicializando sesión:", error);
+      } finally {
+        if (mounted) setIsLoading(false);
       }
     };
 
     init();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth State Change:", event, session?.user?.email);
-
+      console.log("Auth Event:", event);
       if (event === 'SIGNED_OUT') {
         setUser(null);
         setViewWithHistory('home');
-      } else if (session?.user) {
-        // Only reload profile if we don't have it or it's different
-        if (!user || user.id !== session.user.id) {
-          await loadUserProfile(session.user);
-        }
+        setCart([]);
+      } else if (event === 'SIGNED_IN' && session?.user) {
+        // If we don't have user yet, load it.
+        if (!user) await loadUserProfile(session.user);
       }
     });
 
@@ -89,34 +86,38 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   const loadUserProfile = async (authUser: any) => {
-    // Fetch detailed profile
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', authUser.id)
-      .single();
+    try {
+      // Fetch detailed profile
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', authUser.id)
+        .single();
 
-    if (profile) {
-      setUser({
-        id: profile.id,
-        email: profile.email,
-        name: profile.name,
-        role: profile.role || 'user',
-        avatar: profile.avatar_url,
-        wishlist: [],
-        coupons: []
-      });
-    } else {
-      // Fallback
-      setUser({
-        id: authUser.id,
-        email: authUser.email || '',
-        name: authUser.user_metadata?.name || 'Usuario',
-        role: 'user',
-        avatar: authUser.user_metadata?.avatar_url,
-        wishlist: [],
-        coupons: []
-      });
+      if (profile) {
+        setUser({
+          id: profile.id,
+          email: profile.email,
+          name: profile.name,
+          role: profile.role || 'user',
+          avatar: profile.avatar_url,
+          wishlist: [],
+          coupons: []
+        });
+      } else {
+        console.warn("Perfil no encontrado en DB, usando metadatos", error);
+        setUser({
+          id: authUser.id,
+          email: authUser.email || '',
+          name: authUser.user_metadata?.name || 'Usuario',
+          role: 'user',
+          avatar: authUser.user_metadata?.avatar_url,
+          wishlist: [],
+          coupons: []
+        });
+      }
+    } catch (e) {
+      console.error("Error cargando perfil:", e);
     }
   };
 
@@ -191,21 +192,33 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
   // --- SUPABASE ACTIONS ---
 
-  const login = async (email: string, password?: string) => { // Updated signature
+  const login = async (email: string, password?: string) => {
     if (!password) {
       showNotification("Se requiere contraseña");
       return;
     }
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
 
-    if (error) {
-      showNotification(error.message);
-    } else {
-      setViewWithHistory('home');
-      showNotification("¡Bienvenido de nuevo!");
+    setIsLoading(true); // Show loading during login
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        showNotification(error.message);
+      } else if (data.session?.user) {
+        // Manually load profile to ensure state checks out before redirect
+        await loadUserProfile(data.session.user);
+        setViewWithHistory('home');
+        showNotification("¡Bienvenido de nuevo!");
+      }
+    } catch (e) {
+      console.error("Login fatal error:", e);
+      showNotification("Error inesperado al iniciar sesión");
+    } finally {
+      setIsLoading(false);
     }
   };
 
