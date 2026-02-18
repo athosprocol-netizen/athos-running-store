@@ -1,14 +1,15 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// TEMPORARY DEBUG: Hardcoding to guarantee connection
+const supabaseUrl = "https://beiatvntfbmdafhjpwyn.supabase.co";
+const supabaseAnonKey = "sb_publishable_clvqs8U2OcFaRI7CyB47MQ_cesMJXRf";
 
-if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn('Faltan las variables de entorno de Supabase. La persistencia no funcionará.');
-}
+console.log("Supabase Client Init:", supabaseUrl);
 
-export const supabase = createClient(
-    supabaseUrl || '',
-    supabaseAnonKey || ''
-);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+        persistSession: true, // Keep this true for now
+        autoRefreshToken: true,
+    }
+});

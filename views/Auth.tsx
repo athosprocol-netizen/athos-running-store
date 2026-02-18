@@ -112,8 +112,24 @@ export const Auth = () => {
                             }}
                             className="font-bold text-gray-400 hover:text-athos-black text-xs tracking-wide transition-colors"
                         >
-                            {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia Sesión'} (v1.5-debug)
+                            {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia Sesión'} (v2.0-Hardcoded)
                         </button>
+
+                        <div className="mt-8">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (confirm("Esto borrará datos temporales y recargará la página. ¿Continuar?")) {
+                                        localStorage.clear();
+                                        sessionStorage.clear();
+                                        window.location.reload();
+                                    }
+                                }}
+                                className="text-[10px] text-red-400 underline hover:text-red-500"
+                            >
+                                🚑 SI NO FUNCIONA: CLIC AQUÍ PARA REPARAR
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
