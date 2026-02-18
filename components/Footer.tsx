@@ -6,11 +6,11 @@ export const Footer = () => {
     const { setView } = useApp();
 
     const socialLinks = [
-        { icon: Music2, label: 'TikTok' }, // Represents TikTok
-        { icon: Facebook, label: 'Facebook' },
-        { icon: Youtube, label: 'YouTube' },
-        { icon: Twitter, label: 'X' },
-        { icon: Instagram, label: 'Instagram' },
+        { icon: Music2, label: 'TikTok', url: 'https://www.tiktok.com/@athos.co' },
+        { icon: Facebook, label: 'Facebook', url: 'https://www.facebook.com/athos.col' },
+        { icon: Youtube, label: 'YouTube', url: 'https://www.youtube.com/@athos_pro' },
+        { icon: Twitter, label: 'X', url: 'https://x.com/athos_pro' },
+        { icon: Instagram, label: 'Instagram', url: 'https://www.instagram.com/athos.col' },
     ];
 
     return (
@@ -32,10 +32,17 @@ export const Footer = () => {
                                 Rendimiento, estilo y comunidad. Diseñamos equipamiento de running para quienes buscan superar sus propios límites.
                             </p>
                             <div className="flex gap-4">
-                                {[Instagram, Twitter, Facebook, Youtube].map((Icon, i) => (
-                                    <button key={i} className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center hover:bg-athos-orange text-white transition-all hover:scale-110">
-                                        <Icon size={18} />
-                                    </button>
+                                {socialLinks.map((social, i) => (
+                                    <a
+                                        key={i}
+                                        href={social.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center hover:bg-athos-orange text-white transition-all hover:scale-110"
+                                        aria-label={social.label}
+                                    >
+                                        <social.icon size={18} />
+                                    </a>
                                 ))}
                             </div>
                         </div>
@@ -105,9 +112,16 @@ export const Footer = () => {
                     {/* Social Grid */}
                     <div className="flex justify-center gap-5 flex-wrap">
                         {socialLinks.map((social, i) => (
-                            <button key={i} className="w-12 h-12 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:bg-athos-orange hover:text-white hover:border-athos-orange hover:scale-110 transition-all shadow-lg">
+                            <a
+                                key={i}
+                                href={social.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-12 h-12 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:bg-athos-orange hover:text-white hover:border-athos-orange hover:scale-110 transition-all shadow-lg"
+                                aria-label={social.label}
+                            >
                                 <social.icon size={20} />
-                            </button>
+                            </a>
                         ))}
                     </div>
 
