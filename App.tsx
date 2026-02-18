@@ -10,6 +10,7 @@ import { Auth } from './views/Auth';
 import { SizeGuide } from './views/SizeGuide';
 import { Admin } from './views/Admin';
 import { Checkout } from './views/Checkout';
+import { Support } from './views/Support';
 import { Footer } from './components/Footer';
 
 const Notification = () => {
@@ -37,6 +38,7 @@ const MainContent = () => {
       case 'size-guide': return <SizeGuide />;
       case 'admin': return <Admin />;
       case 'checkout': return <Checkout />;
+      case 'support': return <Support />;
       default: return <Home />;
     }
   };

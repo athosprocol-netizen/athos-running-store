@@ -1,5 +1,5 @@
 
-export type ViewState = 'home' | 'shop' | 'product' | 'academy' | 'challenges' | 'profile' | 'cart' | 'auth' | 'size-guide' | 'admin' | 'checkout';
+export type ViewState = 'home' | 'shop' | 'product' | 'academy' | 'challenges' | 'profile' | 'cart' | 'auth' | 'size-guide' | 'admin' | 'checkout' | 'support';
 
 export interface TechSpecs {
   weight?: string;

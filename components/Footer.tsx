@@ -62,9 +62,9 @@ export const Footer = () => {
                             <h4 className="font-black italic text-lg uppercase mb-6 tracking-wide">Soporte</h4>
                             <ul className="space-y-4 text-sm font-bold text-gray-500">
                                 <li><button onClick={() => setView('size-guide')} className="hover:text-athos-orange transition-colors">Guía de Tallas</button></li>
-                                <li><button className="hover:text-athos-orange transition-colors">Envíos y Devoluciones</button></li>
-                                <li><button className="hover:text-athos-orange transition-colors">Garantía</button></li>
-                                <li><button className="hover:text-athos-orange transition-colors">Contacto</button></li>
+                                <li><button onClick={() => setView('support')} className="hover:text-athos-orange transition-colors">Envíos y Devoluciones</button></li>
+                                <li><button onClick={() => setView('support')} className="hover:text-athos-orange transition-colors">Garantía</button></li>
+                                <li><button onClick={() => setView('support')} className="hover:text-athos-orange transition-colors">Contacto</button></li>
                             </ul>
                         </div>
 

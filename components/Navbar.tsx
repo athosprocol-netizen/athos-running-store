@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, ShoppingBag, User, ShoppingCart, Search, X, LogIn, Flame, Menu, ChevronRight, LogOut, Settings, Ruler } from 'lucide-react';
+import { Home, ShoppingBag, User, ShoppingCart, Search, X, LogIn, Flame, Menu, ChevronRight, LogOut, Settings, Ruler, HelpCircle } from 'lucide-react';
 import { useApp } from '../context';
 
 export const Navbar = () => {
@@ -20,6 +20,7 @@ export const Navbar = () => {
         { id: 'home', icon: Home, label: 'Inicio' },
         { id: 'shop', icon: ShoppingBag, label: 'Tienda' },
         { id: 'size-guide', icon: Ruler, label: 'Guía de Tallas' },
+        { id: 'support', icon: HelpCircle, label: 'FAQ' },
     ];
 
     const isHomeView = view === 'home';
