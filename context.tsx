@@ -207,8 +207,9 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
       if (error) {
         console.error("Login Error:", error);
-        alert("Error: " + error.message);
+        alert("Error Supabase: " + error.message);
       } else if (data.session) {
+        alert("¡Autenticación Exitosa! Redirigiendo...");
         // SUCCESS: Redirect immediately. Don't wait for profile.
         // The onAuthStateChange listener will handle fetching the profile.
         console.log("Login exitoso, redirigiendo...");
@@ -217,6 +218,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
         // Force profile load in background just in case
         loadUserProfile(data.session.user);
+      } else {
+        alert("Supabase no devolvió sesión (¿Email no confirmado?)");
       }
     } catch (e: any) {
       console.error("Fatal error:", e);
