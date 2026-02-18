@@ -57,7 +57,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
         if (mounted && session?.user) {
           console.log("Sesión recuperada:", session.user.email);
+          showNotification(`Sesión recuperada: ${session.user.email}`); // Visible confirmation
           await loadUserProfile(session.user);
+        } else {
+          console.log("No se encontró sesión previa.");
         }
       } catch (error) {
         console.error("Error inicializando sesión:", error);
@@ -200,13 +203,25 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     setIsLoading(true);
 
     try {
-      showNotification("1. Iniciando proceso...");
+      showNotification("1. Limpiando estado anterior...");
+
+      // Force clear any stale session state before logging in
+      // Wrapped in a short timeout race to ensure it doesn't block the UI if it hangs
+      try {
+        await Promise.race([
+          supabase.auth.signOut(),
+          new Promise(res => setTimeout(res, 1000))
+        ]);
+      } catch (err) {
+        console.warn("SignOut de limpieza falló (no importa):", err);
+      }
+
+      showNotification("2. Enviando credenciales...");
 
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("Timeout 10s")), 10000)
       );
 
-      showNotification("2. Contactando Supabase...");
       const { data, error } = await Promise.race([
         supabase.auth.signInWithPassword({ email, password }),
         timeoutPromise

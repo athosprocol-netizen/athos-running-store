@@ -1,15 +1,25 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// TEMPORARY DEBUG: Hardcoding to guarantee connection
-const supabaseUrl = "https://beiatvntfbmdafhjpwyn.supabase.co";
-const supabaseAnonKey = "sb_publishable_clvqs8U2OcFaRI7CyB47MQ_cesMJXRf";
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-console.log("Supabase Client Init:", supabaseUrl);
+if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn('Faltan las variables de entorno de Supabase. La persistencia no funcionará.');
+}
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-        persistSession: true, // Keep this true for now
-        autoRefreshToken: true,
+console.log("Init Supabase with URL:", supabaseUrl);
+
+export const supabase = createClient(
+    supabaseUrl || '',
+    supabaseAnonKey || '',
+    {
+        auth: {
+            persistSession: true,
+            storageKey: 'athos-auth-token-v2', // Unique key to prevent collisions/corruption
+            storage: localStorage, // Explicitly enforce localStorage
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+        }
     }
-});
+);
