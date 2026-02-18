@@ -47,7 +47,6 @@ export const Footer = () => {
                                 <li><button onClick={() => setView('shop')} className="hover:text-athos-orange transition-colors">Calzado</button></li>
                                 <li><button onClick={() => setView('shop')} className="hover:text-athos-orange transition-colors">Ropa Técnica</button></li>
                                 <li><button onClick={() => setView('shop')} className="hover:text-athos-orange transition-colors">Accesorios</button></li>
-                                <li><button onClick={() => setView('shop')} className="hover:text-athos-orange transition-colors">Laboratorio 3D</button></li>
                             </ul>
                         </div>
 
@@ -85,7 +84,7 @@ export const Footer = () => {
 
                     {/* Bottom Bar */}
                     <div className="flex justify-between items-center text-[10px] font-bold text-gray-600 uppercase tracking-widest">
-                        <p>© 2024 ATHOS RUNNING. TODOS LOS DERECHOS RESERVADOS.</p>
+                        <p>© 2026 ATHOS RUNNING. TODOS LOS DERECHOS RESERVADOS.</p>
                         <div className="flex gap-6">
                             <span className="cursor-pointer hover:text-white transition-colors">Privacidad</span>
                             <span className="cursor-pointer hover:text-white transition-colors">Términos</span>

@@ -220,23 +220,21 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
       if (error) {
         console.error("Login Error:", error);
-        alert("Error Supabase: " + error.message);
+        showNotification(error.message);
       } else if (data.session) {
-        alert("¡Autenticación Exitosa! Redirigiendo...");
-        // SUCCESS: Redirect immediately. Don't wait for profile.
-        // The onAuthStateChange listener will handle fetching the profile.
+        // SUCCESS: Redirect immediately.
         console.log("Login exitoso, redirigiendo...");
         setViewWithHistory('home');
-        showNotification("¡Bienvenido!");
+        showNotification("¡Bienvenido al Club!");
 
-        // Force profile load in background just in case
+        // Force profile load in background
         loadUserProfile(data.session.user);
       } else {
-        alert("Supabase no devolvió sesión (¿Email no confirmado?)");
+        showNotification("Supabase no devolvió sesión (¿Email no confirmado?)");
       }
     } catch (e: any) {
       console.error("Fatal error:", e);
-      alert("Error inesperado: " + (e.message || e));
+      showNotification("Error: " + (e.message || "Error de conexión"));
     } finally {
       setIsLoading(false);
     }
