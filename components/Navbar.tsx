@@ -70,7 +70,7 @@ export const Navbar = () => {
                 <div className="max-w-[1400px] mx-auto px-10 flex items-center justify-between">
                     {/* Logo */}
                     <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setView('home')}>
-                        <img src="/logo.png" alt="ATHOS" className={`h-32 w-auto object-contain transition-transform duration-300 transform group-hover:scale-105 ${logoColorClass}`} />
+                        <img src="/logo.png" alt="ATHOS" className="h-32 w-auto object-contain transition-transform duration-300 transform group-hover:scale-105" />
                     </div>
 
                     {/* Central Nav */}
