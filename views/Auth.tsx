@@ -112,7 +112,7 @@ export const Auth = () => {
                             }}
                             className="font-bold text-gray-400 hover:text-athos-black text-xs tracking-wide transition-colors"
                         >
-                            {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia Sesión'}
+                            {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia Sesión'} (v1.5-debug)
                         </button>
                     </div>
                 </div>

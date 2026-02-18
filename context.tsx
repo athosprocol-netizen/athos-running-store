@@ -200,41 +200,30 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     setIsLoading(true);
 
     try {
-      // Force clear any stale session state before logging in
-      await supabase.auth.signOut();
+      // REMOVED await supabase.auth.signOut(); -> This might be causing the hang if network is flaky
 
-      console.log("Enviando solicitud a Supabase...");
-
-      // Create a timeout promise that rejects after 10 seconds
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Tiempo de espera agotado. Revisa tu conexión.")), 10000)
+        setTimeout(() => reject(new Error("Tiempo de espera agotado (10s)")), 10000)
       );
 
-      // Race the login against the timeout
       const { data, error } = await Promise.race([
         supabase.auth.signInWithPassword({ email, password }),
         timeoutPromise
       ]) as any;
 
-      console.log("Respuesta recibida:", data, error);
-
       if (error) {
-        console.error("Login Error:", error);
         showNotification(error.message);
       } else if (data.session) {
-        // SUCCESS: Redirect immediately.
         console.log("Login exitoso, redirigiendo...");
         setViewWithHistory('home');
         showNotification("¡Bienvenido al Club!");
-
-        // Force profile load in background
         loadUserProfile(data.session.user);
       } else {
-        showNotification("Supabase no devolvió sesión (¿Email no confirmado?)");
+        showNotification("Supabase no devolvió sesión.");
       }
     } catch (e: any) {
       console.error("Fatal error:", e);
-      showNotification("Error: " + (e.message || "Error de conexión"));
+      showNotification("Error: " + (e.message || "Error conexión"));
     } finally {
       setIsLoading(false);
     }
