@@ -113,6 +113,12 @@ export const Auth = () => {
                         >
                             {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia Sesión'}
                         </button>
+
+                        {/* DEBUG INFO - REMOVE LATER */}
+                        <div className="mt-4 p-2 bg-gray-100 text-[10px] text-gray-500 rounded">
+                            <p>Status Conexión: {import.meta.env.VITE_SUPABASE_URL ? 'URL Configurada ✅' : 'URL Faltante ❌'}</p>
+                            <p>Key: {import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Key Configurada ✅' : 'Key Faltante ❌'}</p>
+                        </div>
                     </div>
                 </div>
             </div>
