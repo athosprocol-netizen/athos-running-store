@@ -3,7 +3,7 @@ import { useApp } from '../context';
 import { LogIn, UserPlus, ArrowRight, Mail, Lock, User } from 'lucide-react';
 
 export const Auth = () => {
-    const { login, register, showNotification } = useApp();
+    const { login, register, showNotification, isLoading } = useApp();
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
