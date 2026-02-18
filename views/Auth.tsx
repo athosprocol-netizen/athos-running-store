@@ -11,6 +11,7 @@ export const Auth = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        console.log("Formulario enviado. Login:", isLogin, "Email:", email);
         if (isLogin) {
             login(email, password);
         } else {
