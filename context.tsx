@@ -200,10 +200,20 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+      console.log("Enviando solicitud a Supabase...");
+
+      // Create a timeout promise that rejects after 10 seconds
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Tiempo de espera agotado. Revisa tu conexión.")), 10000)
+      );
+
+      // Race the login against the timeout
+      const { data, error } = await Promise.race([
+        supabase.auth.signInWithPassword({ email, password }),
+        timeoutPromise
+      ]) as any;
+
+      console.log("Respuesta recibida:", data, error);
 
       if (error) {
         console.error("Login Error:", error);
