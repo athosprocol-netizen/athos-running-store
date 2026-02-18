@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context';
+import { supabase } from '../lib/supabase';
 import { LogIn, UserPlus, ArrowRight, Mail, Lock, User } from 'lucide-react';
 
 export const Auth = () => {
@@ -115,9 +116,27 @@ export const Auth = () => {
                         </button>
 
                         {/* DEBUG INFO - REMOVE LATER */}
-                        <div className="mt-4 p-2 bg-gray-100 text-[10px] text-gray-500 rounded">
+                        <div className="mt-4 p-2 bg-gray-100 text-[10px] text-gray-500 rounded space-y-2">
                             <p>Status Conexión: {import.meta.env.VITE_SUPABASE_URL ? 'URL Configurada ✅' : 'URL Faltante ❌'}</p>
                             <p>Key: {import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Key Configurada ✅' : 'Key Faltante ❌'}</p>
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    alert("Probando conexión...");
+                                    try {
+                                        const start = Date.now();
+                                        const { error } = await supabase.auth.getSession();
+                                        const end = Date.now();
+                                        if (error) alert("Error conectando: " + error.message);
+                                        else alert(`Conexión EXITOSA (${end - start}ms)`);
+                                    } catch (e: any) {
+                                        alert("Error fatal: " + e.message);
+                                    }
+                                }}
+                                className="w-full bg-gray-200 py-1 px-2 rounded hover:bg-gray-300 transition-colors"
+                            >
+                                🧪 PROBAR CONEXIÓN RED
+                            </button>
                         </div>
                     </div>
                 </div>

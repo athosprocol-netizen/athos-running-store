@@ -200,6 +200,9 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     setIsLoading(true);
 
     try {
+      // Force clear any stale session state before logging in
+      await supabase.auth.signOut();
+
       console.log("Enviando solicitud a Supabase...");
 
       // Create a timeout promise that rejects after 10 seconds
