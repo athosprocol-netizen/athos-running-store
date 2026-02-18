@@ -156,6 +156,16 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       }
     } catch (e) {
       console.error("Error cargando perfil:", e);
+      // Fallback: Ensure user is set even if DB fails
+      setUser({
+        id: authUser.id,
+        email: authUser.email || '',
+        name: authUser.user_metadata?.name || 'Usuario',
+        role: 'user',
+        avatar: authUser.user_metadata?.avatar_url,
+        wishlist: [],
+        coupons: []
+      });
     }
   };
 
