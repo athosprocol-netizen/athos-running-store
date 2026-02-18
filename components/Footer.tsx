@@ -29,7 +29,7 @@ export const Footer = () => {
                                 <img src="/logo.png" alt="ATHOS" className="h-32 w-auto object-contain hover:brightness-110 transition-all" />
                             </div>
                             <p className="text-gray-400 text-sm leading-relaxed mb-8 max-w-sm font-medium">
-                                Diseñado para la élite, accesible para todos. Fusionamos tecnología de impresión 3D, análisis biomecánico y diseño de vanguardia para romper récords.
+                                Rendimiento, estilo y comunidad. Diseñamos equipamiento de running para quienes buscan superar sus propios límites.
                             </p>
                             <div className="flex gap-4">
                                 {[Instagram, Twitter, Facebook, Youtube].map((Icon, i) => (

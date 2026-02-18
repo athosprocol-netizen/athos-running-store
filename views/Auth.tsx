@@ -12,13 +12,13 @@ export const Auth = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (isLogin) {
-            login(email);
+            login(email, password);
         } else {
             if (!name.trim()) {
                 showNotification("Por favor ingresa tu nombre completo.");
                 return;
             }
-            register(name, email);
+            register(name, email, password);
         }
     };
 

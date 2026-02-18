@@ -1,7 +1,7 @@
-
 import React, { createContext, useContext, useState, PropsWithChildren, useEffect } from 'react';
 import { UserProfile, CartItem, Product, ViewState, CustomizationOptions, Review } from './types';
 import { INITIAL_USER, MOCK_PRODUCTS } from './constants';
+import { supabase } from './lib/supabase';
 
 interface AppContextType {
   user: UserProfile | null;
@@ -20,8 +20,8 @@ interface AppContextType {
   checkout: () => void;
   confirmOrder: () => void;
   showNotification: (msg: string) => void;
-  login: (email: string) => void;
-  register: (name: string, email: string) => void;
+  login: (email: string, password?: string) => void;
+  register: (name: string, email: string, password?: string) => void;
   logout: () => void;
   updateUserProfile: (data: Partial<UserProfile>) => void;
   updateProduct: (product: Product) => void;
@@ -36,33 +36,132 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [view, _setView] = useState<ViewState>('home');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(true); // Start loading
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Simulate Fetching Data from Supabase
+
+  // 1. SUPABASE AUTH & INITIAL LOAD
   useEffect(() => {
-    const fetchProducts = async () => {
+    let mounted = true;
+
+    const init = async () => {
       setIsLoading(true);
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 800));
 
-      // Add stock to mock products if missing (migration logic)
-      const productsWithStock = MOCK_PRODUCTS.map(p => ({
-        ...p,
-        stock: p.stock !== undefined ? p.stock : Math.floor(Math.random() * 20)
-      }));
+      // Get initial session
+      const { data: { session } } = await supabase.auth.getSession();
 
-      setProducts(productsWithStock);
-      setIsLoading(false);
+      if (mounted) {
+        if (session?.user) {
+          await loadUserProfile(session.user);
+        } else {
+          setUser(null);
+        }
+        await fetchReviews();
+        setIsLoading(false);
+      }
     };
 
-    fetchProducts();
+    init();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth State Change:", event, session?.user?.email);
+
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setViewWithHistory('home');
+      } else if (session?.user) {
+        // Only reload profile if we don't have it or it's different
+        if (!user || user.id !== session.user.id) {
+          await loadUserProfile(session.user);
+        }
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
+
+  const loadUserProfile = async (authUser: any) => {
+    // Fetch detailed profile
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', authUser.id)
+      .single();
+
+    if (profile) {
+      setUser({
+        id: profile.id,
+        email: profile.email,
+        name: profile.name,
+        role: profile.role || 'user',
+        avatar: profile.avatar_url,
+        wishlist: [],
+        coupons: []
+      });
+    } else {
+      // Fallback
+      setUser({
+        id: authUser.id,
+        email: authUser.email || '',
+        name: authUser.user_metadata?.name || 'Usuario',
+        role: 'user',
+        avatar: authUser.user_metadata?.avatar_url,
+        wishlist: [],
+        coupons: []
+      });
+    }
+  };
+
+  // 2. FETCH REVIEWS (Merge DB reviews with Mock Products)
+  const fetchReviews = async () => {
+    const { data: dbReviews, error } = await supabase
+      .from('reviews')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching reviews:', error);
+      return;
+    }
+
+    // Merge mock products with DB reviews
+    const updatedProducts = MOCK_PRODUCTS.map(p => {
+      const productReviews = dbReviews.filter((r: any) => r.product_id === p.id).map((r: any) => ({
+        id: r.id,
+        userId: r.user_id,
+        userName: r.user_name,
+        userAvatar: r.user_avatar,
+        rating: r.rating,
+        comment: r.comment,
+        date: new Date(r.created_at).toLocaleDateString(),
+        image: r.image_url
+      }));
+
+      // Combine with hardcoded mock reviews if any
+      const allReviews = [...(p.reviews || []), ...productReviews];
+      const totalRating = allReviews.length > 0
+        ? allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length
+        : p.rating;
+
+      return {
+        ...p,
+        reviews: allReviews,
+        rating: parseFloat(totalRating.toFixed(1)),
+        reviewsCount: allReviews.length
+      };
+    });
+
+    setProducts(updatedProducts);
+  };
+
 
   // Browser History Handling
   useEffect(() => {
@@ -77,9 +176,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Wrapped setView to update History
   const setViewWithHistory = (newView: ViewState) => {
-    // Don't push if it's the same view
     if (view !== newView) {
       window.history.pushState({ view: newView }, '', `?view=${newView}`);
       _setView(newView);
@@ -92,47 +189,113 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  const login = (email: string) => {
-    // Logic to simulate login - Load "Alejandro" only here
-    const role = email.includes('admin') ? 'admin' : 'user';
-    const baseUser = email === 'alejandro@athos.co' ? { ...INITIAL_USER, role: 'user' } : INITIAL_USER;
+  // --- SUPABASE ACTIONS ---
 
-    setUser({
-      ...baseUser,
-      email: email,
-      name: email.split('@')[0],
-      role: role, // Default to user unless admin email
+  const login = async (email: string, password?: string) => { // Updated signature
+    if (!password) {
+      showNotification("Se requiere contraseña");
+      return;
+    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
     });
-    setViewWithHistory('home');
-    showNotification(role === 'admin' ? "¡Hola Admin!" : "¡Bienvenido de nuevo!");
+
+    if (error) {
+      showNotification(error.message);
+    } else {
+      setViewWithHistory('home');
+      showNotification("¡Bienvenido de nuevo!");
+    }
   };
 
-  const register = (name: string, email: string) => {
-    const newUser: UserProfile = {
-      id: Math.random().toString(36).substr(2, 9),
-      email: email,
-      name: name,
-      role: 'user',
-      coupons: [],
-      wishlist: []
-    };
-    setUser(newUser);
-    setViewWithHistory('home');
-    showNotification(`¡Cuenta creada! Bienvenido, ${name}.`);
+  const register = async (name: string, email: string, password?: string) => {
+    if (!password) {
+      alert("Contraseña requerida");
+      return;
+    }
+
+    console.log("Intentando registro con:", email);
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name: name,
+          avatar_url: `https://ui-avatars.com/api/?name=${name}&background=FF4D00&color=fff`
+        }
+      }
+    });
+
+    console.log("Respuesta Supabase:", data, error);
+
+    if (error) {
+      console.error("Error en registro:", error);
+      showNotification(error.message);
+      alert("Error: " + error.message); // Force visibility
+    } else {
+      if (data.user && !data.session) {
+        console.log("Usuario creado pero sin sesión (¿Esperando confirmación de email?)");
+        alert("Cuenta creada. REVISA TU EMAIL para confirmar antes de iniciar sesión.");
+      }
+
+      // Backup: Manually create profile if session exists (Auto Confirm ON)
+      if (data.session?.user) {
+        console.log("Sesión activa, intentando crear perfil manual...");
+        const { error: profileError } = await supabase.from('profiles').upsert({
+          id: data.user!.id,
+          email: email,
+          name: name,
+          role: 'user',
+          avatar_url: `https://ui-avatars.com/api/?name=${name}&background=FF4D00&color=fff`
+        });
+        if (profileError) {
+          console.error("Error creando perfil manual:", profileError);
+          alert("Error guardando perfil: " + profileError.message);
+        } else {
+          console.log("Perfil creado manualmente con éxito.");
+        }
+      }
+
+      showNotification("Cuenta creada. ¡Bienvenido al Club!");
+      if (data.session) {
+        setViewWithHistory('home');
+      }
+    }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
     setViewWithHistory('home');
     showNotification("Sesión cerrada correctamente");
   };
 
-  const updateUserProfile = (data: Partial<UserProfile>) => {
+  const updateUserProfile = async (data: Partial<UserProfile>) => {
     if (!user) return;
+
+    // Update local state
     setUser({ ...user, ...data });
-    showNotification("Perfil actualizado exitosamente");
+
+    // Update DB
+    const updates: any = {};
+    if (data.name) updates.name = data.name;
+    if (data.avatar) updates.avatar_url = data.avatar;
+
+    if (Object.keys(updates).length > 0) {
+      const { error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', user.id);
+
+      if (error) console.error(error);
+    }
+
+    showNotification("Perfil actualizado");
   };
 
+  // Keep these mostly local for now as per requirements scope
   const updateProduct = (updatedProduct: Product) => {
     setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
     showNotification("Producto actualizado");
@@ -148,23 +311,52 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     showNotification("Producto eliminado");
   };
 
-  const addReview = (productId: string, review: Review) => {
-    setProducts(prev => prev.map(p => {
-      if (p.id === productId) {
-        const newReviews = [...(p.reviews || []), review];
-        const totalRating = newReviews.reduce((sum, r) => sum + r.rating, 0);
-        const newRating = totalRating / newReviews.length;
+  // REVIEWS: INSERT INTO SUPABASE
+  const addReview = async (productId: string, review: Review) => {
+    if (!user) return;
 
-        return {
-          ...p,
-          reviews: newReviews,
-          rating: parseFloat(newRating.toFixed(1)),
-          reviewsCount: newReviews.length
-        };
+    // 1. Upload Image if present (Base64 -> Blob -> Storage)
+    let imageUrl = null;
+    if (review.image && review.image.startsWith('data:')) {
+      try {
+        const res = await fetch(review.image);
+        const blob = await res.blob();
+        const fileName = `${Date.now()}-${productId}.jpg`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('review-images')
+          .upload(fileName, blob);
+
+        if (!uploadError && uploadData) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('review-images')
+            .getPublicUrl(fileName);
+          imageUrl = publicUrl;
+        }
+      } catch (e) {
+        console.error("Error uploading image", e);
       }
-      return p;
-    }));
-    showNotification("¡Gracias por tu reseña!");
+    }
+
+    // 2. Insert Review to DB
+    const { error } = await supabase.from('reviews').insert({
+      product_id: productId,
+      user_id: user.id,
+      user_name: user.name,
+      user_avatar: user.avatar,
+      rating: review.rating,
+      comment: review.comment,
+      image_url: imageUrl || review.image
+    });
+
+    if (error) {
+      showNotification("Error al guardar reseña");
+      console.error(error);
+      return;
+    }
+
+    showNotification("¡Reseña publicada!");
+    await fetchReviews(); // Refresh
   };
 
   const selectProduct = (id: string) => {
