@@ -200,30 +200,31 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     setIsLoading(true);
 
     try {
-      // REMOVED await supabase.auth.signOut(); -> This might be causing the hang if network is flaky
+      showNotification("1. Iniciando proceso...");
 
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Tiempo de espera agotado (10s)")), 10000)
+        setTimeout(() => reject(new Error("Timeout 10s")), 10000)
       );
 
+      showNotification("2. Contactando Supabase...");
       const { data, error } = await Promise.race([
         supabase.auth.signInWithPassword({ email, password }),
         timeoutPromise
       ]) as any;
 
+      showNotification("3. Respuesta recibida.");
+
       if (error) {
-        showNotification(error.message);
+        showNotification("ERROR: " + error.message);
       } else if (data.session) {
-        console.log("Login exitoso, redirigiendo...");
+        showNotification("¡ÉXITO! Redirigiendo...");
         setViewWithHistory('home');
-        showNotification("¡Bienvenido al Club!");
         loadUserProfile(data.session.user);
       } else {
-        showNotification("Supabase no devolvió sesión.");
+        showNotification("Raro: Sin sesión y sin error.");
       }
     } catch (e: any) {
-      console.error("Fatal error:", e);
-      showNotification("Error: " + (e.message || "Error conexión"));
+      showNotification("EXCEPCIÓN: " + (e.message || e));
     } finally {
       setIsLoading(false);
     }
