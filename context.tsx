@@ -230,56 +230,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
   // --- SUPABASE ACTIONS ---
 
-  const login = async (email: string, password?: string) => {
-    if (!password) {
-      alert("Se requiere contraseña");
-      return;
-    }
 
-    setIsLoading(true);
-
-    try {
-      showNotification("1. Limpiando estado anterior...");
-
-      // Force clear any stale session state before logging in
-      // Wrapped in a short timeout race to ensure it doesn't block the UI if it hangs
-      try {
-        await Promise.race([
-          supabase.auth.signOut(),
-          new Promise(res => setTimeout(res, 1000))
-        ]);
-      } catch (err) {
-        console.warn("SignOut de limpieza falló (no importa):", err);
-      }
-
-      showNotification("2. Enviando credenciales...");
-
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Timeout 10s")), 10000)
-      );
-
-      const { data, error } = await Promise.race([
-        supabase.auth.signInWithPassword({ email, password }),
-        timeoutPromise
-      ]) as any;
-
-      showNotification("3. Respuesta recibida.");
-
-      if (error) {
-        showNotification("ERROR: " + error.message);
-      } else if (data.session) {
-        showNotification("¡ÉXITO! Redirigiendo...");
-        setViewWithHistory('home');
-        loadUserProfile(data.session.user);
-      } else {
-        showNotification("Raro: Sin sesión y sin error.");
-      }
-    } catch (e: any) {
-      showNotification("EXCEPCIÓN: " + (e.message || e));
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const register = async (name: string, email: string, password?: string) => {
     if (!password) {
