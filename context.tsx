@@ -50,16 +50,9 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     let mounted = true;
 
     const init = async () => {
-      // Safety timeout to ensure app becomes interactive even if Supabase hangs
-      const timeout = setTimeout(() => {
-        if (mounted) {
-          console.warn("Session init timed out, forcing release.");
-          setIsLoading(false);
-        }
-      }, 3000);
-
+      // Opt-out of blocking loading state for initialization.
+      // The app will open immediately. If a session exists, it will populate shortly after.
       try {
-        setIsLoading(true);
         const { data: { session } } = await supabase.auth.getSession();
 
         if (mounted && session?.user) {
@@ -68,9 +61,6 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         }
       } catch (error) {
         console.error("Error inicializando sesión:", error);
-      } finally {
-        clearTimeout(timeout);
-        if (mounted) setIsLoading(false);
       }
     };
 
