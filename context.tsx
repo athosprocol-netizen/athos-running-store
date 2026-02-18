@@ -194,7 +194,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
   const login = async (email: string, password?: string) => {
     if (!password) {
-      showNotification("Se requiere contraseña");
+      alert("Se requiere contraseña");
       return;
     }
 
@@ -207,16 +207,19 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       });
 
       if (error) {
-        showNotification(error.message);
+        console.error("Login Error:", error);
+        alert("Error de Inicio de Sesión: " + error.message);
       } else if (data.session?.user) {
         // Manually load profile to ensure state checks out before redirect
         await loadUserProfile(data.session.user);
         setViewWithHistory('home');
         showNotification("¡Bienvenido de nuevo!");
+      } else {
+        alert("No se inició sesión. Posiblemente falta confirmar el correo.");
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Login fatal error:", e);
-      showNotification("Error inesperado al iniciar sesión");
+      alert("Error inesperado al iniciar sesión: " + (e.message || e));
     } finally {
       setIsLoading(false);
     }

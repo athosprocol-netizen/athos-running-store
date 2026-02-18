@@ -94,9 +94,10 @@ export const Auth = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-athos-black text-white h-12 rounded-xl font-black uppercase tracking-widest hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-lg mt-4"
+                            disabled={isLoading}
+                            className={`w-full bg-athos-black text-white h-12 rounded-xl font-black uppercase tracking-widest hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-lg mt-4 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
-                            {isLogin ? 'Entrar' : 'Registrarse'} <ArrowRight size={16} />
+                            {isLoading ? 'Cargando...' : (isLogin ? 'Entrar' : 'Registrarse')} {!isLoading && <ArrowRight size={16} />}
                         </button>
                     </form>
 
