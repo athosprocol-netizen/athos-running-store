@@ -52,8 +52,8 @@ export const Support = () => {
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-athos-orange/10 rounded-full blur-[100px] pointer-events-none"></div>
 
                 <div className="max-w-4xl mx-auto text-center relative z-10">
-                    <span className="bg-athos-orange text-white px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest mb-6 inline-block">Soporte ATHOS</span>
-                    <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter mb-6">
+                    <span className="bg-athos-orange text-white px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest mb-6 inline-block md:hidden">Soporte ATHOS</span>
+                    <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter mb-6 pr-4">
                         ¿CÓMO PODEMOS <span className="text-transparent bg-clip-text bg-gradient-to-r from-athos-orange to-red-600">AYUDARTE?</span>
                     </h1>
                     <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">

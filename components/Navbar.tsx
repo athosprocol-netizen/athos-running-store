@@ -26,9 +26,13 @@ export const Navbar = () => {
     const isHomeView = view === 'home';
 
     // FIX: Always use dark text for visibility on white/light backgrounds
-    const textColorClass = 'text-athos-black';
-    const logoColorClass = 'text-athos-black';
-    const iconColorClass = 'text-athos-black';
+    // EXCEPT for Support page which has a dark hero section (unless scrolled)
+    const isSupportView = view === 'support';
+    const useWhiteText = isSupportView && !isScrolled;
+
+    const textColorClass = useWhiteText ? 'text-white' : 'text-athos-black';
+    const logoColorClass = useWhiteText ? 'brightness-0 invert' : ''; // White logo
+    const iconColorClass = useWhiteText ? 'text-white' : 'text-athos-black';
 
     const handleNavClick = (viewId: any) => {
         setView(viewId);
@@ -66,7 +70,7 @@ export const Navbar = () => {
                 <div className="max-w-[1400px] mx-auto px-10 flex items-center justify-between">
                     {/* Logo */}
                     <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setView('home')}>
-                        <img src="/logo.png" alt="ATHOS" className="h-32 w-auto object-contain transition-transform duration-300 transform group-hover:scale-105" />
+                        <img src="/logo.png" alt="ATHOS" className={`h-32 w-auto object-contain transition-transform duration-300 transform group-hover:scale-105 ${logoColorClass}`} />
                     </div>
 
                     {/* Central Nav */}
