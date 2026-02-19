@@ -49,6 +49,11 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     let mounted = true;
 
     const init = async () => {
+      // Safety timeout to force loading false if Supabase hangs
+      const safetyTimeout = setTimeout(() => {
+        if (mounted) setIsLoading(false);
+      }, 5000);
+
       try {
         // Check for active session
         const { data: { session } } = await supabase.auth.getSession();
@@ -63,6 +68,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       } catch (error) {
         console.error("Error inicializando:", error);
       } finally {
+        clearTimeout(safetyTimeout);
         if (mounted) setIsLoading(false);
       }
     };
@@ -101,11 +107,16 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     setIsLoading(true);
 
     try {
-      // Standard Supabase Login
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+      // Create a timeout promise
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Tiempo de espera agotado")), 8000)
+      );
+
+      // Race Supabase Login against timeout
+      const { data, error } = await Promise.race([
+        supabase.auth.signInWithPassword({ email, password }),
+        timeoutPromise
+      ]) as any;
 
       if (error) {
         showNotification(error.message);
@@ -117,7 +128,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       }
     } catch (e: any) {
       console.error(e);
-      showNotification("Error de conexión");
+      showNotification(e.message || "Error de conexión");
     } finally {
       setIsLoading(false);
     }
