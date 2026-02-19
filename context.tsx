@@ -139,8 +139,20 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         showNotification(error.message === "Invalid login credentials" ? "Credenciales incorrectas" : error.message);
       } else if (data.session) {
         console.log("Login exitoso, sesión:", data.session.user.email);
+
+        // OPTIMISTIC UPDATE: Set user immediately to unblock UI
+        const sessionUser = data.session.user;
+        setUser({
+          id: sessionUser.id,
+          email: sessionUser.email || '',
+          name: sessionUser.user_metadata?.name || 'Usuario',
+          role: 'user',
+          avatar: sessionUser.user_metadata?.avatar_url,
+          wishlist: [],
+          coupons: []
+        });
+
         showNotification("¡Bienvenido al Club!");
-        // Force view change immediately
         setViewWithHistory('home');
 
         // Load profile in background
