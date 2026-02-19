@@ -123,24 +123,21 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     setIsLoading(true);
 
     try {
-      // Create a timeout promise (increased to 15s)
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Tiempo de espera agotado. Revisa tu conexión.")), 15000)
-      );
+      console.log("Iniciando sesión con:", email);
 
-      // Race Supabase Login against timeout
-      const { data, error } = await Promise.race([
-        supabase.auth.signInWithPassword({ email, password }),
-        timeoutPromise
-      ]) as any;
+      // Direct Supabase Login - No Custom Timeout
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
       if (error) {
-        console.error("Supabase login error:", error);
+        console.error("Error Login:", error.message);
         showNotification(error.message === "Invalid login credentials" ? "Credenciales incorrectas" : error.message);
       } else if (data.session) {
-        console.log("Login exitoso, sesión:", data.session.user.email);
+        console.log("Login exitoso. Sesión establecida.");
 
-        // OPTIMISTIC UPDATE: Set user immediately to unblock UI
+        // 1. UPDATE STATE IMMEDIATELY
         const sessionUser = data.session.user;
         setUser({
           id: sessionUser.id,
@@ -152,18 +149,25 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           coupons: []
         });
 
-        showNotification("¡Bienvenido al Club!");
+        // 2. NAVIGATE IMMEDIATELY
         setViewWithHistory('home');
+        showNotification("¡Bienvenido de nuevo!");
 
-        // Load profile in background
-        loadUserProfile(data.session.user).catch(err => console.error("Error loading profile:", err));
+        // 3. LOAD PROFILE (Background)
+        loadUserProfile(sessionUser).catch(err => console.error("Error loading profile:", err));
+
+      } else if (data.user && !data.session) {
+        // Email not confirmed case
+        console.warn("Usuario identificado pero sin sesión (Email no confirmado).");
+        alert("Por favor confirma tu correo electrónico para iniciar sesión.");
+        showNotification("Verifica tu correo electrónico.");
       } else {
-        console.warn("Login successful but no session returned", data);
-        showNotification("Error: No se pudo establecer la sesión.");
+        console.error("Estado desconocido post-login:", data);
+        showNotification("Error desconocido al iniciar sesión.");
       }
     } catch (e: any) {
-      console.error(e);
-      showNotification(e.message || "Error de conexión");
+      console.error("Excepción en login:", e);
+      showNotification("Error de conexión. Intenta nuevamente.");
     } finally {
       setIsLoading(false);
     }
