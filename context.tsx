@@ -178,6 +178,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
   const loadUserProfile = async (authUser: any) => {
     try {
+      console.log("Cargando perfil para:", authUser.email);
       // Fetch detailed profile
       const { data: profile, error } = await supabase
         .from('profiles')
@@ -186,6 +187,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         .single();
 
       if (profile) {
+        console.log("Perfil encontrado en DB");
         setUser({
           id: profile.id,
           email: profile.email,
@@ -196,7 +198,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           coupons: []
         });
       } else {
-        console.warn("Perfil no encontrado en DB, usando metadatos", error);
+        console.warn("Perfil no encontrado en DB, usando metadatos. Error:", error?.message);
+        // Fallback to metadata
         setUser({
           id: authUser.id,
           email: authUser.email || '',
@@ -208,8 +211,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         });
       }
     } catch (e) {
-      console.error("Error cargando perfil:", e);
-      // Fallback: Ensure user is set even if DB fails
+      console.error("EXCEPCIÓN cargando perfil:", e);
+      //CRITICAL FALLBACK: Ensure user is set even if DB fails/throws
       setUser({
         id: authUser.id,
         email: authUser.email || '',
