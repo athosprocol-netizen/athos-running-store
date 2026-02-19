@@ -125,21 +125,14 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     try {
       console.log("Iniciando sesión con:", email);
 
-      // Check Configuration
-      if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-        throw new Error("ERROR CRÍTICO: Faltan variables de entorno (URL/KEY). Contacta soporte.");
-      }
+      showNotification("Enviando solicitud a Supabase...");
 
-      // 20s Timeout to prevent infinite loading (increased from 10s)
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Tiempo de espera agotado (20s). Verifica tu conexión.")), 20000)
-      );
-
-      // Race Supabase Login against timeout
-      const { data, error } = await Promise.race([
-        supabase.auth.signInWithPassword({ email, password }),
-        timeoutPromise
-      ]) as any;
+      // Direct Supabase Login - No Custom Timeout wrapper
+      // We want to see if it resolves or hangs natively
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
       if (error) {
         console.error("Error Login:", error.message);
