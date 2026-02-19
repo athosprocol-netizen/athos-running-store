@@ -12,7 +12,7 @@ export const Cart = () => {
     const recentlyViewed = MOCK_PRODUCTS.slice(0, 3);
 
     return (
-        <div className="pt-24 min-h-screen bg-athos-bg pb-32 animate-fade-in">
+        <div className="pt-32 md:pt-40 min-h-screen bg-athos-bg pb-32 animate-fade-in">
 
             {/* HEADER */}
             <div className="px-6 max-w-2xl mx-auto flex items-center justify-between mb-8">
