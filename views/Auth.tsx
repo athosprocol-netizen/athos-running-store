@@ -100,10 +100,11 @@ export const Auth = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-athos-black text-white h-12 rounded-xl font-black uppercase tracking-widest hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-lg mt-4"
+                            disabled={isLoading}
+                            className={`w-full bg-athos-black text-white h-12 rounded-xl font-black uppercase tracking-widest transition-transform flex items-center justify-center gap-2 shadow-lg mt-4 ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:scale-[1.02]'}`}
                         >
-                            {isLogin ? 'ENTRAR' : 'CREAR CUENTA'}
-                            <ArrowRight size={20} />
+                            {isLoading ? 'CARGANDO...' : (isLogin ? 'ENTRAR' : 'CREAR CUENTA')}
+                            {!isLoading && <ArrowRight size={20} />}
                         </button>
                     </form>
 

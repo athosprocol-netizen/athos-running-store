@@ -155,9 +155,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         setViewWithHistory('home');
         showNotification("¡Bienvenido de nuevo!");
 
-        // 3. LOAD PROFILE (Background)
-        loadUserProfile(sessionUser).catch(err => console.error("Error loading profile:", err));
-
+        // Profile loading is handled by the onAuthStateChange listener on SIGNED_IN event.
       } else if (data.user && !data.session) {
         // Email not confirmed case
         console.warn("Usuario identificado pero sin sesión (Email no confirmado).");
