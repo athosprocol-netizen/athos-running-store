@@ -123,9 +123,9 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     setIsLoading(true);
 
     try {
-      // Create a timeout promise
+      // Create a timeout promise (increased to 15s)
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Tiempo de espera agotado")), 5000)
+        setTimeout(() => reject(new Error("Tiempo de espera agotado. Revisa tu conexión.")), 15000)
       );
 
       // Race Supabase Login against timeout
@@ -135,12 +135,19 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       ]) as any;
 
       if (error) {
-        showNotification(error.message);
+        console.error("Supabase login error:", error);
+        showNotification(error.message === "Invalid login credentials" ? "Credenciales incorrectas" : error.message);
       } else if (data.session) {
-        showNotification("¡Bienvenido!");
+        console.log("Login exitoso, sesión:", data.session.user.email);
+        showNotification("¡Bienvenido al Club!");
+        // Force view change immediately
         setViewWithHistory('home');
-        // Profile will load via onAuthStateChange or we can force it
-        loadUserProfile(data.session.user);
+
+        // Load profile in background
+        loadUserProfile(data.session.user).catch(err => console.error("Error loading profile:", err));
+      } else {
+        console.warn("Login successful but no session returned", data);
+        showNotification("Error: No se pudo establecer la sesión.");
       }
     } catch (e: any) {
       console.error(e);
