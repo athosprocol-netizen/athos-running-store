@@ -120,12 +120,11 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       return;
     }
 
-    setIsLoading(true);
-
     try {
       console.log("Iniciando sesión con:", email);
-
       showNotification("Enviando solicitud a Supabase...");
+
+      setIsLoading(true);
 
       // Direct Supabase Login - No Custom Timeout wrapper
       // We want to see if it resolves or hangs natively
