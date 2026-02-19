@@ -37,7 +37,14 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    try {
+      const savedCart = localStorage.getItem('athos_cart');
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch {
+      return [];
+    }
+  });
   const [view, _setView] = useState<ViewState>('home');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
@@ -107,7 +114,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     };
   }, []);
 
-  // ... (loadUserProfile stays same)
+  // 1.5. SYNC CART TO LOCAL STORAGE
+  useEffect(() => {
+    localStorage.setItem('athos_cart', JSON.stringify(cart));
+  }, [cart]);
 
   // 2. FETCH REVIEWS
   // ...
