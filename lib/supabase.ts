@@ -17,7 +17,11 @@ export const supabase = createClient(
         auth: {
             persistSession: true,
             autoRefreshToken: true,
-            detectSessionInUrl: true
+            detectSessionInUrl: true,
+            // Bypass Navigator LockManager to prevent 10s wait on some devices/configs
+            lock: async (name: string, acquireTimeout: number, acquire: () => Promise<any>) => {
+                return await acquire();
+            }
         }
     }
 );
