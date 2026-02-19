@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../context';
 import { COLOMBIA_LOCATIONS } from '../constants/colombia';
 import { supabase } from '../lib/supabase';
+import emailjs from '@emailjs/browser';
 import { ArrowLeft, Box, CreditCard, CheckCircle, MapPin, Truck, ChevronDown, Trophy, ShoppingBag, ShieldCheck, Loader, Upload, Image as ImageIcon } from 'lucide-react';
 
 export const Checkout = () => {
@@ -104,42 +105,57 @@ export const Checkout = () => {
         }
 
         // Format Order Details for Email
-        const orderItemsText = cart.map(item =>
-            `${item.quantity}x ${item.product.name} (${item.size || 'N/A'}) = $${(item.product.price * item.quantity).toLocaleString('es-CO')}`
-        ).join(' | ');
+        const orderItemsHtml = cart.map(item =>
+            `<tr><td style="padding: 8px; border-bottom: 1px solid #eee;">${item.quantity}x ${item.product.name} (${item.size || 'N/A'})</td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">$${(item.product.price * item.quantity).toLocaleString('es-CO')}</td></tr>`
+        ).join('');
+
+        const emailHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: #000; font-style: italic; font-weight: 900; margin: 0; text-transform: uppercase;">ATHOS</h1>
+                    <p style="color: #ff4500; font-weight: bold; margin-top: 5px;">NUEVA ORDEN RECIBIDA</p>
+                </div>
+                
+                <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #ff4500; padding-bottom: 5px;">Detalles del Cliente</h3>
+                    <p><strong>Nombre:</strong> ${shipping.fullName}</p>
+                    <p><strong>Teléfono:</strong> ${shipping.phone}</p>
+                    <p><strong>Email:</strong> ${user?.email || 'Invitado'}</p>
+                    <p><strong>Envío:</strong> ${shipping.address}, ${shipping.city}, ${shipping.province}</p>
+                </div>
+
+                <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #ff4500; padding-bottom: 5px;">Resumen de la Orden</h3>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        ${orderItemsHtml}
+                        <tr><td style="padding: 8px;">Subtotal:</td><td style="padding: 8px; text-align: right;">$${subtotal.toLocaleString('es-CO')}</td></tr>
+                        <tr><td style="padding: 8px;">Envío:</td><td style="padding: 8px; text-align: right;">$${shippingFee.toLocaleString('es-CO')}</td></tr>
+                        <tr><td style="padding: 8px; font-weight: bold;">TOTAL:</td><td style="padding: 8px; text-align: right; font-weight: bold; color: #ff4500;">$${total.toLocaleString('es-CO')}</td></tr>
+                    </table>
+                </div>
+
+                <div style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #ff4500; padding-bottom: 5px;">Detalles de Pago</h3>
+                    <p><strong>Método:</strong> ${paymentMethod.toUpperCase()}</p>
+                    <p><strong>Comprobante:</strong> ${proofUrl ? `<a href="${proofUrl}" style="color: #ff4500; font-weight: bold;">Ver Imagen del Comprobante</a>` : 'No se adjuntó comprobante'}</p>
+                </div>
+            </div>
+        `;
 
         try {
-            // Fix unhandled timeout rejection by returning early instead of racing blindly
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
-
-            await fetch("https://formsubmit.co/ajax/athospro.col@gmail.com", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+            await emailjs.send(
+                'service_qtpq6cb',
+                import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+                {
+                    asunto: `Nueva Orden de: ${shipping.fullName} - $${total.toLocaleString('es-CO')}`,
+                    mensaje_html: emailHtml
                 },
-                signal: controller.signal,
-                body: JSON.stringify({
-                    _subject: `Nueva Orden de: ${shipping.fullName} - $${total.toLocaleString('es-CO')}`,
-                    "Cliente": shipping.fullName,
-                    "Teléfono": shipping.phone,
-                    "Email": user?.email || 'Invitado',
-                    "Dirección": `${shipping.address}, ${shipping.city}, ${shipping.province}`,
-                    "Resumen de Compra": orderItemsText,
-                    "Subtotal": `$${subtotal.toLocaleString('es-CO')}`,
-                    "Costo de Envío": `$${shippingFee.toLocaleString('es-CO')}`,
-                    "TOTAL A PAGAR": `$${total.toLocaleString('es-CO')}`,
-                    "Método de Pago": paymentMethod.toUpperCase(),
-                    "Link al Comprobante": proofUrl || 'No se adjuntó comprobante',
-                    _template: "box",
-                    _autoresponse: "Hemos recibido tu orden de compra en Athos Running Store. Estaremos verificando tu pago."
-                })
-            });
-            clearTimeout(timeoutId);
-            console.log("Email request successfully handled.");
+                import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+            );
+            console.log("Email request successfully handled via EmailJS.");
         } catch (emailError) {
-            console.error("Warning: Error or timeout sending email, continuing with checkout...", emailError);
+            console.error("Warning: Error sending email via EmailJS, continuing with checkout...", emailError);
             // We do NOT block the checkout progress.
         }
 
