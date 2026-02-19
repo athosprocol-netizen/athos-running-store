@@ -172,7 +172,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       }
     } catch (e: any) {
       console.error("Excepción en login:", e);
-      showNotification("Error de conexión. Intenta nuevamente.");
+      // Show actual error message to user
+      showNotification(e.message || "Error desconocido al iniciar sesión.");
     } finally {
       setIsLoading(false);
     }
