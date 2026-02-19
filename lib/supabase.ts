@@ -10,41 +10,47 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 console.log("Init Supabase with URL:", supabaseUrl);
 
-// Custom Storage Adapter that swallows errors and falls back to memory
-// Custom Storage Adapter that swallows errors and falls back to memory
-class ResilientStorage {
-    private memoryStore: Map<string, string>;
-
-    constructor() {
-        this.memoryStore = new Map();
-    }
-
+// Cookie Storage Adapter for maximum resilience
+class CookieStorageAdapter {
     getItem(key: string): string | null {
         try {
-            const item = sessionStorage.getItem(key);
-            return item || this.memoryStore.get(key) || null;
+            const name = key + "=";
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) === 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return null;
         } catch (e) {
-            console.warn(`ResilientStorage: Read error for ${key}, using memory.`, e);
-            return this.memoryStore.get(key) || null;
+            console.warn(`CookieStorage: Read error for ${key}`, e);
+            return null;
         }
     }
 
     setItem(key: string, value: string): void {
         try {
-            sessionStorage.setItem(key, value);
+            const d = new Date();
+            d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000)); // 1 year
+            const expires = "expires=" + d.toUTCString();
+            // SameSite=Lax is standard for auth; Secure is needed for HTTPS
+            document.cookie = key + "=" + value + ";" + expires + ";path=/;SameSite=Lax;Secure";
         } catch (e) {
-            console.warn(`ResilientStorage: Write error for ${key}, using memory.`, e);
+            console.warn(`CookieStorage: Write error for ${key}`, e);
         }
-        this.memoryStore.set(key, value);
     }
 
     removeItem(key: string): void {
         try {
-            sessionStorage.removeItem(key);
+            document.cookie = key + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         } catch (e) {
-            console.warn(`ResilientStorage: Delete error for ${key}.`, e);
+            console.warn(`CookieStorage: Delete error for ${key}`, e);
         }
-        this.memoryStore.delete(key);
     }
 }
 
@@ -54,7 +60,7 @@ export const supabase = createClient(
     {
         auth: {
             persistSession: true,
-            storage: new ResilientStorage(), // Use wrapper instead of direct localStorage
+            storage: new CookieStorageAdapter(), // Use Cookie adapter
             autoRefreshToken: true,
             detectSessionInUrl: true
         }
