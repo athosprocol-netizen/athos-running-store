@@ -144,7 +144,7 @@ export const Checkout = () => {
         `;
 
         try {
-            await emailjs.send(
+            const emailPromise = emailjs.send(
                 'service_w0gw0zj',
                 import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
                 {
@@ -153,6 +153,13 @@ export const Checkout = () => {
                 },
                 import.meta.env.VITE_EMAILJS_PUBLIC_KEY
             );
+
+            // 8-second timeout to prevent indefinite hanging
+            const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error("Timeout: EmailJS no respondió a tiempo.")), 8000);
+            });
+
+            await Promise.race([emailPromise, timeoutPromise]);
             console.log("Email request successfully handled via EmailJS.");
         } catch (emailError: any) {
             console.error("Warning: Error sending email via EmailJS, continuing with checkout...", emailError);
