@@ -12,7 +12,6 @@ export const Auth = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        alert("DEBUG: Botón presionado. Iniciando proceso...");
         console.log("Formulario enviado. Login:", isLogin, "Email:", email);
         if (isLogin) {
             login(email, password);
@@ -27,6 +26,11 @@ export const Auth = () => {
 
     return (
         <div className="min-h-screen bg-white pt-24 pb-12 px-4 flex items-center justify-center">
+            {/* ... context ... */}
+            {/* Skipping to button part for brevity in replacement if possible, but replace_file_content requires exact context matching. 
+                I will target the specific chunks.
+            */}
+
             <div className="w-full max-w-4xl bg-white shadow-2xl flex flex-col md:flex-row overflow-hidden border border-gray-100 animate-fade-in rounded-[40px]">
 
                 {/* Visual Side */}
@@ -96,10 +100,10 @@ export const Auth = () => {
 
                         <button
                             type="submit"
-                            disabled={isLoading}
-                            className={`w-full bg-athos-black text-white h-12 rounded-xl font-black uppercase tracking-widest hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-lg mt-4 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className="w-full bg-athos-black text-white h-12 rounded-xl font-black uppercase tracking-widest hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-lg mt-4"
                         >
-                            {isLoading ? 'Cargando...' : (isLogin ? 'Entrar' : 'Registrarse')} {!isLoading && <ArrowRight size={16} />}
+                            {isLogin ? 'ENTRAR' : 'CREAR CUENTA'}
+                            <ArrowRight size={20} />
                         </button>
                     </form>
 

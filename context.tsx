@@ -122,7 +122,6 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
     try {
       console.log("Iniciando sesión con:", email);
-      showNotification("Enviando solicitud a Supabase...");
 
       setIsLoading(true);
 
