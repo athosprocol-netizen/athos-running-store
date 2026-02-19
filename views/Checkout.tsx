@@ -287,8 +287,8 @@ export const Checkout = () => {
                                 >
                                     <div className="flex items-center gap-4">
                                         <div className="w-10 h-10 bg-white rounded-lg border border-gray-200 flex items-center justify-center p-1">
-                                            {method === 'nequi' && <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Nequi_logo.svg/1200px-Nequi_logo.svg.png" className="w-full h-full object-contain" alt="Nequi" />}
-                                            {method === 'bancolombia' && <div className="w-6 h-6 rounded-full bg-yellow-400 border-2 border-black"></div>}
+                                            {method === 'nequi' && <img src="/nequi.jpg" className="w-full h-full object-contain mix-blend-multiply" alt="Nequi" />}
+                                            {method === 'bancolombia' && <img src="/bancolombia.png" className="w-full h-full object-contain mix-blend-multiply" alt="Bancolombia" />}
                                         </div>
                                         <span className="font-bold text-sm text-athos-black uppercase">
                                             {method === 'nequi' ? 'Nequi' : 'Bancolombia'}
