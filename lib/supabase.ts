@@ -16,8 +16,6 @@ export const supabase = createClient(
     {
         auth: {
             persistSession: true,
-            storageKey: 'athos-auth-token-v2', // Unique key to prevent collisions/corruption
-            storage: localStorage, // Explicitly enforce localStorage
             autoRefreshToken: true,
             detectSessionInUrl: true
         }
