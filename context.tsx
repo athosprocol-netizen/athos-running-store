@@ -76,12 +76,28 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     init();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log(`Auth Event: ${event}`, session?.user?.email);
+
       if (event === 'SIGNED_OUT') {
-        setUser(null);
-        setCart([]);
-        setViewWithHistory('home');
+        // Double check: sometimes SIGNED_OUT fires but we still have a session in storage/memory
+        // or it's a false positive during initial load.
+        // We only clear if we are SURE.
+        const { data } = await supabase.auth.getSession();
+        if (!data.session) {
+          console.log("Confirmed SIGNED_OUT, clearing user.");
+          setUser(null);
+          setCart([]);
+          // Don't force redirect to home immediately, allows user to realize they were logged out
+          // setViewWithHistory('home'); 
+        } else {
+          console.log("Ignored SIGNED_OUT because session still exists (race condition?)");
+        }
       } else if (event === 'SIGNED_IN' && session?.user) {
-        if (!user) await loadUserProfile(session.user);
+        if (!user || user.id !== session.user.id) {
+          await loadUserProfile(session.user);
+        }
+      } else if (event === 'TOKEN_REFRESHED') {
+        console.log("Token refreshed successfully");
       }
     });
 

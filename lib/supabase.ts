@@ -38,8 +38,9 @@ class CookieStorageAdapter {
             const d = new Date();
             d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000)); // 1 year
             const expires = "expires=" + d.toUTCString();
-            // SameSite=Lax is standard for auth; Secure is needed for HTTPS
-            document.cookie = key + "=" + value + ";" + expires + ";path=/;SameSite=Lax;Secure";
+            const isSecure = window.location.protocol === 'https:' ? ';Secure' : '';
+            // SameSite=Lax is standard for auth; Secure is needed for HTTPS only
+            document.cookie = key + "=" + value + ";" + expires + ";path=/;SameSite=Lax" + isSecure;
         } catch (e) {
             console.warn(`CookieStorage: Write error for ${key}`, e);
         }
