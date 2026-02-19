@@ -370,9 +370,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const logout = () => {
-    // Non-blocking logout so UI updates immediately even if network is slow
-    supabase.auth.signOut().catch(e => console.error("SignOut error:", e));
+  const logout = async () => {
+    // Scope 'local' forces immediate session clear without waiting on the network,
+    // avoiding dangling promises that block re-login.
+    await supabase.auth.signOut({ scope: 'local' });
     setUser(null);
     setCart([]);
     setViewWithHistory('home');
