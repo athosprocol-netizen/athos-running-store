@@ -126,12 +126,17 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
       setIsLoading(true);
 
-      // Direct Supabase Login - No Custom Timeout wrapper
-      // We want to see if it resolves or hangs natively
-      const { data, error } = await supabase.auth.signInWithPassword({
+      // Wrapper with explicit timeout in case Supabase hangs indefinitely
+      const loginPromise = supabase.auth.signInWithPassword({
         email,
         password
       });
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Tiempo de espera agotado. Verifica tu conexión e intenta nuevamente.")), 10000)
+      );
+
+      const { data, error } = await Promise.race([loginPromise, timeoutPromise]) as any;
 
       if (error) {
         console.error("Error Login:", error.message);
@@ -361,9 +366,11 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const logout = async () => {
-    await supabase.auth.signOut();
+  const logout = () => {
+    // Non-blocking logout so UI updates immediately even if network is slow
+    supabase.auth.signOut().catch(e => console.error("SignOut error:", e));
     setUser(null);
+    setCart([]);
     setViewWithHistory('home');
     showNotification("Sesión cerrada correctamente");
   };
