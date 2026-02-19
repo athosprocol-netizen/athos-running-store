@@ -90,8 +90,57 @@ export const Checkout = () => {
             }
         }
 
-        // Simulate Payment Processing API Call
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // Format Order Details for Email
+        const orderItemsText = cart.map(item =>
+            `- ${item.quantity}x ${item.product.name} (${item.size || 'N/A'}) = $${(item.product.price * item.quantity).toLocaleString('es-CO')}`
+        ).join('\n');
+
+        const emailMessage = `
+NUEVA ORDEN DE COMPRA - ATHOS RUNNING STORE
+
+DETALLES DEL CLIENTE:
+Nombre: ${shipping.fullName}
+Teléfono: ${shipping.phone}
+Email: ${user?.email || 'Invitado'}
+
+DIRECCIÓN DE ENVÍO:
+Departamento: ${shipping.province}
+Ciudad: ${shipping.city}
+Dirección: ${shipping.address}
+Código Postal: ${shipping.postalCode}
+
+RESUMEN DE LA ORDEN:
+${orderItemsText}
+-----------------------------------
+Subtotal: $${subtotal.toLocaleString('es-CO')}
+Envío: $${shippingFee.toLocaleString('es-CO')}
+TOTAL A PAGAR: $${total.toLocaleString('es-CO')}
+
+PAGO:
+Método seleccionado: ${paymentMethod.toUpperCase()}
+Enlace al comprobante de pago: ${proofUrl || 'No se adjuntó comprobante'}
+        `;
+
+        try {
+            // Send Email using FormSubmit (Ajax)
+            await fetch("https://formsubmit.co/ajax/athospro.col@gmail.com", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    _subject: `Nueva Orden Athos: ${shipping.fullName} - $${total.toLocaleString('es-CO')}`,
+                    mensaje: emailMessage,
+                    pago: proofUrl || 'Sin comprobante',
+                    _template: "table"
+                })
+            });
+        } catch (emailError) {
+            console.error("Error al enviar email de confirmación:", emailError);
+            // We don't block the checkout if the email strictly fails, 
+            // the order is still saved in Supabase contextually.
+        }
 
         confirmOrder(); // Pass proofUrl if context supports it
         setIsProcessing(false);
