@@ -122,6 +122,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
     try {
       console.log("Iniciando sesión con:", email);
+      showNotification("Conectando con el servidor...");
 
       setIsLoading(true);
 
