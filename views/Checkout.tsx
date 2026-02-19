@@ -16,8 +16,7 @@ export const Checkout = () => {
         phone: '',
         province: '',
         city: '',
-        address: '',
-        postalCode: ''
+        address: ''
     });
     const [errors, setErrors] = useState<Record<string, boolean>>({});
 
@@ -26,7 +25,6 @@ export const Checkout = () => {
 
     const [paymentMethod, setPaymentMethod] = useState<'nequi' | 'bancolombia'>('nequi');
     const [proofFile, setProofFile] = useState<File | null>(null);
-    const [isUploading, setIsUploading] = useState(false);
 
     const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
     const shippingFee = subtotal > 200000 ? 0 : 15000;
@@ -36,11 +34,22 @@ export const Checkout = () => {
     const validateStep1 = () => {
         const newErrors: Record<string, boolean> = {};
         if (!shipping.fullName.trim()) newErrors.fullName = true;
-        if (!shipping.phone.trim()) newErrors.phone = true;
         if (!shipping.address.trim()) newErrors.address = true;
-        if (!shipping.postalCode.trim()) newErrors.postalCode = true;
+        if (!shipping.province) newErrors.province = true;
+        if (!shipping.city) newErrors.city = true;
+
+        const phoneDigits = shipping.phone.replace(/\D/g, '');
+        if (phoneDigits.length !== 10) {
+            newErrors.phone = true;
+        }
 
         setErrors(newErrors);
+
+        if (newErrors.phone) {
+            showNotification("El teléfono debe tener 10 dígitos (Ej: 3001234567)");
+            return false;
+        }
+
         if (Object.keys(newErrors).length > 0) {
             showNotification("Por favor completa los campos obligatorios");
             return false;
@@ -49,6 +58,10 @@ export const Checkout = () => {
     };
 
     const validateStep2 = () => {
+        if (!proofFile) {
+            showNotification("Por favor sube tu comprobante de pago para continuar.");
+            return false;
+        }
         return true;
     };
 
@@ -92,63 +105,38 @@ export const Checkout = () => {
 
         // Format Order Details for Email
         const orderItemsText = cart.map(item =>
-            `<tr><td style="padding: 8px; border-bottom: 1px solid #eee;">${item.quantity}x ${item.product.name} (${item.size || 'N/A'})</td>
-            <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">$${(item.product.price * item.quantity).toLocaleString('es-CO')}</td></tr>`
-        ).join('');
-
-        const emailHtml = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px;">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <h1 style="color: #000; font-style: italic; font-weight: 900; margin: 0; text-transform: uppercase;">ATHOS</h1>
-                    <p style="color: #ff4500; font-weight: bold; margin-top: 5px;">NUEVA ORDEN RECIBIDA</p>
-                </div>
-                
-                <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #ff4500; padding-bottom: 5px;">Detalles del Cliente</h3>
-                    <p><strong>Nombre:</strong> ${shipping.fullName}</p>
-                    <p><strong>Teléfono:</strong> ${shipping.phone}</p>
-                    <p><strong>Email:</strong> ${user?.email || 'Invitado'}</p>
-                    <p><strong>Envío:</strong> ${shipping.address}, ${shipping.city}, ${shipping.province} (CP: ${shipping.postalCode})</p>
-                </div>
-
-                <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #ff4500; padding-bottom: 5px;">Resumen de la Orden</h3>
-                    <table style="width: 100%; border-collapse: collapse;">
-                        ${orderItemsText}
-                        <tr><td style="padding: 8px;">Subtotal:</td><td style="padding: 8px; text-align: right;">$${subtotal.toLocaleString('es-CO')}</td></tr>
-                        <tr><td style="padding: 8px;">Envío:</td><td style="padding: 8px; text-align: right;">$${shippingFee.toLocaleString('es-CO')}</td></tr>
-                        <tr><td style="padding: 8px; font-weight: bold;">TOTAL:</td><td style="padding: 8px; text-align: right; font-weight: bold; color: #ff4500;">$${total.toLocaleString('es-CO')}</td></tr>
-                    </table>
-                </div>
-
-                <div style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #ff4500; padding-bottom: 5px;">Detalles de Pago</h3>
-                    <p><strong>Método:</strong> ${paymentMethod.toUpperCase()}</p>
-                    <p><strong>Comprobante:</strong> ${proofUrl ? `<a href="${proofUrl}" style="color: #ff4500; font-weight: bold;">Ver Imagen del Comprobante</a>` : 'No se adjuntó comprobante'}</p>
-                </div>
-            </div>
-        `;
+            `${item.quantity}x ${item.product.name} (${item.size || 'N/A'}) = $${(item.product.price * item.quantity).toLocaleString('es-CO')}`
+        ).join(' | ');
 
         try {
-            // Use Promise.race to enforce an 8-second timeout so the checkout never hangs indefinitely
-            const fetchPromise = fetch("https://formsubmit.co/ajax/athospro.col@gmail.com", {
+            // Fix unhandled timeout rejection by returning early instead of racing blindly
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
+
+            await fetch("https://formsubmit.co/ajax/athospro.col@gmail.com", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
+                signal: controller.signal,
                 body: JSON.stringify({
-                    _subject: `Nueva Orden Athos: ${shipping.fullName} - $${total.toLocaleString('es-CO')}`,
-                    mensaje: emailHtml,
+                    _subject: `Nueva Orden de: ${shipping.fullName} - $${total.toLocaleString('es-CO')}`,
+                    "Cliente": shipping.fullName,
+                    "Teléfono": shipping.phone,
+                    "Email": user?.email || 'Invitado',
+                    "Dirección": `${shipping.address}, ${shipping.city}, ${shipping.province}`,
+                    "Resumen de Compra": orderItemsText,
+                    "Subtotal": `$${subtotal.toLocaleString('es-CO')}`,
+                    "Costo de Envío": `$${shippingFee.toLocaleString('es-CO')}`,
+                    "TOTAL A PAGAR": `$${total.toLocaleString('es-CO')}`,
+                    "Método de Pago": paymentMethod.toUpperCase(),
+                    "Link al Comprobante": proofUrl || 'No se adjuntó comprobante',
                     _template: "box",
-                    _autoresponse: "Hemos recibido tu orden de compra en Athos Running Store. Estaremos verificando tu pago.",
-                    _replyto: user?.email || undefined
+                    _autoresponse: "Hemos recibido tu orden de compra en Athos Running Store. Estaremos verificando tu pago."
                 })
             });
-
-            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout sending email")), 8000));
-
-            await Promise.race([fetchPromise, timeoutPromise]);
+            clearTimeout(timeoutId);
             console.log("Email request successfully handled.");
         } catch (emailError) {
             console.error("Warning: Error or timeout sending email, continuing with checkout...", emailError);
@@ -317,17 +305,6 @@ export const Checkout = () => {
                                     onChange={e => setShipping({ ...shipping, address: e.target.value })}
                                     className={`w-full bg-gray-50 border-2 rounded-lg p-4 font-bold text-sm focus:bg-white ${errors.address ? 'border-red-500' : 'border-gray-200'}`}
                                     placeholder="Calle 123 # 45 - 67, Apto 201"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="text-xs font-bold text-athos-black uppercase mb-1 block">Código Postal <span className="text-red-500">*</span></label>
-                                <input
-                                    type="text"
-                                    value={shipping.postalCode}
-                                    onChange={e => setShipping({ ...shipping, postalCode: e.target.value })}
-                                    className={`w-full bg-gray-50 border-2 rounded-lg p-4 font-bold text-sm focus:bg-white ${errors.postalCode ? 'border-red-500' : 'border-gray-200'}`}
-                                    placeholder="110111"
                                 />
                             </div>
                         </div>
