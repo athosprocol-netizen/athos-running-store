@@ -197,6 +197,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           name: profile.name,
           role: profile.role || 'user',
           avatar: profile.avatar_url,
+          age: profile.age,
+          location: profile.location,
+          address: profile.address,
+          phone: profile.phone,
           wishlist: [],
           coupons: []
         });
@@ -383,8 +387,12 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
     // Update DB
     const updates: any = {};
-    if (data.name) updates.name = data.name;
-    if (data.avatar) updates.avatar_url = data.avatar;
+    if (data.name !== undefined) updates.name = data.name;
+    if (data.avatar !== undefined) updates.avatar_url = data.avatar;
+    if (data.age !== undefined) updates.age = data.age;
+    if (data.location !== undefined) updates.location = data.location;
+    if (data.address !== undefined) updates.address = data.address;
+    if (data.phone !== undefined) updates.phone = data.phone;
 
     if (Object.keys(updates).length > 0) {
       const { error } = await supabase
