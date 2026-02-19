@@ -19,13 +19,7 @@ export const Checkout = () => {
     });
     const [errors, setErrors] = useState<Record<string, boolean>>({});
 
-    const [paymentMethod, setPaymentMethod] = useState<'card' | 'paypal' | 'google'>('card');
-    const [cardDetails, setCardDetails] = useState({
-        holder: user?.name || '',
-        number: '',
-        expiry: '',
-        cvv: ''
-    });
+    const [paymentMethod, setPaymentMethod] = useState<'nequi' | 'bancolombia'>('nequi');
 
     const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
     const shippingFee = subtotal > 200000 ? 0 : 15000;
@@ -48,16 +42,6 @@ export const Checkout = () => {
     };
 
     const validateStep2 = () => {
-        if (paymentMethod === 'card') {
-            const newErrors: Record<string, boolean> = {};
-            if (!cardDetails.number.trim()) newErrors.cardNumber = true;
-            if (!cardDetails.cvv.trim()) newErrors.cardCvv = true;
-            setErrors(newErrors);
-            if (Object.keys(newErrors).length > 0) {
-                showNotification("Datos de tarjeta incompletos");
-                return false;
-            }
-        }
         return true;
     };
 
@@ -260,20 +244,19 @@ export const Checkout = () => {
                         </div>
 
                         <div className="space-y-3">
-                            {['card', 'paypal', 'google'].map((method) => (
+                            {['nequi', 'bancolombia'].map((method) => (
                                 <div
                                     key={method}
                                     onClick={() => setPaymentMethod(method as any)}
                                     className={`flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all ${paymentMethod === method ? 'border-athos-black bg-gray-50' : 'border-gray-100 bg-white hover:border-gray-200'}`}
                                 >
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-white rounded-lg border border-gray-200 flex items-center justify-center">
-                                            {method === 'card' && <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-red-500 to-yellow-400"></div>}
-                                            {method === 'paypal' && <span className="font-bold text-blue-800 italic">P</span>}
-                                            {method === 'google' && <span className="font-bold text-gray-800">G</span>}
+                                        <div className="w-10 h-10 bg-white rounded-lg border border-gray-200 flex items-center justify-center p-1">
+                                            {method === 'nequi' && <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Nequi_logo.svg/1200px-Nequi_logo.svg.png" className="w-full h-full object-contain" alt="Nequi" />}
+                                            {method === 'bancolombia' && <div className="w-6 h-6 rounded-full bg-yellow-400 border-2 border-black"></div>}
                                         </div>
-                                        <span className="font-bold text-sm text-athos-black">
-                                            {method === 'card' ? 'Tarjeta de Crédito' : method === 'paypal' ? 'PayPal' : 'Google Pay'}
+                                        <span className="font-bold text-sm text-athos-black uppercase">
+                                            {method === 'nequi' ? 'Nequi' : 'Bancolombia'}
                                         </span>
                                     </div>
                                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === method ? 'border-athos-black' : 'border-gray-300'}`}>
@@ -283,52 +266,18 @@ export const Checkout = () => {
                             ))}
                         </div>
 
-                        {paymentMethod === 'card' && (
-                            <div className="animate-slide-up space-y-4 pt-4 border-t border-gray-100">
-                                <div>
-                                    <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Nombre en la Tarjeta</label>
-                                    <input
-                                        type="text"
-                                        value={cardDetails.holder}
-                                        onChange={e => setCardDetails({ ...cardDetails, holder: e.target.value })}
-                                        className="w-full bg-gray-50 border-gray-200 border-2 rounded-lg p-4 font-bold text-sm"
-                                        placeholder="Como aparece en el plástico"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Número de Tarjeta</label>
-                                    <input
-                                        type="text"
-                                        value={cardDetails.number}
-                                        onChange={e => setCardDetails({ ...cardDetails, number: e.target.value })}
-                                        className={`w-full bg-gray-50 border-2 rounded-lg p-4 font-bold text-sm tracking-widest ${errors.cardNumber ? 'border-red-500' : 'border-gray-200'}`}
-                                        placeholder="0000 0000 0000 0000"
-                                    />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Expiración</label>
-                                        <input
-                                            type="text"
-                                            value={cardDetails.expiry}
-                                            onChange={e => setCardDetails({ ...cardDetails, expiry: e.target.value })}
-                                            className="w-full bg-gray-50 border-gray-200 border-2 rounded-lg p-4 font-bold text-sm text-center"
-                                            placeholder="MM/YY"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">CVV</label>
-                                        <input
-                                            type="text"
-                                            value={cardDetails.cvv}
-                                            onChange={e => setCardDetails({ ...cardDetails, cvv: e.target.value })}
-                                            className={`w-full bg-gray-50 border-2 rounded-lg p-4 font-bold text-sm text-center ${errors.cardCvv ? 'border-red-500' : 'border-gray-200'}`}
-                                            placeholder="123"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                        {/* Payment Instructions */}
+                        <div className="animate-slide-up bg-gray-50 p-6 rounded-xl border border-gray-200 text-center">
+                            <p className="text-sm font-bold text-gray-500 uppercase mb-2">
+                                {paymentMethod === 'nequi' ? 'Envía a Nequi' : 'Transferencia Bancolombia'}
+                            </p>
+                            <p className="text-2xl font-black text-athos-black tracking-widest select-all">
+                                {paymentMethod === 'nequi' ? '311 710 7008' : '813 782 32538'}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-4 font-medium">
+                                * Envía el comprobante a nuestro WhatsApp para confirmar tu orden.
+                            </p>
+                        </div>
                     </div>
                 )}
 
