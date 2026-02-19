@@ -58,6 +58,9 @@ export const Navbar = () => {
         };
     }, [isMobileMenuOpen]);
 
+    if (view === 'checkout') return null;
+
+
     return (
         <>
             {/* DESKTOP HEADER - FIXED COLOR */}

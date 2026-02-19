@@ -18,7 +18,7 @@ interface AppContextType {
   addToCart: (product: Product, size?: string, customization?: CustomizationOptions) => void;
   joinChallenge: (id: string) => void;
   checkout: () => void;
-  confirmOrder: () => void;
+  confirmOrder: (proofUrl?: string | null) => void;
   showNotification: (msg: string) => void;
   login: (email: string, password?: string) => void;
   register: (name: string, email: string, password?: string) => void;
@@ -485,8 +485,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     window.scrollTo(0, 0);
   };
 
-  const confirmOrder = () => {
+  const confirmOrder = (proofUrl?: string | null) => {
+    console.log("Order Confirmed. Proof:", proofUrl);
     setCart([]);
+    showNotification("Orden recibida. Te contactaremos pronto.");
   };
 
   return (

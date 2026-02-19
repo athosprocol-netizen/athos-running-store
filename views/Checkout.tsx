@@ -1,7 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context';
-import { ArrowLeft, Box, CreditCard, CheckCircle, MapPin, Truck, ChevronDown, Trophy, ShoppingBag, ShieldCheck, Loader } from 'lucide-react';
+import { COLOMBIA_LOCATIONS } from '../constants/colombia';
+import { supabase } from '../lib/supabase';
+import { ArrowLeft, Box, CreditCard, CheckCircle, MapPin, Truck, ChevronDown, Trophy, ShoppingBag, ShieldCheck, Loader, Upload, Image as ImageIcon } from 'lucide-react';
 
 export const Checkout = () => {
     const { setView, cart, confirmOrder, user, showNotification } = useApp();
@@ -12,14 +14,19 @@ export const Checkout = () => {
     const [shipping, setShipping] = useState({
         fullName: '',
         phone: '',
-        province: 'Valle del Cauca',
-        city: 'Cartago',
+        province: '',
+        city: '',
         address: '',
         postalCode: ''
     });
     const [errors, setErrors] = useState<Record<string, boolean>>({});
 
+    // Derived State for Cities based on selected Province
+    const availableCities = shipping.province ? COLOMBIA_LOCATIONS[shipping.province] || [] : [];
+
     const [paymentMethod, setPaymentMethod] = useState<'nequi' | 'bancolombia'>('nequi');
+    const [proofFile, setProofFile] = useState<File | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
 
     const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
     const shippingFee = subtotal > 200000 ? 0 : 15000;
@@ -61,10 +68,32 @@ export const Checkout = () => {
 
     const handleConfirmOrder = async () => {
         setIsProcessing(true);
+
+        // Upload Proof if exists
+        let proofUrl = null;
+        if (proofFile) {
+            try {
+                const fileName = `${Date.now()}-${user?.id || 'guest'}-proof.jpg`;
+                const { data, error } = await supabase.storage
+                    .from('payment-proofs')
+                    .upload(fileName, proofFile);
+
+                if (data) {
+                    const { data: publicUrlData } = supabase.storage
+                        .from('payment-proofs')
+                        .getPublicUrl(fileName);
+                    proofUrl = publicUrlData.publicUrl;
+                }
+            } catch (e) {
+                console.error("Upload failed", e);
+                // Continue anyway for now or show error
+            }
+        }
+
         // Simulate Payment Processing API Call
         await new Promise(resolve => setTimeout(resolve, 2000));
 
-        confirmOrder();
+        confirmOrder(); // Pass proofUrl if context supports it
         setIsProcessing(false);
         setStep(4);
         window.scrollTo(0, 0);
@@ -100,8 +129,11 @@ export const Checkout = () => {
     return (
         <div className="min-h-screen bg-white pb-32">
             {/* HEADER */}
-            <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-4 h-16 flex items-center justify-between">
-                <button onClick={() => step === 1 ? setView('cart') : prevStep()} className="p-2 -ml-2 text-athos-black hover:bg-gray-100 rounded-full">
+            <div className={`sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-4 h-16 flex items-center justify-between transition-all duration-300`}>
+                <button
+                    onClick={() => step === 1 ? setView('cart') : prevStep()}
+                    className="p-2 -ml-2 text-athos-black hover:bg-gray-100 rounded-full z-50 relative"
+                >
                     <ArrowLeft size={24} />
                 </button>
                 <span className="font-black italic text-lg uppercase tracking-wide">Finalizar Compra</span>
@@ -184,12 +216,13 @@ export const Checkout = () => {
                                     <div className="relative">
                                         <select
                                             value={shipping.province}
-                                            onChange={e => setShipping({ ...shipping, province: e.target.value })}
-                                            className="w-full bg-gray-50 border-2 border-gray-200 rounded-lg p-4 font-bold text-sm appearance-none focus:bg-white"
+                                            onChange={e => setShipping({ ...shipping, province: e.target.value, city: '' })} // Reset city on province change
+                                            className="w-full bg-gray-50 border-2 border-gray-200 rounded-lg p-4 font-bold text-sm appearance-none focus:bg-white truncate pr-8"
                                         >
-                                            <option>Bogotá D.C.</option>
-                                            <option>Antioquia</option>
-                                            <option>Valle</option>
+                                            <option value="">Seleccionar</option>
+                                            {Object.keys(COLOMBIA_LOCATIONS).sort().map(dept => (
+                                                <option key={dept} value={dept}>{dept}</option>
+                                            ))}
                                         </select>
                                         <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                                     </div>
@@ -200,11 +233,13 @@ export const Checkout = () => {
                                         <select
                                             value={shipping.city}
                                             onChange={e => setShipping({ ...shipping, city: e.target.value })}
-                                            className="w-full bg-gray-50 border-2 border-gray-200 rounded-lg p-4 font-bold text-sm appearance-none focus:bg-white"
+                                            className="w-full bg-gray-50 border-2 border-gray-200 rounded-lg p-4 font-bold text-sm appearance-none focus:bg-white truncate pr-8"
+                                            disabled={!shipping.province}
                                         >
-                                            <option>Bogotá</option>
-                                            <option>Medellín</option>
-                                            <option>Cali</option>
+                                            <option value="">{shipping.province ? 'Seleccionar' : '-'}</option>
+                                            {availableCities.map(city => (
+                                                <option key={city} value={city}>{city}</option>
+                                            ))}
                                         </select>
                                         <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                                     </div>
@@ -266,16 +301,50 @@ export const Checkout = () => {
                             ))}
                         </div>
 
-                        {/* Payment Instructions */}
+                        {/* Payment Instructions & Proof Upload */}
                         <div className="animate-slide-up bg-gray-50 p-6 rounded-xl border border-gray-200 text-center">
                             <p className="text-sm font-bold text-gray-500 uppercase mb-2">
                                 {paymentMethod === 'nequi' ? 'Envía a Nequi' : 'Transferencia Bancolombia'}
                             </p>
-                            <p className="text-2xl font-black text-athos-black tracking-widest select-all">
+                            <p className="text-2xl font-black text-athos-black tracking-widest select-all mb-6">
                                 {paymentMethod === 'nequi' ? '311 710 7008' : '813 782 32538'}
                             </p>
+
+                            {/* Upload Section */}
+                            <div className="bg-white p-4 rounded-lg border-2 border-dashed border-gray-300 relative group hover:border-athos-orange transition-colors">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        if (e.target.files && e.target.files[0]) {
+                                            setProofFile(e.target.files[0]);
+                                        }
+                                    }}
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                />
+                                <div className="flex flex-col items-center gap-2">
+                                    {proofFile ? (
+                                        <>
+                                            <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
+                                                <CheckCircle size={20} />
+                                            </div>
+                                            <span className="text-xs font-bold text-green-600 line-clamp-1">{proofFile.name}</span>
+                                            <span className="text-[10px] text-gray-400">Click para cambiar</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="w-10 h-10 bg-gray-100 text-gray-400 group-hover:bg-athos-orange/10 group-hover:text-athos-orange rounded-full flex items-center justify-center transition-colors">
+                                                <Upload size={20} />
+                                            </div>
+                                            <span className="text-xs font-bold text-gray-500 group-hover:text-athos-black">Subir Comprobante</span>
+                                            <span className="text-[10px] text-gray-400">Captura de pantalla requerida</span>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+
                             <p className="text-xs text-gray-400 mt-4 font-medium">
-                                * Envía el comprobante a nuestro WhatsApp para confirmar tu orden.
+                                * Tu orden no será procesada sin el comprobante.
                             </p>
                         </div>
                     </div>
