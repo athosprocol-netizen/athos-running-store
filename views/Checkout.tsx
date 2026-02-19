@@ -145,7 +145,7 @@ export const Checkout = () => {
 
         try {
             await emailjs.send(
-                'service_qtpq6cb',
+                'service_w0gw0zj',
                 import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
                 {
                     asunto: `Nueva Orden de: ${shipping.fullName} - $${total.toLocaleString('es-CO')}`,
@@ -154,8 +154,9 @@ export const Checkout = () => {
                 import.meta.env.VITE_EMAILJS_PUBLIC_KEY
             );
             console.log("Email request successfully handled via EmailJS.");
-        } catch (emailError) {
+        } catch (emailError: any) {
             console.error("Warning: Error sending email via EmailJS, continuing with checkout...", emailError);
+            alert("Error al enviar el correo (EmailJS): " + (emailError.text || emailError.message || JSON.stringify(emailError)));
             // We do NOT block the checkout progress.
         }
 
