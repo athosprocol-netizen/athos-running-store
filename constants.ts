@@ -142,22 +142,7 @@ export const MOCK_PRODUCTS: Product[] = [
   }
 ];
 
-export const INITIAL_USER: UserProfile = {
-  id: "u123",
-  email: "alejandro@athos.co",
-  name: "Alejandro",
-  role: 'user',
-  location: "Cartago, Valle del Cauca",
-  address: "Cra 4 # 12-34", // Default address for profile, but checkout will ignore it
-  phone: "324 267 4234",
-  age: 28,
-  avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop",
-  coupons: [
-    { code: 'BIENVENIDO10', description: '10% en tu primera compra', discount: 10, expiry: '2024-12-31' },
-    { code: 'MMB2024', description: 'Envío gratis temporada maratón', discount: 100, expiry: '2024-08-01' }
-  ],
-  wishlist: ['p1', 'p2']
-};
+export const INITIAL_USER: UserProfile | null = null;
 
 export const BLOG_POSTS: BlogPost[] = [
   {
