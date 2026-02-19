@@ -52,7 +52,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       // Safety timeout to force loading false if Supabase hangs
       const safetyTimeout = setTimeout(() => {
         if (mounted) setIsLoading(false);
-      }, 5000);
+      }, 3000);
 
       try {
         // Check for active session
@@ -109,7 +109,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     try {
       // Create a timeout promise
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Tiempo de espera agotado")), 8000)
+        setTimeout(() => reject(new Error("Tiempo de espera agotado")), 5000)
       );
 
       // Race Supabase Login against timeout
@@ -259,53 +259,62 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       return;
     }
 
-    console.log("Intentando registro con:", email);
+    setIsLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          name: name,
-          avatar_url: `https://ui-avatars.com/api/?name=${name}&background=FF4D00&color=fff`
+    try {
+      console.log("Intentando registro con:", email);
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: name,
+            avatar_url: `https://ui-avatars.com/api/?name=${name}&background=FF4D00&color=fff`
+          }
+        }
+      });
+
+      console.log("Respuesta Supabase:", data, error);
+
+      if (error) {
+        console.error("Error en registro:", error);
+        showNotification(error.message);
+        alert("Error: " + error.message); // Force visibility
+      } else {
+        if (data.user && !data.session) {
+          console.log("Usuario creado pero sin sesión (¿Esperando confirmación de email?)");
+          alert("Cuenta creada. REVISA TU EMAIL para confirmar antes de iniciar sesión.");
+        }
+
+        // Backup: Manually create profile if session exists (Auto Confirm ON)
+        if (data.session?.user) {
+          console.log("Sesión activa, intentando crear perfil manual...");
+          const { error: profileError } = await supabase.from('profiles').upsert({
+            id: data.user!.id,
+            email: email,
+            name: name,
+            role: 'user',
+            avatar_url: `https://ui-avatars.com/api/?name=${name}&background=FF4D00&color=fff`
+          });
+          if (profileError) {
+            console.error("Error creando perfil manual:", profileError);
+            alert("Error guardando perfil: " + profileError.message);
+          } else {
+            console.log("Perfil creado manualmente con éxito.");
+          }
+        }
+
+        showNotification("Cuenta creada. ¡Bienvenido al Club!");
+        if (data.session) {
+          setViewWithHistory('home');
         }
       }
-    });
-
-    console.log("Respuesta Supabase:", data, error);
-
-    if (error) {
-      console.error("Error en registro:", error);
-      showNotification(error.message);
-      alert("Error: " + error.message); // Force visibility
-    } else {
-      if (data.user && !data.session) {
-        console.log("Usuario creado pero sin sesión (¿Esperando confirmación de email?)");
-        alert("Cuenta creada. REVISA TU EMAIL para confirmar antes de iniciar sesión.");
-      }
-
-      // Backup: Manually create profile if session exists (Auto Confirm ON)
-      if (data.session?.user) {
-        console.log("Sesión activa, intentando crear perfil manual...");
-        const { error: profileError } = await supabase.from('profiles').upsert({
-          id: data.user!.id,
-          email: email,
-          name: name,
-          role: 'user',
-          avatar_url: `https://ui-avatars.com/api/?name=${name}&background=FF4D00&color=fff`
-        });
-        if (profileError) {
-          console.error("Error creando perfil manual:", profileError);
-          alert("Error guardando perfil: " + profileError.message);
-        } else {
-          console.log("Perfil creado manualmente con éxito.");
-        }
-      }
-
-      showNotification("Cuenta creada. ¡Bienvenido al Club!");
-      if (data.session) {
-        setViewWithHistory('home');
-      }
+    } catch (e: any) {
+      console.error("Unexpected error in register:", e);
+      showNotification("Error inesperado en registro");
+    } finally {
+      setIsLoading(false);
     }
   };
 
