@@ -125,11 +125,16 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     try {
       console.log("Iniciando sesión con:", email);
 
-      // Direct Supabase Login - No Custom Timeout
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+      // 10s Timeout to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Tiempo de espera agotado. Verifica tu conexión.")), 10000)
+      );
+
+      // Race Supabase Login against timeout
+      const { data, error } = await Promise.race([
+        supabase.auth.signInWithPassword({ email, password }),
+        timeoutPromise
+      ]) as any;
 
       if (error) {
         console.error("Error Login:", error.message);
