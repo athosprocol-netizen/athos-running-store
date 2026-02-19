@@ -120,7 +120,7 @@ export const Checkout = () => {
                 <button onClick={() => step === 1 ? setView('cart') : prevStep()} className="p-2 -ml-2 text-athos-black hover:bg-gray-100 rounded-full">
                     <ArrowLeft size={24} />
                 </button>
-                <span className="font-black italic text-lg uppercase tracking-wide">Checkout</span>
+                <span className="font-black italic text-lg uppercase tracking-wide">Finalizar Compra</span>
                 <div className="relative">
                     <ShoppingBag size={24} className="text-athos-black" />
                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-athos-orange text-white text-[10px] font-bold rounded-full flex items-center justify-center">

@@ -106,7 +106,7 @@ export const Support = () => {
 
                     {/* CONTACT SECTION */}
                     <div className="bg-athos-black text-white p-10 rounded-[40px] relative overflow-hidden flex flex-col justify-center">
-                        <div className="absolute top-[-20%] right-[-20%] w-[300px] h-[300px] bg-athos-orange/20 rounded-full blur-[80px]"></div>
+                        <div className="absolute top-[-20%] right-[-20%] w-[300px] h-[300px] bg-athos-orange/20 rounded-full blur-[80px] pointer-events-none"></div>
 
                         <h2 className="text-3xl font-black italic uppercase mb-6 relative z-10">Contacto Directo</h2>
                         <p className="text-gray-400 mb-8 relative z-10 font-medium">
@@ -145,9 +145,14 @@ export const Support = () => {
                             </div>
                         </div>
 
-                        <button className="mt-10 w-full bg-white text-athos-black py-4 rounded-xl font-black uppercase tracking-widest hover:bg-athos-orange hover:text-white transition-all shadow-lg transform hover:-translate-y-1">
+                        <a
+                            href="https://wa.me/573242674234?text=Hola%20Athos%2C%20tengo%20una%20consulta%20de%20soporte."
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-10 w-full bg-white text-athos-black py-4 rounded-xl font-black uppercase tracking-widest hover:bg-athos-orange hover:text-white transition-all shadow-lg transform hover:-translate-y-1 block text-center relative z-10"
+                        >
                             Iniciar Chat
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>

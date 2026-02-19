@@ -193,7 +193,7 @@ export const Home = () => {
                                         />
                                         {product.id === 'p1' && (
                                             <span className="absolute bottom-3 left-3 bg-athos-orange text-white text-[10px] font-black uppercase px-2 py-1 rounded-md shadow-lg shadow-athos-orange/30">
-                                                Top
+                                                Destacado
                                             </span>
                                         )}
                                     </div>

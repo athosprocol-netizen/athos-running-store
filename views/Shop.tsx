@@ -189,7 +189,7 @@ export const Shop = () => {
                                         {isNew && (
                                             <div className="absolute top-4 left-4 z-10">
                                                 <span className="bg-athos-orange text-white text-[10px] font-black uppercase px-2 py-1.5 rounded-lg shadow-sm">
-                                                    New
+                                                    Nuevo
                                                 </span>
                                             </div>
                                         )}
