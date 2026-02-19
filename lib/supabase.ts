@@ -10,13 +10,50 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 console.log("Init Supabase with URL:", supabaseUrl);
 
+// Custom Storage Adapter that swallows errors and falls back to memory
+class ResilientStorage {
+    private memoryStore: Map<string, string>;
+
+    constructor() {
+        this.memoryStore = new Map();
+    }
+
+    getItem(key: string): string | null {
+        try {
+            const item = localStorage.getItem(key);
+            return item || this.memoryStore.get(key) || null;
+        } catch (e) {
+            console.warn(`ResilientStorage: Read error for ${key}, using memory.`, e);
+            return this.memoryStore.get(key) || null;
+        }
+    }
+
+    setItem(key: string, value: string): void {
+        try {
+            localStorage.setItem(key, value);
+        } catch (e) {
+            console.warn(`ResilientStorage: Write error for ${key}, using memory.`, e);
+        }
+        this.memoryStore.set(key, value);
+    }
+
+    removeItem(key: string): void {
+        try {
+            localStorage.removeItem(key);
+        } catch (e) {
+            console.warn(`ResilientStorage: Delete error for ${key}.`, e);
+        }
+        this.memoryStore.delete(key);
+    }
+}
+
 export const supabase = createClient(
     supabaseUrl || '',
     supabaseAnonKey || '',
     {
         auth: {
             persistSession: true,
-            storage: localStorage,
+            storage: new ResilientStorage(), // Use wrapper instead of direct localStorage
             autoRefreshToken: true,
             detectSessionInUrl: true
         }
