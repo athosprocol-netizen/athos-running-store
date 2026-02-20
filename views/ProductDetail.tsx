@@ -41,10 +41,14 @@ export const ProductDetail = () => {
 
     const handleAddToCart = () => {
         if (!activeSize && (product.category === 'shoes' || product.category === 'apparel')) {
+            alert('¡Espera! Por favor selecciona una talla antes de agregar el producto al carrito.');
             showNotification('Por favor selecciona una talla');
             return;
         }
-        const finalSize = `${activeSize} (${selectedGender})`;
+
+        // Ensure size text is passed cleanly
+        const finalSize = activeSize ? `${activeSize} (${selectedGender})` : 'Única';
+
         for (let i = 0; i < quantity; i++) {
             addToCart(product, finalSize);
         }

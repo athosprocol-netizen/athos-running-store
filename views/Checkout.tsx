@@ -58,6 +58,18 @@ export const Checkout = () => {
         return true;
     };
 
+    // Auto-fill from localStorage on mount
+    useEffect(() => {
+        const savedShipping = localStorage.getItem('athos_saved_shipping');
+        if (savedShipping) {
+            try {
+                setShipping(JSON.parse(savedShipping));
+            } catch (e) {
+                console.error("Failed to parse saved shipping info");
+            }
+        }
+    }, []);
+
     const validateStep2 = () => {
         if (!proofFile) {
             showNotification("Por favor sube tu comprobante de pago para continuar.");
@@ -67,7 +79,11 @@ export const Checkout = () => {
     };
 
     const nextStep = () => {
-        if (step === 1 && !validateStep1()) return;
+        if (step === 1) {
+            if (!validateStep1()) return;
+            // Save valid shipping info to auto-fill future checkouts
+            localStorage.setItem('athos_saved_shipping', JSON.stringify(shipping));
+        }
         if (step === 2 && !validateStep2()) return;
 
         setErrors({});
@@ -92,15 +108,24 @@ export const Checkout = () => {
                     .from('payment-proofs')
                     .upload(fileName, proofFile);
 
+                if (error) {
+                    console.error("Upload error", error);
+                    alert("Hubo un error al subir el comprobante. Por favor intenta de nuevo.");
+                    setIsProcessing(false);
+                    return; // Detener flujo si falla la imagen
+                }
+
                 if (data) {
                     const { data: publicUrlData } = supabase.storage
                         .from('payment-proofs')
-                        .getPublicUrl(fileName);
-                    proofUrl = publicUrlData.publicUrl;
+                        .getPublicUrl(data.path || fileName);
+                    proofUrl = publicUrlData?.publicUrl || '';
                 }
             } catch (e) {
-                console.error("Upload failed", e);
-                // Continue anyway for now or show error
+                console.error("Upload failed exception", e);
+                alert("Hubo una interrupción al subir el comprobante.");
+                setIsProcessing(false);
+                return;
             }
         }
 
