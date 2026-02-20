@@ -60,7 +60,12 @@ export const Shop = () => {
 
     const handleQuickAdd = (e: React.MouseEvent, product: any) => {
         e.stopPropagation();
-        addToCart(product);
+        if (product.category === 'shoes' || product.category === 'apparel') {
+            showNotification('Por favor, selecciona una talla primero.');
+            selectProduct(product.id);
+        } else {
+            addToCart(product);
+        }
     };
 
     const handleShareClick = async (e: React.MouseEvent, product: any) => {
