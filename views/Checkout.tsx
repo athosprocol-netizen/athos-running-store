@@ -99,20 +99,28 @@ export const Checkout = () => {
     const handleConfirmOrder = async () => {
         setIsProcessing(true);
 
-        // Upload Proof if exists
-        let proofUrl = null;
-        if (proofFile) {
-            try {
+        try {
+            // 1. Upload Proof if exists
+            let proofUrl = null;
+            if (proofFile) {
                 const fileName = `${Date.now()}-${user?.id || 'guest'}-proof.jpg`;
-                const { data, error } = await supabase.storage
+
+                // Add an 8-second timeout for the upload
+                const uploadPromise = supabase.storage
                     .from('payment-proofs')
                     .upload(fileName, proofFile);
 
+                const timeoutUpload = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error("Timeout: Supabase no respondió al subir imagen. (Servidor lento o sin permisos)")), 8000)
+                );
+
+                // @ts-ignore
+                const { data, error } = await Promise.race([uploadPromise, timeoutUpload]);
+
                 if (error) {
                     console.error("Upload error", error);
-                    alert("Hubo un error al subir el comprobante. Por favor intenta de nuevo.");
-                    setIsProcessing(false);
-                    return; // Detener flujo si falla la imagen
+                    alert("Hubo un error al subir la imagen. Por favor, intenta de nuevo.");
+                    return; // Detener flujo, se dispara finally
                 }
 
                 if (data) {
@@ -121,59 +129,63 @@ export const Checkout = () => {
                         .getPublicUrl(data.path || fileName);
                     proofUrl = publicUrlData?.publicUrl || '';
                 }
-            } catch (e) {
-                console.error("Upload failed exception", e);
-                alert("Hubo una interrupción al subir el comprobante.");
-                setIsProcessing(false);
-                return;
             }
+
+            // 2. Format Order Details for Email
+            const orderItemsHtml = cart.map(item =>
+                `<tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; color: #444;">${item.quantity}x ${item.product.name} (${item.size || 'N/A'})</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right; color: #444;">$${(item.product.price * item.quantity).toLocaleString('es-CO')}</td>
+                </tr>`
+            ).join('');
+
+            // 3. Send Email Via EmailJS
+            try {
+                const emailPromise = emailjs.send(
+                    'service_w0gw0zj', // Updated Service ID
+                    import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_uo3yssb',
+                    {
+                        customer_name: shipping.fullName,
+                        customer_phone: shipping.phone,
+                        customer_email: user?.email || 'Invitado',
+                        shipping_address: `${shipping.address}, ${shipping.city}, ${shipping.province}`,
+                        order_items_html: `<table style="width: 100%; border-collapse: collapse;">${orderItemsHtml}</table>`,
+                        subtotal: `$${subtotal.toLocaleString('es-CO')}`,
+                        shipping_cost: `$${shippingFee.toLocaleString('es-CO')}`,
+                        total: `$${total.toLocaleString('es-CO')}`,
+                        payment_method: paymentMethod.toUpperCase(),
+                        proof_url: proofUrl || '#'
+                    },
+                    import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Ze2no8CSyEuXkoj2H' // Fallback to avoid empty env bugs
+                );
+
+                // 8-second timeout for EmailJS
+                let timeoutId: NodeJS.Timeout;
+                const timeoutPromise = new Promise((_, reject) => {
+                    timeoutId = setTimeout(() => reject(new Error("Timeout: EmailJS no respondió a tiempo.")), 8000);
+                });
+
+                await Promise.race([emailPromise, timeoutPromise]);
+                clearTimeout(timeoutId!); // Clear timeout if email resolves
+                console.log("Email request successfully handled via EmailJS.");
+            } catch (emailError: any) {
+                console.error("Warning: Error sending email", emailError);
+                // We do NOT block the checkout progress if email fails. Order is still valid.
+                alert("La orden se procesó, pero hubo demora en el envío del correo de recibo. ¡No te preocupes, ya la guardamos!");
+            }
+
+            // 4. Clear cart and finalize
+            confirmOrder();
+            setStep(4);
+            window.scrollTo(0, 0);
+
+        } catch (e: any) {
+            console.error("Global checkout error", e);
+            alert("Ocurrió un error inesperado procesando tu orden: " + (e.message || "Error desconocido"));
+        } finally {
+            // Este bloque garantiza que el botón SIEMPRE vuelva a habilitarse
+            setIsProcessing(false);
         }
-
-        // Format Order Details for Email
-        const orderItemsHtml = cart.map(item =>
-            `<tr>
-                <td style="padding: 10px; border-bottom: 1px solid #eee; color: #444;">${item.quantity}x ${item.product.name} (${item.size || 'N/A'})</td>
-                <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right; color: #444;">$${(item.product.price * item.quantity).toLocaleString('es-CO')}</td>
-            </tr>`
-        ).join('');
-
-        try {
-            const emailPromise = emailjs.send(
-                'service_w0gw0zj', // Updated Service ID
-                import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-                {
-                    customer_name: shipping.fullName,
-                    customer_phone: shipping.phone,
-                    customer_email: user?.email || 'Invitado',
-                    shipping_address: `${shipping.address}, ${shipping.city}, ${shipping.province}`,
-                    order_items_html: `<table style="width: 100%; border-collapse: collapse;">${orderItemsHtml}</table>`,
-                    subtotal: `$${subtotal.toLocaleString('es-CO')}`,
-                    shipping_cost: `$${shippingFee.toLocaleString('es-CO')}`,
-                    total: `$${total.toLocaleString('es-CO')}`,
-                    payment_method: paymentMethod.toUpperCase(),
-                    proof_url: proofUrl || '#'
-                },
-                import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-            );
-
-            // 8-second timeout to prevent indefinite hanging
-            const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error("Timeout: EmailJS no respondió a tiempo.")), 8000);
-            });
-
-            await Promise.race([emailPromise, timeoutPromise]);
-            console.log("Email request successfully handled via EmailJS.");
-        } catch (emailError: any) {
-            console.error("Warning: Error sending email via EmailJS, continuing with checkout...", emailError);
-            alert("Error al enviar el correo (EmailJS): " + (emailError.text || emailError.message || JSON.stringify(emailError)));
-            // We do NOT block the checkout progress.
-        }
-
-        // Clear cart and finalize
-        confirmOrder();
-        setIsProcessing(false);
-        setStep(4);
-        window.scrollTo(0, 0);
     };
 
     // ---- STEP 4: SUCCESS SCREEN ----
