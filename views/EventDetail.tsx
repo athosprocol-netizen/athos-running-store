@@ -144,8 +144,8 @@ export const EventDetail = () => {
                     <div className="sticky top-[100px] bg-white rounded-[32px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-gray-100 p-8">
                         <div className="flex justify-between items-start mb-6">
                             <div>
-                                <span className="text-gray-400 text-xs font-bold uppercase tracking-widest block mb-1">Precio Oficial</span>
-                                <h3 className="text-4xl font-black text-athos-black italic tracking-tighter">${event.price.toLocaleString('es-CO')} <span className="text-lg font-bold text-gray-400">COP</span></h3>
+                                <span className="text-gray-400 text-xs font-bold uppercase tracking-widest block mb-1">Estado de la Carrera</span>
+                                <h3 className="text-2xl font-black text-athos-black italic tracking-tighter uppercase">{!isPast ? 'Inscripciones Abiertas' : 'Finalizada'}</h3>
                             </div>
                             <button className="text-gray-400 hover:text-athos-orange transition-colors" title="Compartir Evento">
                                 <Share2 size={24} />

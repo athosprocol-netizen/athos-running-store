@@ -38,11 +38,12 @@ export const EventRegistration = () => {
                 id: `reg-${Date.now()}`,
                 userId: user?.id || 'guest',
                 eventId: event.id,
-                registeredAt: new Date().toISOString(),
-                status: 'paid',
+                date: new Date().toISOString(),
+                status: 'pending',
                 distance: formData.distance,
-                tshirtSize: formData.tshirtSize,
-                paymentStatus: 'paid'
+                shirtSize: formData.tshirtSize,
+                emergencyContactName: formData.emergencyContactName,
+                emergencyContactPhone: formData.emergencyContactPhone
             };
 
             registerForEvent(newRegistration);
@@ -73,8 +74,8 @@ export const EventRegistration = () => {
                             <span className="text-sm font-black text-athos-black">{formData.tshirtSize}</span>
                         </div>
                         <div className="border-t border-gray-200 pt-3 mt-3 flex justify-between">
-                            <span className="text-sm font-bold text-gray-500">Total Pagado</span>
-                            <span className="text-sm font-black text-athos-orange">${event.price.toLocaleString('es-CO')} COP</span>
+                            <span className="text-sm font-bold text-gray-500">Contacto</span>
+                            <span className="text-sm font-black text-athos-orange">Enviado al Organizador</span>
                         </div>
                     </div>
                     <button
@@ -234,23 +235,12 @@ export const EventRegistration = () => {
 
                         <div className="space-y-3 mb-6 font-medium">
                             <div className="flex justify-between text-gray-400">
-                                <span>Inscripción General</span>
-                                <span className="text-white">${event.price.toLocaleString('es-CO')}</span>
+                                <span>Inscripción en Plataforma</span>
+                                <span className="text-green-400">Gratuita</span>
                             </div>
                             <div className="flex justify-between text-gray-400">
                                 <span>Kit Oficial</span>
-                                <span className="text-green-400">Incluido</span>
-                            </div>
-                            <div className="flex justify-between text-gray-400">
-                                <span>Impuestos</span>
-                                <span className="text-white">$0</span>
-                            </div>
-                        </div>
-
-                        <div className="border-t border-gray-800 pt-6 mb-8">
-                            <div className="flex justify-between items-end">
-                                <span className="text-gray-400 font-bold uppercase tracking-widest text-xs">Total a Pagar</span>
-                                <span className="text-4xl font-black italic text-athos-orange">${event.price.toLocaleString('es-CO')}</span>
+                                <span className="text-green-400">Sujeto a Organizador</span>
                             </div>
                         </div>
 
@@ -258,20 +248,19 @@ export const EventRegistration = () => {
                             form="registration-form"
                             type="submit"
                             disabled={isSubmitting}
-                            className={`w - full bg - athos - orange text - white font - black uppercase tracking - widest py - 5 rounded - 2xl flex justify - center items - center gap - 2 transition - all glow - effect ${isSubmitting ? 'opacity-70 cursor-wait' : 'hover:bg-white hover:text-athos-black hover:scale-[1.02]'} `}
+                            className={`w-full bg-athos-orange text-white font-black uppercase tracking-widest py-5 rounded-2xl flex justify-center items-center gap-2 transition-all glow-effect ${isSubmitting ? 'opacity-70 cursor-wait' : 'hover:bg-white hover:text-athos-black hover:scale-[1.02]'}`}
                         >
                             {isSubmitting ? 'Procesando...' : (
-                                <>Pagar Inscripción <ChevronRight size={20} /></>
+                                <>Registrar Participación <ChevronRight size={20} /></>
                             )}
                         </button>
 
                         <div className="mt-6 flex flex-col items-center gap-2 text-gray-500">
                             <div className="flex gap-2">
-                                <CreditCard size={16} />
                                 <Shield size={16} />
                             </div>
                             <span className="text-[10px] uppercase font-bold tracking-widest text-center">
-                                Pagos encriptados de extremo a extremo
+                                Tus datos están asegurados con ATHOS
                             </span>
                         </div>
                     </div>
