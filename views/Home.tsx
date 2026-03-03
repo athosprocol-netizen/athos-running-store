@@ -106,7 +106,7 @@ export const Home = () => {
                         {events.filter(e => e.status === 'upcoming').slice(0, 3).map((event, index) => (
                             <div
                                 key={event.id}
-                                className="shrink-0 w-[90%] md:w-[850px] relative select-none"
+                                className="shrink-0 w-[82vw] md:w-[850px] relative select-none"
                                 onClick={() => handleItemClick(() => selectEvent(event.id))}
                             >
                                 <div className={`${index % 2 === 0 ? 'bg-athos-black' : 'bg-gray-100'} rounded-[24px] md:rounded-[40px] p-5 md:p-14 h-[150px] md:h-[450px] relative overflow-hidden flex items-center shadow-xl shadow-athos-black/20 group transition-transform active:scale-[0.99] border hover:shadow-[0_0_20px_rgba(255,77,0,0.1)] hover:border-athos-orange/30 ${index % 2 !== 0 ? 'border-gray-200' : 'border-transparent'}`}>
