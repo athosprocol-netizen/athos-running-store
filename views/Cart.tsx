@@ -4,21 +4,18 @@ import { Minus, Plus, Trash2, Check, ArrowRight, ArrowLeft } from 'lucide-react'
 import { MOCK_PRODUCTS } from '../constants';
 
 export const Cart = () => {
-    const { cart, checkout, setView, selectProduct } = useApp();
+    const { cart, checkout, setView, selectProduct, removeFromCart, updateCartItemQuantity, clearCart, recentlyViewed } = useApp();
 
     const total = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
-    // Mock recently viewed
-    const recentlyViewed = MOCK_PRODUCTS.slice(0, 3);
-
     return (
-        <div className="pt-32 md:pt-40 min-h-screen bg-athos-bg pb-32 animate-fade-in">
+        <div className="pt-6 md:pt-10 min-h-screen bg-athos-bg pb-32 animate-fade-in">
 
             {/* HEADER */}
             <div className="px-6 max-w-2xl mx-auto flex items-center justify-between mb-8">
                 <button onClick={() => setView('shop')} className="p-2 -ml-2 hover:bg-white rounded-full transition-colors"><ArrowLeft size={24} /></button>
                 <h1 className="text-xl font-black italic text-athos-black uppercase">Tu Bolsa</h1>
-                <button className="p-2 bg-white rounded-full shadow-sm"><Trash2 size={18} className="text-red-500" /></button>
+                <button onClick={clearCart} className="p-2 bg-white rounded-full shadow-sm" title="Vaciar Carrito"><Trash2 size={18} className="text-red-500" /></button>
             </div>
 
             <div className="px-6 max-w-2xl mx-auto">
@@ -44,17 +41,26 @@ export const Cart = () => {
                                 </div>
 
                                 {/* Info */}
-                                <div className="flex-grow">
+                                <div className="flex-grow pr-8">
                                     <h3 className="font-bold text-sm text-athos-black uppercase line-clamp-1">{item.product.name}</h3>
                                     <p className="text-xs text-gray-400 font-medium mb-2">{item.product.category} {item.size ? `• ${item.size}` : ''}</p>
                                     <span className="font-black text-athos-black">${item.product.price.toLocaleString('es-CO')}</span>
                                 </div>
 
+                                {/* Delete Button */}
+                                <button
+                                    onClick={() => removeFromCart(item.cartId)}
+                                    className="absolute top-2 right-2 p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors md:opacity-0 md:group-hover:opacity-100 z-10"
+                                    title="Quitar producto"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+
                                 {/* Quantity */}
-                                <div className="flex flex-col items-center gap-1 bg-gray-50 p-1 rounded-lg">
-                                    <button className="w-6 h-6 flex items-center justify-center bg-white rounded-md shadow-sm text-gray-600 hover:text-black"><Minus size={12} /></button>
+                                <div className="flex flex-col items-center gap-1 bg-gray-50 p-1 rounded-lg z-10 relative">
+                                    <button onClick={() => updateCartItemQuantity(item.cartId, item.quantity - 1)} className="w-6 h-6 flex items-center justify-center bg-white rounded-md shadow-sm text-gray-600 hover:text-black"><Minus size={12} /></button>
                                     <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
-                                    <button className="w-6 h-6 flex items-center justify-center bg-white rounded-md shadow-sm text-gray-600 hover:text-black"><Plus size={12} /></button>
+                                    <button onClick={() => updateCartItemQuantity(item.cartId, item.quantity + 1)} className="w-6 h-6 flex items-center justify-center bg-white rounded-md shadow-sm text-gray-600 hover:text-black"><Plus size={12} /></button>
                                 </div>
                             </div>
                         ))}
@@ -69,13 +75,15 @@ export const Cart = () => {
                             <div
                                 key={p.id}
                                 onClick={() => selectProduct(p.id)}
-                                className="min-w-[140px] bg-white p-3 rounded-[20px] shadow-sm cursor-pointer"
+                                className="w-40 flex-shrink-0 flex flex-col bg-white p-3 rounded-[20px] shadow-sm cursor-pointer"
                             >
-                                <div className="aspect-square bg-gray-50 rounded-xl mb-3 flex items-center justify-center">
-                                    <img src={p.image} className="w-full h-full object-contain mix-blend-multiply p-2" />
+                                <div className="w-full aspect-square bg-gray-50 rounded-xl mb-3 flex items-center justify-center overflow-hidden relative">
+                                    <img src={p.image} className="absolute inset-0 w-full h-full object-contain mix-blend-multiply p-3 transition-transform duration-500 hover:scale-110" />
                                 </div>
-                                <h4 className="font-bold text-xs text-athos-black uppercase truncate mb-1">{p.name}</h4>
-                                <span className="text-xs font-black text-athos-orange">${(p.price / 1000).toFixed(0)}k</span>
+                                <div className="mt-auto overflow-hidden">
+                                    <h4 className="font-bold text-xs text-athos-black uppercase truncate mb-1">{p.name}</h4>
+                                    <span className="text-xs font-black text-athos-orange">${(p.price / 1000).toFixed(0)}k</span>
+                                </div>
                             </div>
                         ))}
                     </div>

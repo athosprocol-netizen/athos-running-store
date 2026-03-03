@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import { LogIn, UserPlus, ArrowRight, Mail, Lock, User } from 'lucide-react';
 
 export const Auth = () => {
-    const { login, register, showNotification, isLoading } = useApp();
+    const { setView, login, register, showNotification, isLoading } = useApp();
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -25,7 +25,7 @@ export const Auth = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white pt-24 pb-12 px-4 flex items-center justify-center">
+        <div className="min-h-screen bg-transparent pt-24 md:pt-32 pb-12 px-4 flex items-start justify-center">
             {/* ... context ... */}
             {/* Skipping to button part for brevity in replacement if possible, but replace_file_content requires exact context matching. 
                 I will target the specific chunks.
@@ -96,6 +96,15 @@ export const Auth = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
+                            {isLogin && (
+                                <button
+                                    type="button"
+                                    onClick={() => setView('forgot-password')}
+                                    className="text-[10px] font-bold text-athos-orange hover:text-athos-orange/80 block ml-auto mt-2 transition-colors uppercase"
+                                >
+                                    ¿Olvidaste tu contraseña?
+                                </button>
+                            )}
                         </div>
 
                         <button

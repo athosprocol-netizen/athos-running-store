@@ -46,9 +46,9 @@ export const Support = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-athos-bg text-athos-black font-sans">
+        <div className="min-h-screen bg-transparent text-athos-black font-sans relative z-10">
             {/* HER0 SECTION */}
-            <div className="bg-athos-black text-white pt-48 pb-20 px-6 relative overflow-visible rounded-b-[40px]">
+            <div className="bg-athos-black text-white pt-16 md:pt-24 pb-20 px-6 relative overflow-visible rounded-b-[40px] shadow-xl">
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-athos-orange/10 rounded-full blur-[100px] pointer-events-none"></div>
 
                 <div className="max-w-4xl mx-auto text-center relative z-10">

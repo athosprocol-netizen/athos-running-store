@@ -3,7 +3,7 @@ import { Home, ShoppingBag, User, ShoppingCart, Search, X, LogIn, Flame, Menu, C
 import { useApp } from '../context';
 
 export const Navbar = () => {
-    const { view, setView, cart, user, logout, searchQuery, setSearchQuery } = useApp();
+    const { view, setView, cart, user, logout, searchQuery, setSearchQuery, products, selectProduct } = useApp();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -17,7 +17,7 @@ export const Navbar = () => {
     }, []);
 
     const navItems = [
-        { id: 'home', icon: Home, label: 'Inicio' },
+        { id: 'home', icon: Home, label: 'Eventos' },
         { id: 'shop', icon: ShoppingBag, label: 'Tienda' },
         { id: 'size-guide', icon: Ruler, label: 'Guía de Tallas' },
         { id: 'support', icon: HelpCircle, label: 'FAQ' },
@@ -25,14 +25,10 @@ export const Navbar = () => {
 
     const isHomeView = view === 'home';
 
-    // FIX: Always use dark text for visibility on white/light backgrounds
-    // EXCEPT for Support page which has a dark hero section (unless scrolled)
-    const isSupportView = view === 'support';
-    const useWhiteText = isSupportView && !isScrolled;
-
-    const textColorClass = useWhiteText ? 'text-white' : 'text-athos-black';
-    const logoColorClass = useWhiteText ? 'brightness-0 invert' : ''; // White logo
-    const iconColorClass = useWhiteText ? 'text-white' : 'text-athos-black';
+    // The navbar text should ALWAYS be dark so it is visible against the white background.
+    const textColorClass = 'text-athos-black';
+    const logoColorClass = '';
+    const iconColorClass = 'text-athos-black';
 
     const handleNavClick = (viewId: any) => {
         setView(viewId);
@@ -43,10 +39,28 @@ export const Navbar = () => {
         if (e.key === 'Enter') {
             setView('shop');
             setIsSearchOpen(false);
+            setIsMobileMenuOpen(false); // Make sure mobile menu closes too if it was open
+        }
+    };
+
+    // Also add a direct function for the button click
+    const executeSearch = () => {
+        if (searchQuery.trim()) {
+            setView('shop');
+            setIsSearchOpen(false);
+            setIsMobileMenuOpen(false);
         }
     };
 
     // Scroll Lock Effect
+    const safeQuery = searchQuery || '';
+    const searchResults = safeQuery.trim().length > 0
+        ? (products || []).filter(p =>
+            (p?.name || '').toLowerCase().includes(safeQuery.toLowerCase()) ||
+            (p?.category || '').toLowerCase().includes(safeQuery.toLowerCase())
+        ).slice(0, 4)
+        : [];
+
     useEffect(() => {
         if (isMobileMenuOpen) {
             document.body.style.overflow = 'hidden';
@@ -67,13 +81,13 @@ export const Navbar = () => {
             <nav
                 className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 hidden md:block ${isScrolled
                     ? 'bg-white/90 backdrop-blur-xl border-b border-athos-border py-4 shadow-sm'
-                    : 'bg-transparent py-8'
+                    : 'bg-white/80 backdrop-blur-md py-4'
                     }`}
             >
                 <div className="max-w-[1400px] mx-auto px-10 flex items-center justify-between">
-                    {/* Logo */}
+                    {/* Logo (ENLARGED VIA CSS SCALE) */}
                     <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setView('home')}>
-                        <img src="/logo.png" alt="ATHOS" className="h-32 w-auto object-contain transition-transform duration-300 transform group-hover:scale-105" />
+                        <img src="/logo.png" alt="ATHOS" className="h-[60px] w-auto object-contain transition-transform duration-300 transform scale-125 md:scale-[1.4] origin-left group-hover:scale-[1.45]" />
                     </div>
 
                     {/* Central Nav */}
@@ -148,12 +162,12 @@ export const Navbar = () => {
                     <Menu size={28} strokeWidth={2.5} />
                 </button>
 
-                {/* Center: Logo */}
+                {/* Center: Logo (ENLARGED VIA CSS SCALE ON MOBILE TOO) */}
                 <div
                     onClick={() => setView('home')}
                     className="absolute left-1/2 top-2 transform -translate-x-1/2 flex items-center justify-center filter drop-shadow-md"
                 >
-                    <img src="/logo.png" alt="ATHOS" className="h-[60px] w-auto object-contain" />
+                    <img src="/logo.png" alt="ATHOS" className="h-[60px] w-auto object-contain transform scale-[1.35] origin-center" />
                 </div>
 
                 {/* Right: Actions */}
@@ -322,9 +336,48 @@ export const Navbar = () => {
                             </div>
                             {searchQuery && (
                                 <div className="text-center">
-                                    <p className="text-gray-400 font-bold text-sm mb-4">Presiona ENTER para ver resultados</p>
-                                    <button onClick={() => { setView('shop'); setIsSearchOpen(false); }} className="bg-athos-black text-white px-8 py-3 rounded-full font-black uppercase text-xs tracking-widest hover:bg-athos-orange transition-colors">
-                                        Ver Resultados
+                                    {searchResults.length > 0 ? (
+                                        <div className="mb-8 bg-white border border-gray-100 rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.05)] overflow-hidden animate-fade-in text-left">
+                                            <div className="p-4 bg-gray-50 border-b border-gray-100 uppercase text-xs font-black tracking-widest text-gray-500">
+                                                Mejores Coincidencias ({searchResults.length})
+                                            </div>
+                                            <ul className="divide-y divide-gray-100">
+                                                {searchResults.map(p => (
+                                                    <li
+                                                        key={p.id}
+                                                        onClick={() => {
+                                                            selectProduct(p.id);
+                                                            setIsSearchOpen(false);
+                                                            setIsMobileMenuOpen(false);
+                                                        }}
+                                                        className="flex items-center gap-6 p-4 hover:bg-gray-50 cursor-pointer transition-colors group"
+                                                    >
+                                                        <div className="w-16 h-16 bg-gray-100 rounded-2xl flex-shrink-0 flex items-center justify-center p-2 group-hover:scale-110 transition-transform overflow-hidden">
+                                                            <img src={p.image} alt={p.name} className="w-full h-full object-contain mix-blend-multiply" />
+                                                        </div>
+                                                        <div className="flex-grow">
+                                                            <p className="text-xs uppercase font-bold text-gray-400 mb-1">{p.category}</p>
+                                                            <h4 className="text-base font-black italic uppercase text-athos-black">{p.name}</h4>
+                                                        </div>
+                                                        <div className="text-right flex-shrink-0 hidden md:block">
+                                                            <span className="text-lg font-black text-athos-orange">${p.price.toLocaleString('es-CO')}</span>
+                                                        </div>
+                                                        <div className="text-gray-300 group-hover:text-athos-orange transition-colors">
+                                                            <ChevronRight size={24} />
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ) : (
+                                        <div className="p-12 text-center text-gray-400 font-bold uppercase tracking-widest bg-gray-50 rounded-3xl mb-8">
+                                            No se encontraron elementos
+                                        </div>
+                                    )}
+
+                                    <p className="text-gray-400 font-bold text-sm mb-4">Presiona ENTER para ver todos los resultados</p>
+                                    <button onClick={executeSearch} className="bg-athos-black text-white px-8 py-3 rounded-full font-black uppercase text-xs tracking-widest hover:bg-athos-orange transition-colors shadow-[0_0_20px_rgba(255,77,0,0.3)]">
+                                        Ver Todo ({searchQuery})
                                     </button>
                                 </div>
                             )}

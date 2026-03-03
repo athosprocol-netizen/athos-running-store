@@ -36,7 +36,7 @@ export const MOCK_PRODUCTS: Product[] = [
       stability: 'Neutral'
     },
     tags: ['Día de Carrera', 'Placa Carbono', 'Más Vendido'],
-    stock: 12
+    stock: 1
   },
   {
     id: 'p2',
@@ -60,7 +60,7 @@ export const MOCK_PRODUCTS: Product[] = [
       stability: 'Stable'
     },
     tags: ['Ultra Distancia', 'Gore-Tex'],
-    stock: 8
+    stock: 1
   },
   {
     id: 'p3',
@@ -73,7 +73,7 @@ export const MOCK_PRODUCTS: Product[] = [
     reviewsCount: 45,
     description: 'Tejido ultraligero con costuras selladas para eliminar rozaduras durante tus esfuerzos más rápidos.',
     tags: ['Ligero', 'Secado Rápido'],
-    stock: 25
+    stock: 1
   },
   {
     id: 'p6',
@@ -86,7 +86,7 @@ export const MOCK_PRODUCTS: Product[] = [
     reviewsCount: 15,
     description: 'Reloj de running con pantalla AMOLED y métricas avanzadas de entrenamiento.',
     tags: ['GPS', 'Tech'],
-    stock: 5
+    stock: 1
   },
   {
     id: 'p7',
@@ -99,7 +99,7 @@ export const MOCK_PRODUCTS: Product[] = [
     reviewsCount: 22,
     description: 'Lleva tus geles y llaves sin rebote.',
     tags: ['Accesorios'],
-    stock: 30
+    stock: 1
   },
   {
     id: 'p8',
@@ -112,7 +112,7 @@ export const MOCK_PRODUCTS: Product[] = [
     reviewsCount: 40,
     description: 'Lentes fotocromáticos para cualquier condición de luz.',
     tags: ['Sol', 'Protección'],
-    stock: 15
+    stock: 1
   },
   {
     id: 'p9',
@@ -125,7 +125,7 @@ export const MOCK_PRODUCTS: Product[] = [
     reviewsCount: 55,
     description: 'Mantén tu cabeza fresca en los días más calurosos.',
     tags: ['Ropa', 'Cabeza'],
-    stock: 50
+    stock: 1
   },
   {
     id: 'p10',
@@ -138,7 +138,7 @@ export const MOCK_PRODUCTS: Product[] = [
     reviewsCount: 10,
     description: 'Diseño minimalista para colgar tus medallas favoritas.',
     tags: ['Hogar', 'Decoración'],
-    stock: 20
+    stock: 1
   }
 ];
 

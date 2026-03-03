@@ -1,8 +1,8 @@
 
 import React, { useState, useRef } from 'react';
 import { useApp } from '../context';
-import { ArrowLeft, Star, Heart, Minus, Plus, Share2, RefreshCw, Camera, Upload, X, User, StarHalf, Smartphone, Facebook, Twitter, Link as LinkIcon, Instagram, Send, MessageCircle, Music2, Gamepad2, Truck, ShieldCheck } from 'lucide-react';
-import { CustomizationOptions, Review } from '../types';
+import { ArrowLeft, ChevronLeft, ChevronRight, Star, Heart, Minus, Plus, Share2, RefreshCw, Camera, Upload, X, User, StarHalf, Smartphone, Facebook, Twitter, Link as LinkIcon, Instagram, Send, MessageCircle, Music2, Gamepad2, Truck, ShieldCheck } from 'lucide-react';
+import { CustomizationOptions, Review, ProductVariant } from '../types';
 import { Breadcrumbs, StockIndicator } from '../components/Shared';
 
 export const ProductDetail = () => {
@@ -12,8 +12,10 @@ export const ProductDetail = () => {
 
     const [quantity, setQuantity] = useState(1);
     const [activeSize, setActiveSize] = useState<string | null>(null);
-    const [selectedColor, setSelectedColor] = useState<string>('c1');
+    const [activeVariant, setActiveVariant] = useState<ProductVariant | null>(null);
+    const [activeGalleryImage, setActiveGalleryImage] = useState<string | null>(null);
     const [selectedGender, setSelectedGender] = useState<'Hombre' | 'Mujer' | 'Niños'>('Hombre');
+    const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
     const [showReviewForm, setShowReviewForm] = useState(false);
     const [newReviewRating, setNewReviewRating] = useState(0);
@@ -21,6 +23,7 @@ export const ProductDetail = () => {
     const [newReviewImage, setNewReviewImage] = useState<string | null>(null);
     const [hoverRating, setHoverRating] = useState(0);
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+    const [isFullScreenImage, setIsFullScreenImage] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const SIZES_CO = {
@@ -28,12 +31,6 @@ export const ProductDetail = () => {
         'Mujer': ['35', '36', '37', '38', '39', '40'],
         'Niños': ['28', '29', '30', '31', '32', '33', '34']
     };
-
-    const MOCK_COLORS = [
-        { id: 'c1', bg: 'bg-gray-800', name: 'Black' },
-        { id: 'c2', bg: 'bg-gray-400', name: 'Grey' },
-        { id: 'c3', bg: 'bg-orange-500', name: 'Orange' },
-    ];
 
     if (!product) return <div>Producto no encontrado</div>;
 
@@ -49,8 +46,12 @@ export const ProductDetail = () => {
         // Ensure size text is passed cleanly
         const finalSize = activeSize ? `${activeSize} (${selectedGender})` : 'Única';
 
+        const productToCart = activeVariant
+            ? { ...product, price: activeVariant.price, image: activeVariant.image }
+            : product;
+
         for (let i = 0; i < quantity; i++) {
-            addToCart(product, finalSize);
+            addToCart(productToCart, finalSize);
         }
     };
 
@@ -80,26 +81,48 @@ export const ProductDetail = () => {
 
     // --- REVIEW LOGIC ---
     const handleStarClick = (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
-        const { left, width } = e.currentTarget.getBoundingClientRect();
-        const clickX = e.clientX - left;
-        const isHalf = clickX < width / 2;
-        const ratingValue = isHalf ? index + 0.5 : index + 1;
-        setNewReviewRating(ratingValue);
+        setNewReviewRating(index + 1);
     };
 
     const handleStarHover = (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
-        const { left, width } = e.currentTarget.getBoundingClientRect();
-        const hoverX = e.clientX - left;
-        const isHalf = hoverX < width / 2;
-        setHoverRating(isHalf ? index + 0.5 : index + 1);
+        setHoverRating(index + 1);
     };
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setNewReviewImage(reader.result as string);
+            reader.onloadend = (event) => {
+                const img = new window.Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1000;
+                    const MAX_HEIGHT = 1000;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx?.drawImage(img, 0, 0, width, height);
+
+                    // Uploads as JPEG at 80% quality
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    setNewReviewImage(compressedDataUrl);
+                };
+                img.src = event.target?.result as string;
             };
             reader.readAsDataURL(file);
         }
@@ -159,10 +182,75 @@ export const ProductDetail = () => {
         );
     };
 
-    return (
-        <div className="bg-white min-h-screen relative animate-fade-in">
+    const allProductImages = [
+        activeVariant ? activeVariant.image : product.image,
+        ...((activeVariant ? activeVariant.images : product.images) || [])
+    ];
 
-            <div className="pt-28 md:pt-44 px-6 max-w-[1400px] mx-auto">
+    const fullScreenImageIndex = isFullScreenImage ? allProductImages.indexOf(isFullScreenImage) : -1;
+
+    const handleNextImage = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (fullScreenImageIndex !== -1) {
+            const nextIndex = (fullScreenImageIndex + 1) % allProductImages.length;
+            setIsFullScreenImage(allProductImages[nextIndex]);
+            setActiveGalleryImage(allProductImages[nextIndex]);
+        }
+    };
+
+    const handlePrevImage = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (fullScreenImageIndex !== -1) {
+            const prevIndex = (fullScreenImageIndex - 1 + allProductImages.length) % allProductImages.length;
+            setIsFullScreenImage(allProductImages[prevIndex]);
+            setActiveGalleryImage(allProductImages[prevIndex]);
+        }
+    };
+
+    return (
+        <div className="bg-transparent min-h-screen relative animate-fade-in">
+
+            {/* FULLSCREEN IMAGE MODAL */}
+            {isFullScreenImage && (
+                <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-10 animate-fade-in" onClick={() => setIsFullScreenImage(null)}>
+                    <button
+                        className="absolute top-6 right-6 text-white bg-white/10 p-3 rounded-full hover:bg-white/20 transition-colors z-[110]"
+                        onClick={() => setIsFullScreenImage(null)}
+                    >
+                        <X size={24} />
+                    </button>
+
+                    {/* Navigation Arrows */}
+                    {fullScreenImageIndex !== -1 && allProductImages.length > 1 && (
+                        <>
+                            <button
+                                className="absolute left-4 md:left-10 top-1/2 -translate-y-1/2 text-white bg-white/10 p-3 rounded-full hover:bg-white/20 transition-colors z-[110]"
+                                onClick={handlePrevImage}
+                            >
+                                <ChevronLeft size={32} />
+                            </button>
+                            <button
+                                className="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 text-white bg-white/10 p-3 rounded-full hover:bg-white/20 transition-colors z-[110]"
+                                onClick={handleNextImage}
+                            >
+                                <ChevronRight size={32} />
+                            </button>
+                        </>
+                    )}
+
+                    <img
+                        src={isFullScreenImage}
+                        className="max-w-full max-h-full object-contain drop-shadow-2xl cursor-zoom-out z-[105]"
+                        alt="Visor de imagen"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsFullScreenImage(null);
+                        }}
+                    />
+                </div>
+            )}
+
+            <div className="pt-6 md:pt-10 px-6 max-w-[1400px] mx-auto">
                 <Breadcrumbs items={[
                     { label: 'Inicio', action: () => setView('home') },
                     { label: 'Tienda', action: () => setView('shop') },
@@ -173,13 +261,37 @@ export const ProductDetail = () => {
             <div className="pt-4 md:pt-10 pb-10 px-6 max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-start border-b border-gray-100 mb-12">
 
                 {/* IMAGE SECTION */}
-                <div className="relative flex justify-center items-center py-10">
+                <div className="relative flex flex-col items-center py-4">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-gray-100 rounded-full blur-[80px] opacity-60 pointer-events-none"></div>
                     <img
-                        src={product.image}
-                        className="w-full max-w-[350px] md:max-w-[500px] object-contain mix-blend-multiply drop-shadow-2xl z-10 hover:scale-105 transition-transform duration-500"
+                        src={activeGalleryImage || (activeVariant ? activeVariant.image : product.image)}
+                        className="w-full max-w-[350px] md:max-w-[500px] object-contain mix-blend-multiply drop-shadow-2xl z-10 transition-transform duration-300 mb-8 cursor-zoom-in"
                         alt={product.name}
+                        onClick={() => setIsFullScreenImage(activeGalleryImage || (activeVariant ? activeVariant.image : product.image))}
+                        title="Ver en pantalla completa"
                     />
+
+                    {/* Thumbnail Gallery Carousel */}
+                    <div className="flex flex-wrap gap-3 max-w-full px-4 z-20 pb-2">
+                        {/* Always show main cover as first thumb */}
+                        <button
+                            onClick={() => setActiveGalleryImage(activeVariant ? activeVariant.image : product.image)}
+                            className={`relative w-16 h-16 rounded-xl flex-shrink-0 bg-white overflow-hidden transition-all ${(!activeGalleryImage || activeGalleryImage === (activeVariant ? activeVariant.image : product.image)) ? 'border-none ring-2 ring-athos-orange ring-offset-2 shadow-md' : 'border border-gray-200 hover:border-gray-300'}`}
+                        >
+                            <img src={activeVariant ? activeVariant.image : product.image} className="w-full h-full object-cover mix-blend-multiply" />
+                        </button>
+
+                        {/* Map over the respective array */}
+                        {(activeVariant ? activeVariant.images : product.images)?.map((img, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setActiveGalleryImage(img)}
+                                className={`relative w-16 h-16 rounded-xl flex-shrink-0 bg-white overflow-hidden transition-all ${activeGalleryImage === img ? 'border-none ring-2 ring-athos-orange ring-offset-2 shadow-md' : 'border border-gray-200 hover:border-gray-300'}`}
+                            >
+                                <img src={img} className="w-full h-full object-cover mix-blend-multiply" />
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* INFO SECTION */}
@@ -219,24 +331,54 @@ export const ProductDetail = () => {
                         <span className="flex items-center gap-1"><ShieldCheck size={12} /> Garantía 30 días</span>
                     </div>
 
-                    <p className="text-gray-500 text-sm leading-relaxed mb-8 max-w-md font-medium">
-                        {product.description}
-                    </p>
+                    {/* Expandable Description */}
+                    <div className="mb-8 max-w-md">
+                        <div className={`relative overflow-hidden transition-all duration-300 ${isDescriptionExpanded ? 'max-h-[1000px]' : 'max-h-24'}`}>
+                            <p className="text-gray-500 text-sm leading-relaxed font-medium whitespace-pre-wrap">
+                                {product.description}
+                            </p>
+                            {!isDescriptionExpanded && (
+                                <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-bg-athos-bg to-transparent pointer-events-none" />
+                            )}
+                        </div>
+                        <button
+                            onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                            className="text-xs font-bold text-athos-orange hover:text-orange-600 mt-2 flex items-center gap-1 uppercase tracking-wide transition-colors"
+                        >
+                            {isDescriptionExpanded ? 'Ver Menos' : 'Ver Más'}
+                            {isDescriptionExpanded ? <ChevronLeft size={14} className="rotate-90" /> : <ChevronRight size={14} className="rotate-90" />}
+                        </button>
+                    </div>
 
                     {/* COLOR & SIZE SELECTOR */}
                     <div className="space-y-6 mb-8">
-                        <div className="flex items-center justify-between max-w-sm">
-                            <span className="font-bold text-athos-black text-sm uppercase">Color</span>
-                            <div className="flex gap-2">
-                                {MOCK_COLORS.map(c => (
+                        {product.variants && product.variants.length > 0 && (
+                            <div className="flex flex-col gap-3">
+                                <span className="font-bold text-athos-black text-sm uppercase">Color: <span className="text-gray-500 ml-1">{activeVariant ? activeVariant.colorName : 'Original'}</span></span>
+                                <div className="flex flex-wrap gap-4 pb-2">
+                                    {/* Main Color Option */}
                                     <button
-                                        key={c.id}
-                                        onClick={() => setSelectedColor(c.id)}
-                                        className={`w-8 h-8 rounded-full ${c.bg} border-2 transition-all ${selectedColor === c.id ? 'border-athos-black scale-110' : 'border-transparent'}`}
-                                    ></button>
-                                ))}
+                                        onClick={() => { setActiveVariant(null); setActiveGalleryImage(null); }}
+                                        className={`relative w-16 h-16 rounded-2xl flex-shrink-0 overflow-hidden border-2 transition-all ${!activeVariant ? 'border-athos-orange shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                                        title="Original"
+                                    >
+                                        <img src={product.image} className="w-full h-full object-cover mix-blend-multiply" alt="Main Color" />
+                                    </button>
+
+                                    {/* Dynamic Variant Options */}
+                                    {product.variants.map((v) => (
+                                        <button
+                                            key={v.id}
+                                            onClick={() => { setActiveVariant(v); setActiveGalleryImage(null); }}
+                                            className={`relative w-16 h-16 rounded-2xl flex-shrink-0 overflow-hidden border-2 transition-all ${activeVariant?.id === v.id ? 'border-athos-orange shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                                            title={v.colorName}
+                                        >
+                                            <img src={v.image} className="w-full h-full object-cover mix-blend-multiply" alt={v.colorName} />
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {(product.category === 'shoes' || product.category === 'apparel') && (
                             <div className="flex flex-col gap-3">
@@ -273,7 +415,7 @@ export const ProductDetail = () => {
 
                         <div className="flex flex-col">
                             <span className="text-[10px] text-gray-400 font-bold uppercase">Total</span>
-                            <span className="text-2xl font-black text-athos-black">${(product.price * quantity).toLocaleString('es-CO')}</span>
+                            <span className="text-2xl font-black text-athos-black">${((activeVariant ? activeVariant.price : product.price) * quantity).toLocaleString('es-CO')}</span>
                         </div>
                     </div>
 
@@ -441,8 +583,15 @@ export const ProductDetail = () => {
                                 </div>
                                 <p className="text-sm text-gray-600 font-medium leading-relaxed mb-4">"{review.comment}"</p>
                                 {review.image && (
-                                    <div className="mt-4 rounded-xl overflow-hidden h-40 bg-gray-50 border border-gray-100">
-                                        <img src={review.image} className="w-full h-full object-cover" alt="Review attachment" />
+                                    <div
+                                        className="mt-4 rounded-xl overflow-hidden h-40 bg-gray-50 border border-gray-100 cursor-zoom-in flex items-center justify-center relative hover:shadow-md transition-shadow"
+                                        onClick={() => setIsFullScreenImage(review.image || null)}
+                                        title="Ver foto cargada"
+                                    >
+                                        <div className="absolute top-2 right-2 bg-black/40 p-1.5 rounded-lg text-white backdrop-blur">
+                                            <Camera size={16} />
+                                        </div>
+                                        <img src={review.image} className="w-full h-full object-contain max-h-[160px]" alt="Foto adjunta en la reseña" />
                                     </div>
                                 )}
                             </div>
@@ -472,7 +621,7 @@ export const ProductDetail = () => {
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-sm text-athos-black line-clamp-1">{product.name}</h4>
-                                    <p className="text-xs text-athos-orange font-bold">${(product.price / 1000).toFixed(0)}k</p>
+                                    <p className="text-xs text-athos-orange font-bold">${product.price.toLocaleString('es-CO')}</p>
                                 </div>
                             </div>
 

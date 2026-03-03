@@ -27,7 +27,7 @@ export const SizeGuide = () => {
     const [gender, setGender] = useState<'men' | 'women'>('men');
 
     return (
-        <div className="pt-24 md:pt-48 pb-24 px-4 md:px-10 max-w-[1400px] mx-auto min-h-screen bg-white animate-fade-in">
+        <div className="pt-6 md:pt-10 pb-24 px-4 md:px-10 max-w-[1400px] mx-auto min-h-screen bg-transparent animate-fade-in">
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
 

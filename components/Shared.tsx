@@ -16,8 +16,8 @@ export const Breadcrumbs = ({ items }: BreadcrumbProps) => {
             {items.map((item, index) => (
                 <React.Fragment key={index}>
                     <ChevronRight size={10} />
-                    <button 
-                        onClick={item.action} 
+                    <button
+                        onClick={item.action}
                         disabled={!item.action}
                         className={`${!item.action ? 'text-athos-black cursor-default' : 'hover:text-athos-orange transition-colors cursor-pointer'}`}
                     >
@@ -41,19 +41,19 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
 
     return (
         <div className="flex justify-center items-center gap-2 mt-12 mb-8 animate-fade-in">
-            <button 
+            <button
                 onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
                 className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 hover:border-athos-black hover:text-athos-black disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
-                <ChevronRight size={16} className="rotate-180"/>
+                <ChevronRight size={16} className="rotate-180" />
             </button>
-            
+
             <span className="text-xs font-black uppercase tracking-widest text-athos-black px-4">
                 Página {currentPage} de {totalPages}
             </span>
 
-            <button 
+            <button
                 onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
                 className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 hover:border-athos-black hover:text-athos-black disabled:opacity-30 disabled:cursor-not-allowed transition-all"
@@ -81,11 +81,8 @@ export const ProductSkeleton = () => {
 
 // --- STOCK INDICATOR ---
 export const StockIndicator = ({ stock }: { stock: number }) => {
-    if (stock === 0) {
-        return <span className="text-xs font-bold text-red-500 flex items-center gap-1"><Package size={12}/> Agotado</span>;
+    if (stock <= 0) {
+        return <span className="text-xs font-bold text-red-500 flex items-center gap-1"><Package size={12} /> Agotado</span>;
     }
-    if (stock < 5) {
-        return <span className="text-xs font-bold text-athos-orange flex items-center gap-1 animate-pulse"><Package size={12}/> ¡Solo quedan {stock}!</span>;
-    }
-    return <span className="text-xs font-bold text-green-600 flex items-center gap-1"><Package size={12}/> En Stock</span>;
+    return <span className="text-xs font-bold text-green-600 flex items-center gap-1"><Package size={12} /> En stock</span>;
 };

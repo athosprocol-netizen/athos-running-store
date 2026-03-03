@@ -7,8 +7,7 @@ import { Breadcrumbs, Pagination, ProductSkeleton } from '../components/Shared';
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'rating';
 
 export const Shop = () => {
-    const { selectProduct, products, addToCart, toggleWishlist, user, searchQuery, setSearchQuery, showNotification, isLoading, setView } = useApp();
-    const [activeCategory, setActiveCategory] = useState('all');
+    const { selectProduct, products, addToCart, toggleWishlist, user, searchQuery, setSearchQuery, showNotification, isLoading, setView, activeCategory, setActiveCategory } = useApp();
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [sortBy, setSortBy] = useState<SortOption>('default');
     const [shareProduct, setShareProduct] = useState<any | null>(null);
@@ -17,15 +16,13 @@ export const Shop = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 8;
 
+    const uniqueCategories = Array.from(new Set(products.map(p => p.category))).filter(Boolean) as string[];
     const categories = [
         { id: 'all', label: 'Todo' },
-        { id: 'shoes', label: 'Zapatillas' },
-        { id: 'apparel', label: 'Camisetas' },
-        { id: 'relojes', label: 'Relojes' },
-        { id: 'cinturones', label: 'Cinturones' },
-        { id: 'gafas', label: 'Gafas' },
-        { id: 'gorras', label: 'Gorras' },
-        { id: 'medalleros', label: 'Medalleros' },
+        ...uniqueCategories.map(cat => ({
+            id: cat,
+            label: cat.charAt(0).toUpperCase() + cat.slice(1)
+        }))
     ];
 
     // Filter Logic
@@ -94,7 +91,7 @@ export const Shop = () => {
     };
 
     return (
-        <div className="pt-24 md:pt-48 min-h-screen bg-athos-bg pb-32 animate-fade-in px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="pt-6 md:pt-10 min-h-screen bg-athos-bg pb-32 animate-fade-in px-4 md:px-8 max-w-[1400px] mx-auto">
 
             <Breadcrumbs items={[{ label: 'Inicio', action: () => setView('home') }, { label: 'Tienda' }]} />
 
@@ -219,17 +216,17 @@ export const Shop = () => {
                                             <img
                                                 src={product.image}
                                                 alt={product.name}
-                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                className="w-full h-full object-cover transition-transform duration-700"
                                             />
                                         </div>
 
                                         <div>
                                             <h4 className="font-black text-athos-black text-sm md:text-base leading-tight mb-1 truncate">{product.name}</h4>
-                                            <p className="text-xs text-gray-400 font-bold mb-3 uppercase truncate">{product.subtitle || product.category}</p>
+                                            <p className="text-xs text-gray-400 font-bold mb-3 uppercase truncate">{product.category}</p>
 
                                             <div className="flex justify-between items-end">
                                                 <div>
-                                                    <span className="block text-lg font-black text-athos-black">${(product.price / 1000).toFixed(0)}k</span>
+                                                    <span className="block text-lg font-black text-athos-black">${product.price.toLocaleString('es-CO')}</span>
                                                     <div className="flex items-center gap-1 mt-0.5">
                                                         <Star size={10} className="fill-yellow-400 text-yellow-400" />
                                                         <span className="text-[10px] font-bold text-gray-400">{product.rating}</span>
@@ -266,7 +263,7 @@ export const Shop = () => {
                             </div>
                             <div>
                                 <h4 className="font-bold text-sm text-athos-black line-clamp-1">{shareProduct.name}</h4>
-                                <p className="text-xs text-athos-orange font-bold">${(shareProduct.price / 1000).toFixed(0)}k</p>
+                                <p className="text-xs text-athos-orange font-bold">${shareProduct.price.toLocaleString('es-CO')}</p>
                             </div>
                         </div>
                         <div className="grid grid-cols-3 gap-4 mb-2">

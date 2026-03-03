@@ -1,5 +1,4 @@
-
-export type ViewState = 'home' | 'shop' | 'product' | 'academy' | 'challenges' | 'profile' | 'cart' | 'auth' | 'size-guide' | 'admin' | 'checkout' | 'support';
+export type ViewState = 'home' | 'shop' | 'product' | 'academy' | 'challenges' | 'profile' | 'cart' | 'auth' | 'size-guide' | 'admin' | 'checkout' | 'support' | 'forgot-password' | 'update-password' | 'events' | 'event-detail' | 'event-registration' | 'event-results' | 'organizer';
 
 export interface TechSpecs {
   weight?: string;
@@ -37,6 +36,15 @@ export interface Product {
   isCustomizable?: boolean;
   stock: number; // Inventory management
   sku?: string; // For backend
+  variants?: ProductVariant[]; // Multiple colors with different prices
+}
+
+export interface ProductVariant {
+  id: string; // unique inside the array
+  colorName: string;
+  price: number;
+  image: string; // base64 or URL (main variant photo)
+  images?: string[]; // additional gallery photos for this variant
 }
 
 export interface CustomizationOptions {
@@ -69,7 +77,7 @@ export interface UserProfile {
   id: string;
   email: string;
   name: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'organizer';
   avatar?: string;
   // Personal Info
   location?: string;
@@ -82,6 +90,54 @@ export interface UserProfile {
   wishlist: string[];
   activeChallengeId?: string;
   createdAt?: string;
+  // Events Data
+  eventHistory?: string[]; // IDs de eventos participados
+}
+
+// --- EVENTS SYSTEM ---
+
+export interface Event {
+  id: string;
+  title: string;
+  date: string; // ISO String
+  location: string;
+  city: string;
+  description: string;
+  price: number;
+  image: string;
+  images?: string[]; // Galerías del evento
+  organizerId: string;
+  isFeatured?: boolean;
+  distances: string[]; // e.g. ['5K', '10K', '21K']
+  status: 'upcoming' | 'ongoing' | 'past';
+  maxParticipants?: number;
+  currentParticipants?: number;
+  photosLink?: string; // Enlace a fotos.respira.run o similar
+}
+
+export interface EventRegistration {
+  id: string;
+  userId: string;
+  eventId: string;
+  distance: string;
+  shirtSize?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  status: 'pending' | 'paid' | 'cancelled';
+  paymentId?: string;
+  date: string;
+}
+
+export interface EventResult {
+  id: string;
+  eventId: string;
+  userId: string; // o un string simple para el nombre del corredor si no está logueado
+  runnerName: string;
+  distance: string;
+  time: string; // Ej: "01:45:30"
+  rankOverall: number;
+  rankCategory?: number;
+  category?: string;
 }
 
 export interface CartItem {

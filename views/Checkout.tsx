@@ -216,7 +216,7 @@ export const Checkout = () => {
 
     // ---- MAIN CHECKOUT LAYOUT ----
     return (
-        <div className="min-h-screen bg-white pb-32">
+        <div className="min-h-screen bg-transparent pb-32">
             {/* HEADER */}
             <div className={`sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-4 h-16 flex items-center justify-between transition-all duration-300`}>
                 <button
