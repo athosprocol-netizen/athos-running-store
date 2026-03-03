@@ -55,7 +55,6 @@ export const EventsDirectory = () => {
                                     <img src={event.image || '/imagen_bordes_difuminados.png'} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                     <div className="absolute bottom-4 left-4 z-20">
                                         <h3 className="text-white text-2xl font-black italic tracking-tight">{event.title}</h3>
-                                        <span className="text-athos-orange font-bold text-sm bg-athos-black/50 px-2 py-0.5 rounded backdrop-blur-sm">${event.price.toLocaleString('es-CO')} COP</span>
                                     </div>
                                 </div>
 

@@ -165,6 +165,19 @@ export const Navbar = () => {
                             <Search size={24} strokeWidth={2.5} />
                         </button>
 
+                        <button
+                            onClick={() => setIsCalendarOpen(true)}
+                            className={`flex flex-col items-center justify-center ${iconColorClass} hover:text-athos-orange transition-colors hover:scale-110 duration-200 relative group`}
+                        >
+                            <Calendar size={24} strokeWidth={2.5} className={hasEventToday ? 'text-athos-orange' : ''} />
+                            <span className={`text-[9px] font-black uppercase tracking-widest mt-1 ${hasEventToday ? 'text-athos-orange' : 'text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity'}`}>
+                                {hasEventToday ? 'Hoy' : 'Cal'}
+                            </span>
+                            {hasEventToday && (
+                                <span className="absolute top-0 right-1 w-2 h-2 bg-athos-orange rounded-full animate-pulse border-2 border-white"></span>
+                            )}
+                        </button>
+
                         <div className={`h-6 w-[2px] bg-black/10`}></div>
 
                         <button
@@ -203,31 +216,33 @@ export const Navbar = () => {
                     <Menu size={28} strokeWidth={2.5} />
                 </button>
 
-                {/* Center: Logo and Date Picker Widget */}
+                {/* Center: Logo (Restaurado a su tamaño original en Móvil) */}
                 <div
-                    className="absolute left-1/2 top-1.5 transform -translate-x-1/2 flex flex-col items-center justify-center filter drop-shadow-md z-10 pointer-events-none"
+                    onClick={() => setView('home')}
+                    className="absolute left-1/2 top-2 transform -translate-x-1/2 flex items-center justify-center filter drop-shadow-md"
                 >
-                    <img onClick={() => setView('home')} src="/logo.png" alt="ATHOS" className="h-[40px] w-auto object-contain transform scale-[1.2] origin-center cursor-pointer pointer-events-auto mb-0.5" />
-                    <button
-                        onClick={() => setIsCalendarOpen(true)}
-                        className="pointer-events-auto px-2 py-0.5 bg-gray-100/80 backdrop-blur rounded-full flex items-center gap-1 hover:bg-gray-200 transition-colors"
-                    >
-                        <Calendar size={10} className={hasEventToday ? 'text-athos-orange' : 'text-gray-500'} />
-                        <span className="text-[10px] font-bold text-athos-black uppercase tracking-widest flex items-center gap-1">
-                            {today.toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' }).replace('.', '')}
-                            <span className={hasEventToday ? 'text-athos-orange' : 'text-gray-400'}>
-                                • {hasEventToday ? `${getEventsForDay(today).length} Evento(s)` : 'Libre'}
-                            </span>
-                        </span>
-                    </button>
+                    <img src="/logo.png" alt="ATHOS" className="h-[60px] w-auto object-contain transform scale-[1.35] origin-center" />
                 </div>
 
-                {/* Right: Actions */}
-                <div className="flex items-center gap-3">
-                    <button onClick={() => setView('cart')} className={`relative text-athos-black p-2`}>
+                {/* Right: Actions (Calendario y Carrito) */}
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => setIsCalendarOpen(true)}
+                        className="relative text-athos-black flex flex-col items-center"
+                    >
+                        <Calendar size={24} className={hasEventToday ? 'text-athos-orange' : 'text-gray-600'} />
+                        <span className={`text-[8px] font-black uppercase tracking-widest mt-0.5 leading-none ${hasEventToday ? 'text-athos-orange' : 'text-gray-400'}`}>
+                            {hasEventToday ? 'Evento' : 'Libre'}
+                        </span>
+                        {hasEventToday && (
+                            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-athos-orange rounded-full animate-pulse border border-white"></span>
+                        )}
+                    </button>
+
+                    <button onClick={() => setView('cart')} className={`relative text-athos-black p-1`}>
                         <ShoppingCart size={26} />
                         {cart.length > 0 && (
-                            <span className="absolute 0 top-0 right-0 w-2.5 h-2.5 bg-athos-orange rounded-full animate-pulse ring-2 ring-white"></span>
+                            <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-athos-orange rounded-full animate-pulse ring-2 ring-white"></span>
                         )}
                     </button>
                 </div>

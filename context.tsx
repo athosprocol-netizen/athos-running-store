@@ -36,6 +36,22 @@ const MOCK_EVENTS: Event[] = [
     status: 'upcoming',
     maxParticipants: 2000,
     currentParticipants: 1200
+  },
+  {
+    id: 'e3',
+    title: 'Carrera de la Mujer 2026',
+    date: '2026-03-20T08:00:00Z',
+    location: 'Parque Simón Bolívar',
+    city: 'Bogotá',
+    description: 'Únete a la marea rosa en esta carrera dedicada a la fuerza y valentía de la mujer colombiana.',
+    price: 90000,
+    image: 'https://images.unsplash.com/photo-1571008887538-b36bb32f4571?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+    organizerId: 'org1',
+    isFeatured: true,
+    distances: ['5K', '10K'],
+    status: 'upcoming',
+    maxParticipants: 8000,
+    currentParticipants: 5000
   }
 ];
 
