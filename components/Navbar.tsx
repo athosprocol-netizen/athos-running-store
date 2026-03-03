@@ -159,23 +159,21 @@ export const Navbar = () => {
                     {/* Right Actions */}
                     <div className="flex items-center gap-6">
                         <button
+                            onClick={() => setIsCalendarOpen(true)}
+                            title="Calendario de Eventos"
+                            className={`relative group ${iconColorClass} hover:text-athos-orange transition-colors hover:scale-110 duration-200`}
+                        >
+                            <Calendar size={24} strokeWidth={2.5} className={hasEventToday ? 'text-athos-orange' : ''} />
+                            {hasEventToday && (
+                                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-athos-orange rounded-full animate-pulse border-2 border-white"></span>
+                            )}
+                        </button>
+
+                        <button
                             onClick={() => setIsSearchOpen(true)}
                             className={`${iconColorClass} hover:text-athos-orange transition-colors hover:scale-110 duration-200`}
                         >
                             <Search size={24} strokeWidth={2.5} />
-                        </button>
-
-                        <button
-                            onClick={() => setIsCalendarOpen(true)}
-                            className={`flex flex-col items-center justify-center ${iconColorClass} hover:text-athos-orange transition-colors hover:scale-110 duration-200 relative group`}
-                        >
-                            <Calendar size={24} strokeWidth={2.5} className={hasEventToday ? 'text-athos-orange' : ''} />
-                            <span className={`text-[9px] font-black uppercase tracking-widest mt-1 ${hasEventToday ? 'text-athos-orange' : 'text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity'}`}>
-                                {hasEventToday ? 'Hoy' : 'Cal'}
-                            </span>
-                            {hasEventToday && (
-                                <span className="absolute top-0 right-1 w-2 h-2 bg-athos-orange rounded-full animate-pulse border-2 border-white"></span>
-                            )}
                         </button>
 
                         <div className={`h-6 w-[2px] bg-black/10`}></div>
@@ -228,14 +226,14 @@ export const Navbar = () => {
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => setIsCalendarOpen(true)}
-                        className="relative text-athos-black flex flex-col items-center"
+                        className="relative text-athos-black flex flex-col items-center justify-center translate-y-[3px]"
                     >
                         <Calendar size={24} className={hasEventToday ? 'text-athos-orange' : 'text-gray-600'} />
                         <span className={`text-[8px] font-black uppercase tracking-widest mt-0.5 leading-none ${hasEventToday ? 'text-athos-orange' : 'text-gray-400'}`}>
                             {hasEventToday ? 'Evento' : 'Libre'}
                         </span>
                         {hasEventToday && (
-                            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-athos-orange rounded-full animate-pulse border border-white"></span>
+                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-athos-orange rounded-full border border-white"></span>
                         )}
                     </button>
 
