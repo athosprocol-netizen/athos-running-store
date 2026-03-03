@@ -3,9 +3,38 @@ import { useApp } from '../context';
 import { Settings, Heart, Activity, MapPin, Camera, Save, X, User, Printer, Shirt, Share2, Ticket, Smartphone, ShoppingBag } from 'lucide-react';
 
 export const Profile = () => {
-    const { user, updateUserProfile, logout, products, toggleWishlist, shareWishlist, selectProduct, addToCart } = useApp();
+    const { user, updateUserProfile, logout, products, toggleWishlist, shareWishlist, selectProduct, addToCart, orders, events, registrations, setView } = useApp();
     const [isEditing, setIsEditing] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [activeTab, setActiveTab] = useState<'perfil' | 'pedidos' | 'eventos'>('perfil');
+
+    // Mocks en caso de no estar auth
+    if (!user) {
+        return (
+            <div className="pt-32 pb-20 px-4 min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                    <h2 className="text-4xl font-black italic text-athos-black mb-4 uppercase">Inicia <span className="text-athos-orange">Sesión</span></h2>
+                    <p className="text-gray-500 font-bold mb-8">Debes estar conectado para ver tu perfil de corredor.</p>
+                    <button onClick={() => setView('home')} className="bg-athos-black text-white px-8 py-4 rounded-2xl font-black uppercase hover:bg-athos-orange transition-colors">Ir al Inicio</button>
+                </div>
+            </div>
+        );
+    }
+
+    // Placeholder for NOTIFICATIONS_MOCK, assuming it's defined elsewhere or will be added.
+    // For now, let's define a dummy one to avoid compilation errors.
+    const NOTIFICATIONS_MOCK = [];
+    const unreadNotifications = NOTIFICATIONS_MOCK.filter(n => !n.read).length;
+
+    // Get user's event registrations
+    const userRegistrations = registrations.filter(r => r.userId === user.id);
+    const registeredEvents = userRegistrations.map(reg => {
+        const evt = events.find(e => e.id === reg.eventId);
+        return { ...evt, registration: reg };
+    }).filter(e => e.id !== undefined) as (import('../types').Event & { registration: any })[];
+
+    const upcomingEvents = registeredEvents.filter(e => e.status === 'upcoming');
+    const pastEvents = registeredEvents.filter(e => e.status === 'past');
 
     // Local state for editing form
     const [formData, setFormData] = useState({
@@ -15,8 +44,6 @@ export const Profile = () => {
         address: user?.address || '',
         phone: user?.phone || '',
     });
-
-    if (!user) return <div>Inicia sesión para ver tu perfil</div>;
 
     const wishlistProducts = products.filter(p => user.wishlist.includes(p.id));
 
@@ -136,8 +163,17 @@ export const Profile = () => {
                                     <button onClick={() => { setIsEditing(true); setFormData({ name: user.name, age: user.age || '', location: user.location || '', address: user.address || '', phone: user.phone || '' }); }} className="px-5 py-2.5 bg-white border border-gray-200 hover:border-athos-black rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-sm">
                                         Editar
                                     </button>
-                                    <button onClick={logout} className="px-5 py-2.5 bg-white text-red-500 border border-gray-200 hover:bg-red-50 rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-sm">
-                                        Salir
+                                    <button onClick={() => setActiveTab('pedidos')} className="px-5 py-2.5 bg-white text-red-500 border border-gray-200 hover:bg-red-50 rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-sm">
+                                        Pedidos
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab('eventos')}
+                                        className={`w - full text - left px - 6 py - 4 rounded - xl font - bold uppercase tracking - wide transition - all ${activeTab === 'eventos'
+                                            ? 'bg-athos-black text-white'
+                                            : 'text-gray-600 hover:bg-gray-100 hover:text-athos-black'
+                                            } `}
+                                    >
+                                        Mis Eventos
                                     </button>
                                 </div>
                             </>

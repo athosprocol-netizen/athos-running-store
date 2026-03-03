@@ -99,20 +99,26 @@ export interface UserProfile {
 export interface Event {
   id: string;
   title: string;
-  date: string; // ISO String
+  date: string;
   location: string;
   city: string;
   description: string;
-  price: number;
+  distances: string[];
   image: string;
-  images?: string[]; // Galerías del evento
-  organizerId: string;
-  isFeatured?: boolean;
-  distances: string[]; // e.g. ['5K', '10K', '21K']
   status: 'upcoming' | 'ongoing' | 'past';
+  isFeatured?: boolean;
   maxParticipants?: number;
   currentParticipants?: number;
-  photosLink?: string; // Enlace a fotos.respira.run o similar
+  organizerId: string;
+  photosLink?: string;
+  price: number;
+
+  // Custom properties for UI Mock
+  reward?: string;
+  daysLeft?: number;
+  participants?: number;
+  difficulty?: string;
+  type?: string;
 }
 
 export interface EventRegistration {

@@ -1,5 +1,4 @@
-
-import { Product, UserProfile, BlogPost, Challenge } from './types';
+import { Product, UserProfile, BlogPost, Challenge, Event } from './types';
 
 export const MOCK_PRODUCTS: Product[] = [
   {
@@ -219,5 +218,57 @@ export const CHALLENGES: Challenge[] = [
     participants: 5100,
     difficulty: 'Principiante',
     type: 'Road'
+  }
+];
+
+export const MOCK_EVENTS: Event[] = [
+  {
+    id: 'e1',
+    title: 'Carrera de la Mujer Bogotá 2025',
+    date: '2025-09-29T08:00:00Z',
+    location: 'Parque Simón Bolívar',
+    city: 'Bogotá',
+    description: 'La carrera femenina más grande de Colombia, celebrando la fuerza y el espíritu de la mujer.',
+    distances: ['5K', '10K'],
+    image: 'https://images.unsplash.com/photo-1596727147705-54a9d0c20968?q=80&w=1000&auto=format&fit=crop',
+    status: 'upcoming',
+    reward: 'Insignia "Escalador"',
+    daysLeft: 14,
+    participants: 3420,
+    difficulty: 'Intermedio',
+    organizerId: 'org1',
+    price: 150000,
+  },
+  {
+    id: 'e2',
+    title: 'Maratón Medellín 2026',
+    date: '2026-09-06T06:00:00Z',
+    location: 'Parque de los Pies Descalzos',
+    city: 'Medellín',
+    description: 'La carrera pionera de Colombia con un nivel de organización de clase mundial y ruta certificada.',
+    distances: ['5K', '10K', '21K', '42K'],
+    image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    status: 'upcoming',
+    isFeatured: true,
+    maxParticipants: 15000,
+    currentParticipants: 8520,
+    organizerId: 'org1',
+    price: 180000,
+  },
+  {
+    id: 'e3',
+    title: 'Media Maratón del Mar',
+    date: '2025-02-16T05:30:00Z',
+    location: 'Centro Histórico',
+    city: 'Cartagena',
+    description: 'Corre a nivel del mar mientras recorres las calles históricas y bordeadas por el océano.',
+    distances: ['10K', '21K'],
+    image: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    status: 'past',
+    maxParticipants: 8000,
+    currentParticipants: 8000,
+    organizerId: 'org1',
+    photosLink: 'https://fotos.athos.co/mmm2025',
+    price: 120000,
   }
 ];
