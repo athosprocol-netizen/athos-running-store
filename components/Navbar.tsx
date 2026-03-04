@@ -93,6 +93,13 @@ export const Navbar = () => {
         }
     };
 
+    const [selectedDayEvents, setSelectedDayEvents] = useState<any[] | null>(null);
+
+    // Reset day events list if month or modal changes
+    useEffect(() => {
+        setSelectedDayEvents(null);
+    }, [currentMonth, isCalendarOpen]);
+
     // Scroll Lock Effect
     const safeQuery = searchQuery || '';
     const searchResults = safeQuery.trim().length > 0
@@ -230,7 +237,7 @@ export const Navbar = () => {
                     >
                         <Calendar size={24} className={hasEventToday ? 'text-athos-orange' : 'text-gray-600'} />
                         <span className={`text-[8px] font-black uppercase tracking-widest mt-0.5 leading-none ${hasEventToday ? 'text-athos-orange' : 'text-gray-400'}`}>
-                            {hasEventToday ? 'Evento' : 'Libre'}
+                            {hasEventToday ? 'Eventos' : 'Libre'}
                         </span>
                         {hasEventToday && (
                             <span className="absolute -top-1 -right-1 w-2 h-2 bg-athos-orange rounded-full border border-white"></span>
@@ -375,11 +382,13 @@ export const Navbar = () => {
                 </>
             )}
 
-            {/* MOBILE CALENDAR MODAL */}
+            {/* CALENDAR MODAL (Mobile & Desktop) */}
             {isCalendarOpen && (
                 <>
-                    <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm animate-fade-in md:hidden" onClick={() => setIsCalendarOpen(false)} />
-                    <div className="fixed bottom-0 left-0 right-0 z-[70] bg-white rounded-t-3xl p-6 pb-10 shadow-2xl animate-slide-up md:hidden flex flex-col">
+                    <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setIsCalendarOpen(false)} />
+                    <div
+                        className="fixed bottom-0 md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 left-0 right-0 z-[70] bg-white rounded-t-3xl md:rounded-3xl p-6 pb-10 md:pb-6 shadow-2xl animate-slide-up md:animate-fade-in flex flex-col md:w-[450px]"
+                    >
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-black italic uppercase text-athos-black flex items-center gap-2">
                                 <Calendar size={24} className="text-athos-orange" />
@@ -417,9 +426,13 @@ export const Navbar = () => {
                                         key={idx}
                                         onClick={() => {
                                             if (hasEvents) {
-                                                selectEvent(dayEvents[0].id);
-                                                setIsCalendarOpen(false);
-                                                setIsMobileMenuOpen(false);
+                                                if (dayEvents.length === 1) {
+                                                    selectEvent(dayEvents[0].id);
+                                                    setIsCalendarOpen(false);
+                                                    setIsMobileMenuOpen(false);
+                                                } else {
+                                                    setSelectedDayEvents(dayEvents);
+                                                }
                                             }
                                         }}
                                         className={`p-2 w-full aspect-square flex flex-col items-center justify-center rounded-xl relative transition-all ${isCurr ? 'bg-athos-black text-white shadow-md' :
@@ -438,41 +451,77 @@ export const Navbar = () => {
 
                         {/* Selected Month Events List */}
                         <div className="space-y-3 max-h-[180px] overflow-y-auto pr-1">
-                            <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 sticky top-0 bg-white z-10 py-1">Eventos del Mes</h4>
-                            {events.filter(e => {
-                                const d = new Date(e.date);
-                                return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
-                            }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
-                                <div
-                                    key={e.id}
-                                    onClick={() => {
-                                        selectEvent(e.id);
-                                        setIsCalendarOpen(false);
-                                        setIsMobileMenuOpen(false);
-                                    }}
-                                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-transparent hover:border-athos-orange/20"
-                                >
-                                    <div className="w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-gray-100">
-                                        <span className="text-[10px] font-bold text-gray-400 uppercase leading-none mb-0.5">
-                                            {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
-                                        </span>
-                                        <span className="text-base font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
+                            {selectedDayEvents ? (
+                                <>
+                                    <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
+                                        <h4 className="text-xs font-black text-athos-orange uppercase tracking-widest flex items-center gap-1">
+                                            Eventos del {new Date(selectedDayEvents[0].date).getDate()}
+                                        </h4>
+                                        <button onClick={() => setSelectedDayEvents(null)} className="text-[10px] font-bold text-gray-500 hover:text-athos-black underline">Volver al mes</button>
                                     </div>
-                                    <div className="flex-grow">
-                                        <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
-                                        <p className="text-xs text-gray-500 font-medium flex items-center gap-1">📍 {e.city}</p>
-                                    </div>
-                                    <ChevronRight size={16} className="text-gray-300" />
-                                </div>
-                            ))}
-                            {events.filter(e => {
-                                const d = new Date(e.date);
-                                return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
-                            }).length === 0 && (
-                                    <div className="text-center text-xs text-gray-400 py-6 font-medium italic border-2 border-dashed border-gray-100 rounded-2xl">
-                                        No hay eventos programados en este mes.
-                                    </div>
-                                )}
+                                    {selectedDayEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
+                                        <div
+                                            key={e.id}
+                                            onClick={() => {
+                                                selectEvent(e.id);
+                                                setIsCalendarOpen(false);
+                                                setIsMobileMenuOpen(false);
+                                            }}
+                                            className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-transparent hover:border-athos-orange/20"
+                                        >
+                                            <div className="w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-gray-100">
+                                                <span className="text-[10px] font-bold text-gray-400 uppercase leading-none mb-0.5">
+                                                    {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
+                                                </span>
+                                                <span className="text-base font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
+                                            </div>
+                                            <div className="flex-grow">
+                                                <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
+                                                <p className="text-xs text-gray-500 font-medium flex items-center gap-1">📍 {e.city}</p>
+                                            </div>
+                                            <ChevronRight size={16} className="text-gray-300" />
+                                        </div>
+                                    ))}
+                                </>
+                            ) : (
+                                <>
+                                    <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 sticky top-0 bg-white z-10 py-1">Eventos del Mes</h4>
+                                    {events.filter(e => {
+                                        const d = new Date(e.date);
+                                        return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
+                                    }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
+                                        <div
+                                            key={e.id}
+                                            onClick={() => {
+                                                selectEvent(e.id);
+                                                setIsCalendarOpen(false);
+                                                setIsMobileMenuOpen(false);
+                                            }}
+                                            className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-transparent hover:border-athos-orange/20"
+                                        >
+                                            <div className="w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-gray-100">
+                                                <span className="text-[10px] font-bold text-gray-400 uppercase leading-none mb-0.5">
+                                                    {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
+                                                </span>
+                                                <span className="text-base font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
+                                            </div>
+                                            <div className="flex-grow">
+                                                <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
+                                                <p className="text-xs text-gray-500 font-medium flex items-center gap-1">📍 {e.city}</p>
+                                            </div>
+                                            <ChevronRight size={16} className="text-gray-300" />
+                                        </div>
+                                    ))}
+                                    {events.filter(e => {
+                                        const d = new Date(e.date);
+                                        return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
+                                    }).length === 0 && (
+                                            <div className="text-center text-xs text-gray-400 py-6 font-medium italic border-2 border-dashed border-gray-100 rounded-2xl">
+                                                No hay eventos programados en este mes.
+                                            </div>
+                                        )}
+                                </>
+                            )}
                         </div>
                     </div>
                     <style>{`

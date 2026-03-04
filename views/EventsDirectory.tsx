@@ -1,13 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context';
-import { Calendar, MapPin, Search } from 'lucide-react';
+import { Calendar, MapPin, Search, ChevronRight } from 'lucide-react';
 
 export const EventsDirectory = () => {
     const { events, selectEvent } = useApp();
     const [searchTerm, setSearchTerm] = useState('');
 
-    const upcomingEvents = events.filter(e => e.status === 'upcoming' && e.title.toLowerCase().includes(searchTerm.toLowerCase()));
-    const pastEvents = events.filter(e => e.status === 'past' && e.title.toLowerCase().includes(searchTerm.toLowerCase()));
+    const upcomingEvents = events
+        .filter(e => e.status === 'upcoming' && e.title.toLowerCase().includes(searchTerm.toLowerCase()))
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .slice(0, 5);
+
+    const pastEvents = events
+        .filter(e => e.status === 'past' && e.title.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    // --- CALENDAR LOGIC ---
+    const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [selectedDayEvents, setSelectedDayEvents] = useState<any[] | null>(null);
+
+    // Reset day events list if month changes
+    useEffect(() => {
+        setSelectedDayEvents(null);
+    }, [currentMonth]);
+
+    const nextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+    const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+
+    const generateCalendarDays = () => {
+        const year = currentMonth.getFullYear();
+        const month = currentMonth.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+        const days = [];
+        for (let i = 0; i < adjustedFirstDay; i++) {
+            days.push(null);
+        }
+        for (let i = 1; i <= daysInMonth; i++) {
+            days.push(new Date(year, month, i));
+        }
+        return days;
+    };
+
+    const isToday = (date: Date) => {
+        const today = new Date();
+        return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+    };
+
+    const getEventsForDay = (date: Date) => {
+        return events.filter(e => {
+            const d = new Date(e.date);
+            return d.getDate() === date.getDate() && d.getMonth() === date.getMonth() && d.getFullYear() === date.getFullYear();
+        });
+    };
 
     return (
         <div className="pt-24 pb-20 px-6 max-w-[1400px] mx-auto min-h-[80vh] animate-fade-in">
@@ -92,6 +137,143 @@ export const EventsDirectory = () => {
                         <p className="text-gray-500 font-bold">No se encontraron carreras próximas con esos criterios.</p>
                     </div>
                 )}
+            </section>
+
+            {/* Interactive Calendar Section */}
+            <section className="mb-16 bg-white p-8 md:p-12 rounded-[40px] shadow-[0_20px_40px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-12">
+
+                {/* Calendar Grid */}
+                <div className="w-full lg:w-1/2">
+                    <div className="flex items-center gap-3 mb-6">
+                        <Calendar size={28} className="text-athos-orange" />
+                        <h2 className="text-3xl font-black italic text-athos-black uppercase">Calendario</h2>
+                    </div>
+
+                    {/* Month Selector */}
+                    <div className="flex justify-between items-center mb-6 px-4 py-3 bg-gray-50 rounded-2xl">
+                        <button onClick={prevMonth} className="p-2 hover:bg-white rounded-xl shadow-sm border border-transparent hover:border-gray-200 transition-all text-athos-black hover:text-athos-orange"><ChevronRight size={24} className="rotate-180" /></button>
+                        <span className="font-black text-lg uppercase tracking-widest text-athos-black">
+                            {currentMonth.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' })}
+                        </span>
+                        <button onClick={nextMonth} className="p-2 hover:bg-white rounded-xl shadow-sm border border-transparent hover:border-gray-200 transition-all text-athos-black hover:text-athos-orange"><ChevronRight size={24} /></button>
+                    </div>
+
+                    {/* Calendar Days */}
+                    <div className="grid grid-cols-7 gap-2 mb-2 text-center pb-2">
+                        {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, i) => (
+                            <div key={i} className="text-xs font-black text-gray-400 uppercase">{d}</div>
+                        ))}
+                    </div>
+                    <div className="grid grid-cols-7 gap-2">
+                        {generateCalendarDays().map((day, idx) => {
+                            if (!day) return <div key={idx} className="p-3" />;
+                            const dayEvents = getEventsForDay(day);
+                            const isCurr = isToday(day);
+                            const hasEvents = dayEvents.length > 0;
+
+                            return (
+                                <button
+                                    key={idx}
+                                    onClick={() => {
+                                        if (hasEvents) {
+                                            if (dayEvents.length === 1) {
+                                                selectEvent(dayEvents[0].id);
+                                            } else {
+                                                setSelectedDayEvents(dayEvents);
+                                            }
+                                        }
+                                    }}
+                                    className={`p-3 w-full aspect-square flex flex-col items-center justify-center rounded-2xl relative transition-all ${isCurr ? 'bg-athos-black text-white shadow-lg' :
+                                        hasEvents ? 'bg-athos-orange/10 text-athos-black font-bold border border-athos-orange/30 hover:bg-athos-orange/20 hover:-translate-y-1' :
+                                            'text-gray-500 hover:bg-gray-50 border border-gray-100 hover:border-gray-300'
+                                        }`}
+                                >
+                                    <span className={`text-base tracking-tighter ${isCurr || hasEvents ? 'font-black' : 'font-medium'}`}>{day.getDate()}</span>
+                                    {hasEvents && (
+                                        <div className="absolute bottom-2 w-2 h-2 rounded-full bg-athos-orange animate-pulse" />
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Event List aside */}
+                <div className="w-full lg:w-1/2 bg-gray-50 rounded-[32px] p-8 border border-gray-100">
+                    <div className="h-full max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                        {selectedDayEvents ? (
+                            <>
+                                <div className="flex justify-between items-center mb-6 sticky top-0 bg-gray-50 z-10 py-2">
+                                    <h4 className="text-lg font-black text-athos-orange uppercase tracking-widest flex items-center gap-2">
+                                        <div className="w-1.5 h-6 bg-athos-orange rounded-full"></div>
+                                        Eventos del {new Date(selectedDayEvents[0].date).getDate()}
+                                    </h4>
+                                    <button onClick={() => setSelectedDayEvents(null)} className="text-xs font-bold text-gray-500 hover:text-athos-black underline">Volver al mes</button>
+                                </div>
+                                <div className="space-y-4">
+                                    {selectedDayEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
+                                        <div
+                                            key={e.id}
+                                            onClick={() => selectEvent(e.id)}
+                                            className="flex items-center gap-4 p-4 bg-white rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-gray-100 hover:border-athos-orange/30 shadow-sm hover:shadow-md hover:-translate-y-1"
+                                        >
+                                            <div className="w-16 h-16 bg-gray-50 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border border-gray-200">
+                                                <span className="text-xs font-bold text-gray-400 uppercase leading-none mb-1">
+                                                    {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
+                                                </span>
+                                                <span className="text-2xl font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
+                                            </div>
+                                            <div className="flex-grow">
+                                                <h5 className="font-bold text-base text-athos-black line-clamp-1">{e.title}</h5>
+                                                <p className="text-sm text-gray-500 font-medium flex items-center gap-1.5 mt-1"><MapPin size={14} className="text-athos-orange" /> {e.city}</p>
+                                            </div>
+                                            <ChevronRight size={20} className="text-gray-300 group-hover:text-athos-orange" />
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className="flex items-center gap-2 mb-6 sticky top-0 bg-gray-50 z-10 py-2">
+                                    <div className="w-1.5 h-6 bg-gray-400 rounded-full"></div>
+                                    <h4 className="text-lg font-black text-gray-500 uppercase tracking-widest">Eventos del Mes</h4>
+                                </div>
+                                <div className="space-y-4">
+                                    {events.filter(e => {
+                                        const d = new Date(e.date);
+                                        return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
+                                    }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
+                                        <div
+                                            key={e.id}
+                                            onClick={() => selectEvent(e.id)}
+                                            className="flex items-center gap-4 p-4 bg-white rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-gray-100 hover:border-athos-orange/30 shadow-sm hover:shadow-md hover:-translate-y-1 group"
+                                        >
+                                            <div className="w-16 h-16 bg-gray-50 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border border-gray-200 group-hover:border-athos-orange/30 transition-colors">
+                                                <span className="text-xs font-bold text-gray-400 uppercase leading-none mb-1">
+                                                    {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
+                                                </span>
+                                                <span className="text-2xl font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
+                                            </div>
+                                            <div className="flex-grow">
+                                                <h5 className="font-bold text-base text-athos-black line-clamp-1">{e.title}</h5>
+                                                <p className="text-sm text-gray-500 font-medium flex items-center gap-1.5 mt-1"><MapPin size={14} className="text-athos-orange" /> {e.city}</p>
+                                            </div>
+                                            <ChevronRight size={20} className="text-gray-300 group-hover:text-athos-orange transition-colors" />
+                                        </div>
+                                    ))}
+                                    {events.filter(e => {
+                                        const d = new Date(e.date);
+                                        return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
+                                    }).length === 0 && (
+                                            <div className="text-center text-sm text-gray-400 py-12 px-6 font-medium italic border-2 border-dashed border-gray-200 rounded-3xl bg-white">
+                                                No hay competiciones agendadas para este mes. Explora otros meses en el calendario.
+                                            </div>
+                                        )}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
             </section>
 
             {/* Past Events */}
