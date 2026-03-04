@@ -100,13 +100,13 @@ export const Home = () => {
                         onMouseLeave={handleMouseLeave}
                         onMouseUp={handleMouseUp}
                         onMouseMove={handleMouseMove}
-                        className={`w-full overflow-x-auto hide-scrollbar flex gap-3 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} pl-6 pr-12 md:px-0.5 snap-x snap-proximity`}
+                        className={`w-full overflow-x-auto hide-scrollbar flex gap-3 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} pl-6 pr-12 md:px-0.5`}
                         style={{ WebkitOverflowScrolling: 'touch' }}
                     >
                         {events.filter(e => e.status === 'upcoming').slice(0, 3).map((event, index) => (
                             <div
                                 key={event.id}
-                                className="shrink-0 w-[75vw] md:w-[850px] relative select-none snap-center md:snap-align-none"
+                                className="shrink-0 w-[75vw] md:w-[850px] relative select-none"
                                 onClick={() => handleItemClick(() => selectEvent(event.id))}
                             >
                                 <div className={`${index % 2 === 0 ? 'bg-athos-black' : 'bg-gray-100'} rounded-[24px] md:rounded-[40px] p-5 md:p-14 h-[150px] md:h-[450px] relative overflow-hidden flex items-center shadow-xl shadow-athos-black/20 group transition-transform active:scale-[0.99] border hover:shadow-[0_0_20px_rgba(255,77,0,0.1)] hover:border-athos-orange/30 ${index % 2 !== 0 ? 'border-gray-200' : 'border-transparent'}`}>
@@ -145,35 +145,35 @@ export const Home = () => {
                     </div>
                 </div>
 
-                {/* 4. NEW ARRIVALS (Horizontal Scroller) */}
-                <div className="mt-8 md:mt-12 pl-4 md:pl-0 mb-20 max-w-[1400px] mx-auto overflow-hidden">
-                    <div className="flex overflow-x-auto hide-scrollbar gap-3 md:gap-6 snap-x snap-proximity pr-4 pb-4">
+                {/* 4. NEW ARRIVALS (Grid 2 Columns Mobile) */}
+                <div className="mt-8 md:mt-12 px-4 md:px-0 mb-20 max-w-[1400px] mx-auto overflow-hidden">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-8 pb-4">
                         {displayProducts.map((product) => {
                             const isWishlisted = user?.wishlist.includes(product.id);
                             return (
-                                <div key={product.id} className="shrink-0 w-[150px] sm:w-[170px] md:w-[280px] snap-start group cursor-pointer bg-[#F8F9FA] md:bg-white p-2 md:p-4 rounded-[16px] md:rounded-[24px] border border-gray-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => selectProduct(product.id)}>
+                                <div key={product.id} className="group cursor-pointer bg-[#F8F9FA] md:bg-white p-2.5 sm:p-3 md:p-4 rounded-[16px] md:rounded-[24px] border border-gray-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => selectProduct(product.id)}>
                                     {/* Image Container */}
-                                    <div className="bg-[#EBECEE] md:bg-[#f0f0f0] rounded-[12px] md:rounded-[16px] aspect-square relative mb-2 flex items-center justify-center p-3 overflow-hidden">
+                                    <div className="bg-[#EBECEE] md:bg-[#f0f0f0] rounded-[12px] md:rounded-[16px] aspect-[4/5] relative mb-2.5 flex items-center justify-center p-3 overflow-hidden">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
-                                            className="absolute top-1.5 right-1.5 z-10 bg-white/90 p-1.5 rounded-full shadow-sm hover:scale-110 transition-transform"
+                                            className="absolute top-1.5 right-1.5 z-10 bg-white/90 w-6 h-6 rounded-full shadow-sm hover:scale-110 flex items-center justify-center transition-transform"
                                         >
-                                            <Heart size={12} className={isWishlisted ? "fill-red-500 text-red-500" : "text-gray-300"} />
+                                            <Heart size={11} className={isWishlisted ? "fill-red-500 text-red-500" : "text-gray-300"} />
                                         </button>
                                         <img
                                             src={product.image}
                                             alt={product.name}
-                                            className="w-full h-full object-contain mix-blend-multiply"
+                                            className="w-[90%] h-[90%] object-contain mix-blend-multiply"
                                         />
                                     </div>
 
                                     {/* Info */}
-                                    <div className="px-1 flex flex-col justify-between flex-1">
+                                    <div className="px-0.5 flex flex-col justify-between flex-1">
                                         <h4 className="font-bold text-athos-black text-[10px] sm:text-[11px] md:text-sm uppercase tracking-tight leading-tight truncate mb-1">{product.name}</h4>
                                         <div className="flex justify-between items-end mt-auto">
                                             <span className="font-black text-[13px] sm:text-[14px] md:text-lg text-athos-black">${product.price.toLocaleString('es-CO')}</span>
                                             <div className="flex items-center gap-0.5 mb-0.5">
-                                                <Star size={8} className="fill-athos-orange text-athos-orange" />
+                                                <Star size={7} className="fill-athos-orange text-athos-orange" />
                                                 <span className="text-[9px] font-bold text-gray-500">{product.rating}</span>
                                             </div>
                                         </div>
