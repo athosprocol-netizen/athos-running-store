@@ -98,8 +98,9 @@ export const Home = () => {
                         ref={sliderRef}
                         onMouseDown={handleMouseDown}
                         onMouseLeave={handleMouseLeave}
+                        onMouseUp={handleMouseUp}
                         onMouseMove={handleMouseMove}
-                        className={`w-full overflow-x-auto overflow-y-hidden hide-scrollbar flex gap-3 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} pl-6 pr-12 md:px-0.5 snap-x snap-mandatory`}
+                        className={`w-full overflow-x-auto hide-scrollbar flex gap-3 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} pl-6 pr-12 md:px-0.5 snap-x snap-mandatory touch-pan-x`}
                     >
                         {events.filter(e => e.status === 'upcoming').slice(0, 3).map((event, index) => (
                             <div
