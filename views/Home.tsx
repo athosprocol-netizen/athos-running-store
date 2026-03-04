@@ -93,13 +93,13 @@ export const Home = () => {
             <div className="max-w-[1400px] mx-auto md:px-10">
 
                 {/* 2. HERO CAROUSEL (DRAGGABLE) */}
-                <div className="mt-2 px-6 md:px-0">
+                <div className="mt-2 md:px-0">
                     <div
                         ref={sliderRef}
                         onMouseDown={handleMouseDown}
                         onMouseLeave={handleMouseLeave}
                         onMouseMove={handleMouseMove}
-                        className={`w-full overflow-x-auto overflow-y-hidden hide-scrollbar flex gap-3 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-4 md:px-0.5 snap-x snap-mandatory`}
+                        className={`w-full overflow-x-auto overflow-y-hidden hide-scrollbar flex gap-3 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} pl-6 pr-12 md:px-0.5 snap-x snap-mandatory`}
                     >
                         {events.filter(e => e.status === 'upcoming').slice(0, 3).map((event, index) => (
                             <div
@@ -143,69 +143,42 @@ export const Home = () => {
                     </div>
                 </div>
 
-                {/* 3. CATEGORÍAS */}
-                <div className="mt-8 md:mt-12 w-full">
-                    <div className="flex justify-between items-end mb-4 px-6 md:px-0 max-w-[1400px] mx-auto">
-                        <h2 className="text-xl md:text-2xl font-black text-athos-black">Categorías</h2>
-                        <button className="text-sm font-bold text-athos-orange hover:underline">Ver todo</button>
-                    </div>
-                    <div className="flex justify-between items-center px-6 md:px-0 mb-8 overflow-x-auto hide-scrollbar gap-4 md:gap-8 max-w-[1400px] mx-auto">
-                        {categories.map((cat, idx) => {
-                            const Icon = cat.icon;
-                            return (
-                                <div key={idx} className="flex flex-col items-center gap-2 cursor-pointer group min-w-[70px]">
-                                    <div className="w-16 h-16 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center group-hover:shadow-md transition-shadow group-hover:border-athos-orange/30">
-                                        <Icon size={24} className="text-athos-orange" />
-                                    </div>
-                                    <span className="text-xs font-bold text-gray-600 group-hover:text-athos-orange">{cat.label}</span>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                {/* 4. NUEVOS LANZAMIENTOS (Restored UI) */}
-                <div className="mt-4 md:mt-8 w-full">
-                    <div className="px-6 md:px-10 max-w-[1400px] mx-auto mb-4">
-                        <h3 className="text-xl md:text-3xl font-black italic tracking-tighter uppercase">
-                            <span className="text-athos-black">Nuevos </span>
-                            <span className="text-athos-orange">Lanzamientos</span>
-                        </h3>
-                    </div>
-
-                    <div className="w-full overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 px-6 md:px-10 pb-8 snap-x snap-mandatory touch-pan-x">
-                        {displayProducts.map((product, index) => {
+                {/* 4. NEW ARRIVALS (Grid Style) */}
+                <div className="mt-8 md:mt-12 px-4 md:px-0 mb-20">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 md:gap-x-8 gap-y-6 md:gap-y-12">
+                        {displayProducts.map((product) => {
                             const isWishlisted = user?.wishlist.includes(product.id);
-                            // Generate background colors directly from index like the screenshot
-                            const bgColors = ['bg-red-600', 'bg-[#bad538]', 'bg-blue-500', 'bg-purple-500', 'bg-orange-500'];
-                            const bgColor = bgColors[index % bgColors.length];
-
                             return (
-                                <div key={product.id} className="shrink-0 w-[240px] md:w-[320px] snap-center md:snap-align-none cursor-pointer group" onClick={() => selectProduct(product.id)}>
-                                    <div className={`${bgColor} rounded-[28px] md:rounded-[40px] aspect-[4/5] relative overflow-hidden flex flex-col justify-between p-4 shadow-md transition-transform hover:-translate-y-1`}>
+                                <div key={product.id} className="group cursor-pointer bg-white p-2.5 md:p-4 rounded-[20px] md:rounded-[36px] shadow-[0_4px_15px_rgba(0,0,0,0.03)] border border-gray-100 transition-all hover:shadow-[0_20px_40px_rgba(255,77,0,0.1)] hover:-translate-y-2" onClick={() => selectProduct(product.id)}>
+                                    {/* Image Container */}
+                                    <div className="bg-[#f0f0f0] rounded-[16px] md:rounded-[24px] aspect-square relative mb-3 md:mb-6 flex items-center justify-center p-3 md:p-4 overflow-hidden">
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
+                                            className="absolute top-2 right-2 md:top-4 md:right-4 z-10 bg-white p-1.5 md:p-2.5 rounded-full shadow-sm hover:scale-110 transition-transform"
+                                        >
+                                            <Heart size={14} className={isWishlisted ? "fill-red-500 text-red-500 md:w-[18px] md:h-[18px]" : "text-gray-300 hover:text-gray-500 md:w-[18px] md:h-[18px]"} />
+                                        </button>
+                                        <img
+                                            src={product.image}
+                                            alt={product.name}
+                                            className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
+                                        />
+                                        {product.id === 'p1' && (
+                                            <span className="absolute bottom-2 left-2 bg-athos-orange text-white text-[8px] font-black uppercase px-2 py-0.5 rounded shadow-sm">
+                                                Destacado
+                                            </span>
+                                        )}
+                                    </div>
 
-                                        {/* Top section: button */}
-                                        <div className="flex justify-between w-full relative z-10 w-full">
-                                            <div className="bg-transparent"></div> {/* Spacer */}
-                                            <div className="w-8 h-8 md:w-10 md:h-10 bg-white/90 rounded-full flex items-center justify-center text-athos-orange shadow-sm hover:scale-110 transition-transform">
-                                                <ArrowRight size={16} strokeWidth={3} />
+                                    {/* Info */}
+                                    <div className="px-1 line-clamp-2">
+                                        <h4 className="font-bold text-athos-black text-[11px] md:text-lg truncate uppercase tracking-tight mb-0.5">{product.name}</h4>
+                                        <div className="flex justify-between items-center mt-1">
+                                            <span className="font-black text-sm md:text-2xl text-athos-black">${product.price.toLocaleString('es-CO')}</span>
+                                            <div className="flex items-center gap-1 bg-gray-50 px-1 md:px-1.5 py-0.5 rounded-md">
+                                                <Star size={8} className="fill-athos-orange text-athos-orange md:w-[10px] md:h-[10px]" />
+                                                <span className="text-[10px] md:text-xs font-bold text-gray-600">{product.rating}</span>
                                             </div>
-                                        </div>
-
-                                        {/* Image */}
-                                        <div className="absolute inset-0 flex items-center justify-center p-6 mt-4">
-                                            <img
-                                                src={product.image}
-                                                alt={product.name}
-                                                className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110 drop-shadow-2xl"
-                                                style={{ filter: index === 0 || index === 2 ? 'drop-shadow(0px 20px 10px rgba(0,0,0,0.3))' : 'none' }}
-                                            />
-                                        </div>
-
-                                        {/* Bottom info (optional) */}
-                                        <div className="relative z-10 mt-auto bg-white/95 backdrop-blur-sm rounded-xl p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-4 group-hover:translate-y-0 hidden md:block">
-                                            <h4 className="font-bold text-athos-black text-xs md:text-sm truncate uppercase">{product.name}</h4>
-                                            <span className="font-black text-sm md:text-base text-athos-orange">${product.price.toLocaleString('es-CO')}</span>
                                         </div>
                                     </div>
                                 </div>
