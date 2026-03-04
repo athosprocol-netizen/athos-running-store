@@ -99,14 +99,13 @@ export const Home = () => {
                         ref={sliderRef}
                         onMouseDown={handleMouseDown}
                         onMouseLeave={handleMouseLeave}
-                        onMouseUp={handleMouseUp}
                         onMouseMove={handleMouseMove}
-                        className={`w-full overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-4 md:px-0.5 snap-x snap-mandatory touch-pan-x`}
+                        className={`w-full overflow-x-auto overflow-y-hidden hide-scrollbar flex gap-3 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-4 md:px-0.5 snap-x snap-mandatory`}
                     >
                         {events.filter(e => e.status === 'upcoming').slice(0, 3).map((event, index) => (
                             <div
                                 key={event.id}
-                                className="shrink-0 w-[82vw] md:w-[850px] relative select-none snap-center md:snap-align-none"
+                                className="shrink-0 w-[75vw] md:w-[850px] relative select-none snap-center md:snap-align-none"
                                 onClick={() => handleItemClick(() => selectEvent(event.id))}
                             >
                                 <div className={`${index % 2 === 0 ? 'bg-athos-black' : 'bg-gray-100'} rounded-[24px] md:rounded-[40px] p-5 md:p-14 h-[150px] md:h-[450px] relative overflow-hidden flex items-center shadow-xl shadow-athos-black/20 group transition-transform active:scale-[0.99] border hover:shadow-[0_0_20px_rgba(255,77,0,0.1)] hover:border-athos-orange/30 ${index % 2 !== 0 ? 'border-gray-200' : 'border-transparent'}`}>
@@ -148,18 +147,18 @@ export const Home = () => {
                 {/* 4. NEW ARRIVALS (Grid Style) */}
                 <div className="mt-8 md:mt-12 px-6 md:px-0 mb-20">
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 md:gap-x-8 gap-y-6 md:gap-y-12">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-8 gap-y-6 md:gap-y-12">
                         {displayProducts.map((product) => {
                             const isWishlisted = user?.wishlist.includes(product.id);
                             return (
-                                <div key={product.id} className="group cursor-pointer bg-white p-2 md:p-4 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-gray-100 transition-all hover:shadow-[0_20px_40px_rgba(255,77,0,0.1)] hover:-translate-y-2" onClick={() => selectProduct(product.id)}>
+                                <div key={product.id} className="group cursor-pointer bg-white p-1.5 md:p-4 rounded-2xl md:rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 transition-all hover:shadow-[0_20px_40px_rgba(255,77,0,0.1)] hover:-translate-y-2" onClick={() => selectProduct(product.id)}>
                                     {/* Image Container */}
-                                    <div className="bg-[#F9F9F9] rounded-[20px] aspect-[4/5] relative mb-3 md:mb-6 overflow-hidden">
+                                    <div className="bg-[#F9F9F9] rounded-xl md:rounded-[20px] aspect-[4/5] relative mb-2 md:mb-6 overflow-hidden">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
-                                            className="absolute top-3 right-3 z-10 bg-white p-2 rounded-full shadow-sm hover:scale-110 transition-transform"
+                                            className="absolute top-2 right-2 md:top-3 md:right-3 z-10 bg-white p-1.5 md:p-2 rounded-full shadow-sm hover:scale-110 transition-transform"
                                         >
-                                            <Heart size={16} className={isWishlisted ? "fill-red-500 text-red-500" : "text-gray-300 hover:text-gray-500"} />
+                                            <Heart size={14} className={isWishlisted ? "fill-red-500 text-red-500" : "text-gray-300 hover:text-gray-500"} />
                                         </button>
                                         <img
                                             src={product.image}
@@ -175,12 +174,12 @@ export const Home = () => {
 
                                     {/* Info */}
                                     <div className="px-1 line-clamp-2">
-                                        <h4 className="font-bold text-athos-black text-xs md:text-lg truncate uppercase tracking-tight mb-0.5">{product.name}</h4>
+                                        <h4 className="font-bold text-athos-black text-[10px] md:text-lg truncate uppercase tracking-tight mb-0.5">{product.name}</h4>
                                         <div className="flex justify-between items-center mt-1">
-                                            <span className="font-black text-lg md:text-2xl text-athos-black">${product.price.toLocaleString('es-CO')}</span>
-                                            <div className="flex items-center gap-1 bg-gray-50 px-1.5 py-0.5 rounded-md">
-                                                <Star size={10} className="fill-athos-orange text-athos-orange" />
-                                                <span className="text-xs font-bold text-gray-600">{product.rating}</span>
+                                            <span className="font-black text-sm md:text-2xl text-athos-black">${product.price.toLocaleString('es-CO')}</span>
+                                            <div className="flex items-center gap-1 bg-gray-50 px-1 md:px-1.5 py-0.5 rounded-md">
+                                                <Star size={8} className="fill-athos-orange text-athos-orange md:w-[10px] md:h-[10px]" />
+                                                <span className="text-[10px] md:text-xs font-bold text-gray-600">{product.rating}</span>
                                             </div>
                                         </div>
                                     </div>

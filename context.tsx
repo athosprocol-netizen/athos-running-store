@@ -52,6 +52,38 @@ const MOCK_EVENTS: Event[] = [
     status: 'upcoming',
     maxParticipants: 8000,
     currentParticipants: 5000
+  },
+  {
+    id: 'e4',
+    title: 'Carrera Nocturna Neon 10K',
+    date: '2026-03-20T19:00:00Z',
+    location: 'Centro Histórico',
+    city: 'Cartagena',
+    description: 'Ilumina la noche de Cartagena en este evento espectacular. Corre 10 kilómetros por las murallas y las calles principales bajo la luz de la luna, con pintura de neón, música electrónica y un ambiente festivo como ningún otro.',
+    price: 110000,
+    image: 'https://images.unsplash.com/photo-1517466787929-bc90951d0974?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+    organizerId: 'org2',
+    distances: ['10K'],
+    maxParticipants: 2000,
+    currentParticipants: 1500,
+    status: 'upcoming',
+    isFeatured: false
+  },
+  {
+    id: 'e5',
+    title: 'Expedición Trail Andes',
+    date: '2026-03-20T06:00:00Z',
+    location: 'Reserva Natural',
+    city: 'Manizales',
+    description: 'Para los más aventureros. Una carrera de trail running que te llevará por los senderos más desafiantes y hermosos del eje cafetero. Prepárate para el barro, la montaña y la naturaleza en su estado más puro.',
+    price: 130000,
+    image: 'https://images.unsplash.com/photo-1502224562085-639556652f33?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+    organizerId: 'org1',
+    distances: ['15K', '30K'],
+    maxParticipants: 800,
+    currentParticipants: 600,
+    status: 'upcoming',
+    isFeatured: false
   }
 ];
 

@@ -237,7 +237,7 @@ export const Navbar = () => {
                     >
                         <Calendar size={24} className={hasEventToday ? 'text-athos-orange' : 'text-gray-600'} />
                         <span className={`text-[8px] font-black uppercase tracking-widest mt-0.5 leading-none ${hasEventToday ? 'text-athos-orange' : 'text-gray-400'}`}>
-                            {hasEventToday ? 'Eventos' : 'Libre'}
+                            Eventos
                         </span>
                         {hasEventToday && (
                             <span className="absolute -top-1 -right-1 w-2 h-2 bg-athos-orange rounded-full border border-white"></span>
@@ -387,7 +387,7 @@ export const Navbar = () => {
                 <>
                     <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setIsCalendarOpen(false)} />
                     <div
-                        className="fixed bottom-0 md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 left-0 right-0 z-[70] bg-white rounded-t-3xl md:rounded-3xl p-6 pb-10 md:pb-6 shadow-2xl animate-slide-up md:animate-fade-in flex flex-col md:w-[450px]"
+                        className="fixed top-[72px] md:top-[85px] right-2 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[calc(100vw-16px)] md:w-[450px] z-[70] bg-white rounded-3xl p-6 pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top"
                     >
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-black italic uppercase text-athos-black flex items-center gap-2">
