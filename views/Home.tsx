@@ -41,7 +41,6 @@ export const Home = () => {
 
     const handleMouseMove = (e: React.MouseEvent) => {
         if (!isDown || !sliderRef.current) return;
-        e.preventDefault();
         const x = e.pageX - sliderRef.current.offsetLeft;
         const walk = (x - startX) * 3; // Scroll-fastness
         sliderRef.current.scrollLeft = scrollLeft - walk;
@@ -147,23 +146,23 @@ export const Home = () => {
                 {/* 4. NEW ARRIVALS (Grid Style) */}
                 <div className="mt-8 md:mt-12 px-6 md:px-0 mb-20">
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-8 gap-y-6 md:gap-y-12">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-6 md:gap-y-12 px-2 md:px-0">
                         {displayProducts.map((product) => {
                             const isWishlisted = user?.wishlist.includes(product.id);
                             return (
-                                <div key={product.id} className="group cursor-pointer bg-white p-1.5 md:p-4 rounded-2xl md:rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 transition-all hover:shadow-[0_20px_40px_rgba(255,77,0,0.1)] hover:-translate-y-2" onClick={() => selectProduct(product.id)}>
+                                <div key={product.id} className="group cursor-pointer bg-white p-2 md:p-4 rounded-3xl md:rounded-[36px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 transition-all hover:shadow-[0_20px_40px_rgba(255,77,0,0.1)] hover:-translate-y-2" onClick={() => selectProduct(product.id)}>
                                     {/* Image Container */}
-                                    <div className="bg-[#F9F9F9] rounded-xl md:rounded-[20px] aspect-[4/5] relative mb-2 md:mb-6 overflow-hidden">
+                                    <div className="bg-[#F9F9F9] rounded-2xl md:rounded-[24px] aspect-[4/5] relative mb-4 md:mb-6 flex items-center justify-center p-3 md:p-0 overflow-hidden">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
-                                            className="absolute top-2 right-2 md:top-3 md:right-3 z-10 bg-white p-1.5 md:p-2 rounded-full shadow-sm hover:scale-110 transition-transform"
+                                            className="absolute top-2 right-2 md:top-4 md:right-4 z-10 bg-white p-1.5 md:p-2.5 rounded-full shadow-sm hover:scale-110 transition-transform"
                                         >
-                                            <Heart size={14} className={isWishlisted ? "fill-red-500 text-red-500" : "text-gray-300 hover:text-gray-500"} />
+                                            <Heart size={14} className={isWishlisted ? "fill-red-500 text-red-500 md:w-[18px] md:h-[18px]" : "text-gray-300 hover:text-gray-500 md:w-[18px] md:h-[18px]"} />
                                         </button>
                                         <img
                                             src={product.image}
                                             alt={product.name}
-                                            className="w-full h-full object-cover transition-transform duration-500"
+                                            className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
                                         />
                                         {product.id === 'p1' && (
                                             <span className="absolute bottom-3 left-3 bg-athos-orange text-white text-[9px] font-black uppercase px-2 py-1 rounded-md shadow-lg shadow-athos-orange/30">

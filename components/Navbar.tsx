@@ -387,10 +387,10 @@ export const Navbar = () => {
                 <>
                     <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setIsCalendarOpen(false)} />
                     <div
-                        className="fixed top-[72px] md:top-[85px] right-2 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[calc(100vw-16px)] md:w-[450px] z-[70] bg-white rounded-3xl p-6 pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top"
+                        className="fixed top-[72px] md:top-[85px] right-2 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[calc(100vw-32px)] md:w-[450px] z-[70] bg-white rounded-3xl p-4 md:p-6 pb-4 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top"
                     >
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-black italic uppercase text-athos-black flex items-center gap-2">
+                        <div className="flex justify-between items-center mb-4 md:mb-6">
+                            <h3 className="text-lg md:text-xl font-black italic uppercase text-athos-black flex items-center gap-2">
                                 <Calendar size={24} className="text-athos-orange" />
                                 Mensual
                             </h3>
@@ -435,14 +435,14 @@ export const Navbar = () => {
                                                 }
                                             }
                                         }}
-                                        className={`p-2 w-full aspect-square flex flex-col items-center justify-center rounded-xl relative transition-all ${isCurr ? 'bg-athos-black text-white shadow-md' :
+                                        className={`p-1.5 md:p-2 w-full aspect-square flex flex-col items-center justify-center rounded-xl relative transition-all ${isCurr ? 'bg-athos-black text-white shadow-md' :
                                             hasEvents ? 'bg-athos-orange/10 text-athos-black font-bold border border-athos-orange/30 hover:bg-athos-orange/20' :
                                                 'text-gray-500 hover:bg-gray-50 border border-transparent'
                                             }`}
                                     >
-                                        <span className={`text-sm tracking-tighter ${isCurr ? 'font-black' : ''}`}>{day.getDate()}</span>
+                                        <span className={`text-xs md:text-sm tracking-tighter ${isCurr ? 'font-black' : ''}`}>{day.getDate()}</span>
                                         {hasEvents && (
-                                            <div className="absolute bottom-1.5 w-1.5 h-1.5 rounded-full bg-athos-orange" />
+                                            <div className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-athos-orange" />
                                         )}
                                     </button>
                                 );
@@ -450,78 +450,84 @@ export const Navbar = () => {
                         </div>
 
                         {/* Selected Month Events List */}
-                        <div className="space-y-3 max-h-[180px] overflow-y-auto pr-1">
-                            {selectedDayEvents ? (
-                                <>
-                                    <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
-                                        <h4 className="text-xs font-black text-athos-orange uppercase tracking-widest flex items-center gap-1">
-                                            Eventos del {new Date(selectedDayEvents[0].date).getDate()}
-                                        </h4>
-                                        <button onClick={() => setSelectedDayEvents(null)} className="text-[10px] font-bold text-gray-500 hover:text-athos-black underline">Volver al mes</button>
-                                    </div>
-                                    {selectedDayEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
-                                        <div
-                                            key={e.id}
-                                            onClick={() => {
-                                                selectEvent(e.id);
-                                                setIsCalendarOpen(false);
-                                                setIsMobileMenuOpen(false);
-                                            }}
-                                            className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-transparent hover:border-athos-orange/20"
-                                        >
-                                            <div className="w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-gray-100">
-                                                <span className="text-[10px] font-bold text-gray-400 uppercase leading-none mb-0.5">
-                                                    {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
-                                                </span>
-                                                <span className="text-base font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
-                                            </div>
-                                            <div className="flex-grow">
-                                                <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
-                                                <p className="text-xs text-gray-500 font-medium flex items-center gap-1">📍 {e.city}</p>
-                                            </div>
-                                            <ChevronRight size={16} className="text-gray-300" />
+                        <div className="relative">
+                            <div className="space-y-2 md:space-y-3 max-h-[140px] md:max-h-[180px] overflow-y-auto pr-1">
+                                {selectedDayEvents ? (
+                                    <>
+                                        <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
+                                            <h4 className="text-xs font-black text-athos-orange uppercase tracking-widest flex items-center gap-1">
+                                                Eventos del {new Date(selectedDayEvents[0].date).getDate()}
+                                            </h4>
+                                            <button onClick={() => setSelectedDayEvents(null)} className="text-[10px] font-bold text-gray-500 hover:text-athos-black underline">Volver al mes</button>
                                         </div>
-                                    ))}
-                                </>
-                            ) : (
-                                <>
-                                    <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 sticky top-0 bg-white z-10 py-1">Eventos del Mes</h4>
-                                    {events.filter(e => {
-                                        const d = new Date(e.date);
-                                        return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
-                                    }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
-                                        <div
-                                            key={e.id}
-                                            onClick={() => {
-                                                selectEvent(e.id);
-                                                setIsCalendarOpen(false);
-                                                setIsMobileMenuOpen(false);
-                                            }}
-                                            className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-transparent hover:border-athos-orange/20"
-                                        >
-                                            <div className="w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-gray-100">
-                                                <span className="text-[10px] font-bold text-gray-400 uppercase leading-none mb-0.5">
-                                                    {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
-                                                </span>
-                                                <span className="text-base font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
+                                        {selectedDayEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
+                                            <div
+                                                key={e.id}
+                                                onClick={() => {
+                                                    selectEvent(e.id);
+                                                    setIsCalendarOpen(false);
+                                                    setIsMobileMenuOpen(false);
+                                                }}
+                                                className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-transparent hover:border-athos-orange/20"
+                                            >
+                                                <div className="w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-gray-100">
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase leading-none mb-0.5">
+                                                        {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
+                                                    </span>
+                                                    <span className="text-base font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
+                                                </div>
+                                                <div className="flex-grow">
+                                                    <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
+                                                    <p className="text-xs text-gray-500 font-medium flex items-center gap-1">📍 {e.city}</p>
+                                                </div>
+                                                <ChevronRight size={16} className="text-gray-300" />
                                             </div>
-                                            <div className="flex-grow">
-                                                <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
-                                                <p className="text-xs text-gray-500 font-medium flex items-center gap-1">📍 {e.city}</p>
+                                        ))}
+                                    </>
+                                ) : (
+                                    <>
+                                        <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 sticky top-0 bg-white z-10 py-1">Eventos del Mes</h4>
+                                        {events.filter(e => {
+                                            const d = new Date(e.date);
+                                            return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
+                                        }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
+                                            <div
+                                                key={e.id}
+                                                onClick={() => {
+                                                    selectEvent(e.id);
+                                                    setIsCalendarOpen(false);
+                                                    setIsMobileMenuOpen(false);
+                                                }}
+                                                className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-transparent hover:border-athos-orange/20"
+                                            >
+                                                <div className="w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-gray-100">
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase leading-none mb-0.5">
+                                                        {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
+                                                    </span>
+                                                    <span className="text-base font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
+                                                </div>
+                                                <div className="flex-grow">
+                                                    <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
+                                                    <p className="text-xs text-gray-500 font-medium flex items-center gap-1">📍 {e.city}</p>
+                                                </div>
+                                                <ChevronRight size={16} className="text-gray-300" />
                                             </div>
-                                            <ChevronRight size={16} className="text-gray-300" />
-                                        </div>
-                                    ))}
-                                    {events.filter(e => {
-                                        const d = new Date(e.date);
-                                        return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
-                                    }).length === 0 && (
-                                            <div className="text-center text-xs text-gray-400 py-6 font-medium italic border-2 border-dashed border-gray-100 rounded-2xl">
-                                                No hay eventos programados en este mes.
-                                            </div>
-                                        )}
-                                </>
-                            )}
+                                        ))}
+                                        {events.filter(e => {
+                                            const d = new Date(e.date);
+                                            return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
+                                        }).length === 0 && (
+                                                <div className="text-center text-xs text-gray-400 py-6 font-medium italic border-2 border-dashed border-gray-100 rounded-2xl">
+                                                    No hay eventos programados en este mes.
+                                                </div>
+                                            )}
+                                    </>
+                                )}
+                            </div>
+                            {/* Scroll Indicator (Only active if there's enough content to overflow visually) */}
+                            <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-white to-transparent pointer-events-none flex items-end justify-center pb-1 md:hidden">
+                                <span className="text-[8px] font-black uppercase tracking-widest text-gray-400 bg-white/80 px-2 rounded-full shadow-sm border border-gray-100 pb-0.5">Desliza para ver más</span>
+                            </div>
                         </div>
                     </div>
                     <style>{`
