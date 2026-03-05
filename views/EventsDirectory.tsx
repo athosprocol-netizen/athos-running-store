@@ -153,11 +153,14 @@ export const EventsDirectory = () => {
                                             onClick={() => selectEvent(e.id)}
                                             className="flex items-center gap-4 p-4 bg-white rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-gray-100 hover:border-athos-orange/30 shadow-sm hover:shadow-md hover:-translate-y-1"
                                         >
-                                            <div className="w-16 h-16 bg-gray-50 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border border-gray-200">
-                                                <span className="text-xs font-bold text-gray-400 uppercase leading-none mb-1">
+                                            <div
+                                                className={`w-16 h-16 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border ${e.gradientColors ? 'border-transparent shadow-inner' : 'bg-gray-50 border-gray-200'}`}
+                                                style={e.gradientColors ? { background: `linear-gradient(135deg, ${e.gradientColors[0]}, ${e.gradientColors[1]})` } : {}}
+                                            >
+                                                <span className={`text-xs font-bold uppercase leading-none mb-1 ${e.gradientColors ? 'text-white/90' : 'text-gray-400'}`}>
                                                     {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
                                                 </span>
-                                                <span className="text-2xl font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
+                                                <span className={`text-2xl font-black leading-none ${e.gradientColors ? 'text-white shadow-sm' : 'text-athos-orange'}`}>{new Date(e.date).getDate()}</span>
                                             </div>
                                             <div className="flex-grow">
                                                 <h5 className="font-bold text-base text-athos-black line-clamp-1">{e.title}</h5>
@@ -184,11 +187,14 @@ export const EventsDirectory = () => {
                                             onClick={() => selectEvent(e.id)}
                                             className="flex items-center gap-4 p-4 bg-white rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-gray-100 hover:border-athos-orange/30 shadow-sm hover:shadow-md hover:-translate-y-1 group"
                                         >
-                                            <div className="w-16 h-16 bg-gray-50 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border border-gray-200 group-hover:border-athos-orange/30 transition-colors">
-                                                <span className="text-xs font-bold text-gray-400 uppercase leading-none mb-1">
+                                            <div
+                                                className={`w-16 h-16 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border transition-colors ${e.gradientColors ? 'border-transparent shadow-inner' : 'bg-gray-50 border-gray-200 group-hover:border-athos-orange/30'}`}
+                                                style={e.gradientColors ? { background: `linear-gradient(135deg, ${e.gradientColors[0]}, ${e.gradientColors[1]})` } : {}}
+                                            >
+                                                <span className={`text-xs font-bold uppercase leading-none mb-1 ${e.gradientColors ? 'text-white/90' : 'text-gray-400'}`}>
                                                     {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
                                                 </span>
-                                                <span className="text-2xl font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
+                                                <span className={`text-2xl font-black leading-none ${e.gradientColors ? 'text-white drop-shadow-sm' : 'text-athos-orange'}`}>{new Date(e.date).getDate()}</span>
                                             </div>
                                             <div className="flex-grow">
                                                 <h5 className="font-bold text-base text-athos-black line-clamp-1">{e.title}</h5>
@@ -227,14 +233,17 @@ export const EventsDirectory = () => {
                                 className="group bg-white rounded-[32px] overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_20px_40px_rgba(255,77,0,0.1)] hover:-translate-y-2 hover:border-athos-orange/30 transition-all cursor-pointer flex flex-col"
                                 onClick={() => selectEvent(event.id)}
                             >
-                                <div className="h-64 overflow-hidden relative">
-                                    <div className="absolute inset-0 bg-gradient-to-t from-athos-black/80 via-transparent to-transparent z-10" />
+                                <div
+                                    className="h-64 overflow-hidden relative bg-gray-100"
+                                    style={event.gradientColors ? { background: `linear-gradient(135deg, ${event.gradientColors[0]}, ${event.gradientColors[1]})` } : {}}
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-t from-athos-black/90 via-athos-black/20 to-transparent z-10" />
                                     {event.isFeatured && (
                                         <span className="absolute top-4 left-4 z-20 bg-athos-orange text-white text-[10px] font-black uppercase px-3 py-1.5 rounded-lg shadow-lg">
                                             Destacado
                                         </span>
                                     )}
-                                    <img src={event.image || '/imagen_bordes_difuminados.png'} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                    <img src={event.image || '/imagen_bordes_difuminados.png'} alt={event.title} className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${event.gradientColors ? 'mix-blend-overlay opacity-80' : ''}`} />
                                     <div className="absolute bottom-4 left-4 z-20">
                                         <h3 className="text-white text-2xl font-black italic tracking-tight">{event.title}</h3>
                                     </div>
@@ -291,8 +300,13 @@ export const EventsDirectory = () => {
                                 className="group bg-gray-50 rounded-[24px] p-4 flex gap-4 items-center cursor-pointer hover:bg-gray-100 transition-colors border border-gray-200"
                                 onClick={() => selectEvent(event.id)}
                             >
-                                <img src={event.image || '/medalleroverde.png'} alt={event.title} className="w-20 h-20 rounded-2xl object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
-                                <div>
+                                <div
+                                    className="w-20 h-20 rounded-2xl flex-shrink-0 relative overflow-hidden bg-gray-200 group-hover:shadow-md transition-shadow"
+                                    style={event.gradientColors ? { background: `linear-gradient(135deg, ${event.gradientColors[0]}, ${event.gradientColors[1]})` } : {}}
+                                >
+                                    <img src={event.image || '/medalleroverde.png'} alt={event.title} className={`w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all ${event.gradientColors ? 'mix-blend-overlay' : ''}`} />
+                                </div>
+                                <div className="z-10 relative">
                                     <h4 className="font-black italic text-athos-black leading-tight mb-1 group-hover:text-athos-orange transition-colors">{event.title}</h4>
                                     <p className="text-xs font-bold text-gray-400">{new Date(event.date).getFullYear()} • {event.city}</p>
                                 </div>

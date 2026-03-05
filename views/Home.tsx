@@ -115,17 +115,21 @@ export const Home = () => {
                                 className="shrink-0 w-[88vw] md:w-[850px] relative select-none"
                                 onClick={() => handleItemClick(() => selectEvent(event.id))}
                             >
-                                <div className={`${index % 2 === 0 ? 'bg-athos-black' : 'bg-gray-100'} rounded-[20px] md:rounded-[40px] p-5 md:p-14 h-[160px] sm:h-[180px] md:h-[450px] relative overflow-hidden flex items-center shadow-md group border hover:border-athos-orange/30 ${index % 2 !== 0 ? 'border-gray-200' : 'border-transparent'}`}>
+                                <div
+                                    className={`rounded-[20px] md:rounded-[40px] p-5 md:p-14 h-[160px] sm:h-[180px] md:h-[450px] relative overflow-hidden flex items-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] group border hover:shadow-xl transition-all ${index % 2 !== 0 && !event.gradientColors ? 'border-gray-200 bg-gray-100' : 'border-transparent'}`}
+                                    style={event.gradientColors ? { background: `linear-gradient(135deg, ${event.gradientColors[0]}, ${event.gradientColors[1]})` } : (index % 2 === 0 ? { backgroundColor: '#111' } : {})}
+                                >
                                     <div className="relative z-10 w-[68%] md:w-[60%] pointer-events-none flex flex-col justify-center h-full">
-                                        <span className={`${index % 2 === 0 ? 'text-athos-orange' : 'text-gray-500'} font-bold uppercase tracking-widest text-[8px] md:text-sm mb-1.5 md:mb-3 block`}>Evento Destacado</span>
-                                        <h2 className={`${index % 2 === 0 ? 'text-white' : 'text-athos-black'} text-xl sm:text-2xl md:text-5xl lg:text-5xl xl:text-6xl font-black italic tracking-tighter leading-[0.9] mb-1.5 md:mb-6 uppercase line-clamp-2`}>
+                                        <span className={`${index % 2 === 0 || event.gradientColors ? 'text-white/80' : 'text-gray-500'} font-bold uppercase tracking-widest text-[8px] md:text-sm mb-1.5 md:mb-3 block`}>Evento Destacado</span>
+                                        <h2 className={`${index % 2 === 0 || event.gradientColors ? 'text-white' : 'text-athos-black'} text-xl sm:text-2xl md:text-5xl lg:text-5xl xl:text-6xl font-black italic tracking-tighter leading-[0.9] mb-1.5 md:mb-6 uppercase line-clamp-2`}>
                                             {event.title}
                                         </h2>
-                                        <p className={`${index % 2 === 0 ? 'text-gray-400' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[140px] md:max-w-[250px] leading-tight line-clamp-2 mt-0.5`}>
+                                        <p className={`${index % 2 === 0 || event.gradientColors ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[140px] md:max-w-[250px] leading-tight line-clamp-2 mt-0.5`}>
                                             {new Date(event.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })} <br /> {event.city}
                                         </p>
                                         <span
-                                            className={`inline-block ${index % 2 === 0 ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-3 py-1.5 md:px-10 md:py-4 rounded-lg md:rounded-2xl text-[8px] sm:text-[9px] md:text-sm font-black uppercase tracking-widest transition-all shadow-md w-fit mt-auto`}
+                                            className={`inline-block ${index % 2 === 0 || event.gradientColors ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-3 py-1.5 md:px-10 md:py-4 rounded-lg md:rounded-2xl text-[8px] sm:text-[9px] md:text-sm font-black uppercase tracking-widest transition-all shadow-md w-fit mt-auto cursor-pointer pointer-events-auto`}
+                                            onClick={(e) => { e.stopPropagation(); selectEvent(event.id); }}
                                         >
                                             Inscribirse
                                         </span>

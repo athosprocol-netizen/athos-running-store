@@ -112,6 +112,8 @@ export interface Event {
   organizerId: string;
   photosLink?: string;
   price: number;
+  duration?: string;
+  gradientColors?: [string, string]; // [color1, color2] for UI gradients
 
   // Custom properties for UI Mock
   reward?: string;

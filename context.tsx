@@ -114,6 +114,8 @@ interface AppContextType {
   // Events Functions
   selectEvent: (id: string) => void;
   addEvent: (event: Event) => void;
+  updateEvent: (event: Event) => void;
+  deleteEvent: (id: string) => void;
   registerForEvent: (registration: EventRegistration) => void;
   joinChallenge: (id: string) => void;
   checkout: () => void;
@@ -159,7 +161,14 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   const [view, _setView] = useState<ViewState>('home');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-  const [events, setEvents] = useState<Event[]>(MOCK_EVENTS);
+  const [events, setEvents] = useState<Event[]>(() => {
+    try {
+      const saved = localStorage.getItem('athos_events');
+      return saved ? JSON.parse(saved) : MOCK_EVENTS;
+    } catch {
+      return MOCK_EVENTS;
+    }
+  });
   const [registrations, setRegistrations] = useState<EventRegistration[]>([]);
   const [results, setResults] = useState<EventResult[]>([]);
   const [notification, setNotification] = useState<string | null>(null);
@@ -308,6 +317,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     localStorage.setItem('athos_recent', JSON.stringify(recentlyViewed));
   }, [recentlyViewed]);
+
+  useEffect(() => {
+    localStorage.setItem('athos_events', JSON.stringify(events));
+  }, [events]);
 
   const setViewWithHistory = (newView: ViewState) => {
     if (view !== newView) {
@@ -980,9 +993,39 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     setViewWithHistory('event-detail');
   };
 
-  const addEvent = (event: Event) => {
-    setEvents(prev => [...prev, event]);
-    showNotification("Evento creado exitosamente");
+  const addEvent = async (event: Event) => {
+    try {
+      let mainImg = event.image;
+      if (mainImg?.startsWith('data:')) {
+        mainImg = await uploadProductImage(mainImg, event.id, '-event');
+      }
+      const eventToSave = { ...event, image: mainImg };
+      setEvents(prev => [...prev, eventToSave]);
+      showNotification("Evento creado exitosamente");
+    } catch (e: any) {
+      console.error("Error creating event:", e);
+      showNotification("Error: No se pudo subir la foto del evento.");
+    }
+  };
+
+  const updateEvent = async (updatedEvent: Event) => {
+    try {
+      let mainImg = updatedEvent.image;
+      if (mainImg?.startsWith('data:')) {
+        mainImg = await uploadProductImage(mainImg, updatedEvent.id, '-event');
+      }
+      const eventToSave = { ...updatedEvent, image: mainImg };
+      setEvents(prev => prev.map(e => e.id === eventToSave.id ? eventToSave : e));
+      showNotification("Evento actualizado exitosamente");
+    } catch (e: any) {
+      console.error("Error updating event:", e);
+      showNotification("Error: No se pudo subir la foto del evento.");
+    }
+  };
+
+  const deleteEvent = (id: string) => {
+    setEvents(prev => prev.filter(e => e.id !== id));
+    showNotification("Evento eliminado");
   };
 
   const registerForEvent = (registration: EventRegistration) => {
@@ -1042,6 +1085,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       clearCart,
       selectEvent,
       addEvent,
+      updateEvent,
+      deleteEvent,
       registerForEvent,
       joinChallenge,
       checkout,
