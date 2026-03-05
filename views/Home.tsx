@@ -20,29 +20,27 @@ export const Home = () => {
     ];
 
     // DRAG HANDLERS (Desktop Only)
-    const handlePointerDown = (e: React.PointerEvent) => {
-        if (e.pointerType !== 'mouse' || !sliderRef.current) return;
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if (!sliderRef.current) return;
         setIsDown(true);
         setIsDragging(false);
         setStartX(e.pageX - sliderRef.current.offsetLeft);
         setScrollLeft(sliderRef.current.scrollLeft);
     };
 
-    const handlePointerLeave = (e: React.PointerEvent) => {
-        if (e.pointerType !== 'mouse') return;
+    const handleMouseLeave = () => {
         setIsDown(false);
         setIsDragging(false);
     };
 
-    const handlePointerUp = (e: React.PointerEvent) => {
-        if (e.pointerType !== 'mouse') return;
+    const handleMouseUp = () => {
         setIsDown(false);
         // setTimeout to clear dragging state after the click event phase
         setTimeout(() => setIsDragging(false), 50);
     };
 
-    const handlePointerMove = (e: React.PointerEvent) => {
-        if (e.pointerType !== 'mouse' || !isDown || !sliderRef.current) return;
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!isDown || !sliderRef.current) return;
         const x = e.pageX - sliderRef.current.offsetLeft;
         const walk = (x - startX) * 2; // Scroll-fastness
         sliderRef.current.scrollLeft = scrollLeft - walk;
@@ -52,6 +50,15 @@ export const Home = () => {
             setIsDragging(true);
         }
     };
+
+    // Detach drag on mobile entirely for pure native swipe
+    const isDesktop = typeof window !== 'undefined' ? window.innerWidth > 768 : true;
+    const dragHandlers = isDesktop ? {
+        onMouseDown: handleMouseDown,
+        onMouseLeave: handleMouseLeave,
+        onMouseUp: handleMouseUp,
+        onMouseMove: handleMouseMove
+    } : {};
 
     // Wrapper for click events that checks if we were dragging
     const handleItemClick = (action: () => void) => {
@@ -98,11 +105,8 @@ export const Home = () => {
                 <div className="mt-2 md:px-0">
                     <div
                         ref={sliderRef}
-                        onPointerDown={handlePointerDown}
-                        onPointerLeave={handlePointerLeave}
-                        onPointerUp={handlePointerUp}
-                        onPointerMove={handlePointerMove}
-                        className={`w-full overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} pl-5 pr-12 md:px-0.5 snap-x snap-mandatory`}
+                        {...dragHandlers}
+                        className={`w-full overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-5 md:px-0.5 snap-x snap-mandatory`}
                         style={{ WebkitOverflowScrolling: 'touch' }}
                     >
                         {events.filter(e => e.status === 'upcoming').slice(0, 3).map((event, index) => (
@@ -147,13 +151,13 @@ export const Home = () => {
                     </div>
                 </div>
 
-                {/* 4. NEW ARRIVALS (Grid 2 Columns Mobile) */}
+                {/* 4. NEW ARRIVALS (Bulletproof Flex 2 Columns Mobile) */}
                 <div className="mt-8 md:mt-12 px-4 md:px-0 mb-20 max-w-[1400px] mx-auto overflow-hidden">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-8 pb-4">
+                    <div className="flex flex-wrap gap-3 sm:gap-4 md:gap-8 pb-4">
                         {displayProducts.map((product) => {
                             const isWishlisted = user?.wishlist.includes(product.id);
                             return (
-                                <div key={product.id} className="min-w-0 w-full group cursor-pointer bg-[#F8F9FA] md:bg-white p-2.5 sm:p-3 md:p-4 rounded-[16px] md:rounded-[24px] border border-gray-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => selectProduct(product.id)}>
+                                <div key={product.id} className="w-[calc(50%-0.375rem)] lg:w-[calc(25%-1.5rem)] group cursor-pointer bg-[#F8F9FA] md:bg-white p-2.5 sm:p-3 md:p-4 rounded-[16px] md:rounded-[24px] border border-gray-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => selectProduct(product.id)}>
                                     {/* Image Container */}
                                     <div className="bg-[#EBECEE] md:bg-[#f0f0f0] rounded-[12px] md:rounded-[16px] aspect-[4/5] relative mb-2.5 flex items-center justify-center p-3 overflow-hidden">
                                         <button
