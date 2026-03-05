@@ -113,7 +113,7 @@ export interface Event {
   photosLink?: string;
   price: number;
   duration?: string;
-  gradientColors?: [string, string]; // [color1, color2] for UI gradients
+  gradientColors?: string[]; // Array of colors for UI gradients (up to 3)
 
   // Custom properties for UI Mock
   reward?: string;

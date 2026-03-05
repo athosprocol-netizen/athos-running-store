@@ -117,7 +117,7 @@ export const Home = () => {
                             >
                                 <div
                                     className={`rounded-[20px] md:rounded-[40px] p-5 md:p-14 h-[160px] sm:h-[180px] md:h-[450px] relative overflow-hidden flex items-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] group border hover:shadow-xl transition-all ${index % 2 !== 0 && !event.gradientColors ? 'border-gray-200 bg-gray-100' : 'border-transparent'}`}
-                                    style={event.gradientColors ? { background: `linear-gradient(135deg, ${event.gradientColors[0]}, ${event.gradientColors[1]})` } : (index % 2 === 0 ? { backgroundColor: '#111' } : {})}
+                                    style={event.gradientColors ? { background: `linear-gradient(135deg, ${event.gradientColors.join(', ')})` } : (index % 2 === 0 ? { backgroundColor: '#111' } : {})}
                                 >
                                     <div className="relative z-10 w-[68%] md:w-[60%] pointer-events-none flex flex-col justify-center h-full">
                                         <span className={`${index % 2 === 0 || event.gradientColors ? 'text-white/80' : 'text-gray-500'} font-bold uppercase tracking-widest text-[8px] md:text-sm mb-1.5 md:mb-3 block`}>Evento Destacado</span>

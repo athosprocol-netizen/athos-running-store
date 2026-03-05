@@ -461,9 +461,9 @@ export const Admin = () => {
                                     <div>
                                         <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Fecha</label>
                                         <input
-                                            type="date"
+                                            type="datetime-local"
                                             className="w-full p-3 rounded-xl border-none bg-white font-bold text-sm focus:ring-2 focus:ring-athos-orange/20"
-                                            value={tempEvent.date ? tempEvent.date.split('T')[0] : ''}
+                                            value={tempEvent.date ? new Date(new Date(tempEvent.date).getTime() - new Date(tempEvent.date).getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
                                             onChange={e => setTempEvent({ ...tempEvent, date: new Date(e.target.value).toISOString() })}
                                         />
                                     </div>
@@ -496,23 +496,46 @@ export const Admin = () => {
                                         onChange={e => setTempEvent({ ...tempEvent, description: e.target.value })}
                                     />
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
-                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Color Degradado 1 (Arriba/Izquierda)</label>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Color Degradado 1</label>
                                         <input
                                             type="color"
                                             className="w-full h-12 p-1 rounded-xl border-none bg-white cursor-pointer"
                                             value={tempEvent.gradientColors?.[0] || '#FF4D00'}
-                                            onChange={e => setTempEvent({ ...tempEvent, gradientColors: [e.target.value, tempEvent.gradientColors?.[1] || '#FF8A00'] })}
+                                            onChange={e => {
+                                                const colors = tempEvent.gradientColors || ['#FF4D00', '#FF8A00'];
+                                                setTempEvent({ ...tempEvent, gradientColors: [e.target.value, colors[1], colors[2]].filter(Boolean) as string[] });
+                                            }}
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Color Degradado 2 (Abajo/Derecha)</label>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Color Degradado 2</label>
                                         <input
                                             type="color"
                                             className="w-full h-12 p-1 rounded-xl border-none bg-white cursor-pointer"
                                             value={tempEvent.gradientColors?.[1] || '#FF8A00'}
-                                            onChange={e => setTempEvent({ ...tempEvent, gradientColors: [tempEvent.gradientColors?.[0] || '#FF4D00', e.target.value] })}
+                                            onChange={e => {
+                                                const colors = tempEvent.gradientColors || ['#FF4D00', '#FF8A00'];
+                                                setTempEvent({ ...tempEvent, gradientColors: [colors[0], e.target.value, colors[2]].filter(Boolean) as string[] });
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block flex justify-between">
+                                            <span>Color Degradado 3</span>
+                                            {tempEvent.gradientColors && tempEvent.gradientColors.length > 2 && (
+                                                <button onClick={() => setTempEvent({ ...tempEvent, gradientColors: [tempEvent.gradientColors![0], tempEvent.gradientColors![1]] })} className="text-red-500 hover:text-red-600">Eliminar</button>
+                                            )}
+                                        </label>
+                                        <input
+                                            type="color"
+                                            className="w-full h-12 p-1 rounded-xl border-none bg-white cursor-pointer"
+                                            value={tempEvent.gradientColors?.[2] || '#000000'}
+                                            onChange={e => {
+                                                const colors = tempEvent.gradientColors || ['#FF4D00', '#FF8A00'];
+                                                setTempEvent({ ...tempEvent, gradientColors: [colors[0], colors[1], e.target.value] });
+                                            }}
                                         />
                                     </div>
                                 </div>

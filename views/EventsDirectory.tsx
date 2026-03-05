@@ -155,7 +155,7 @@ export const EventsDirectory = () => {
                                         >
                                             <div
                                                 className={`w-16 h-16 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border ${e.gradientColors ? 'border-transparent shadow-inner' : 'bg-gray-50 border-gray-200'}`}
-                                                style={e.gradientColors ? { background: `linear-gradient(135deg, ${e.gradientColors[0]}, ${e.gradientColors[1]})` } : {}}
+                                                style={e.gradientColors ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : {}}
                                             >
                                                 <span className={`text-xs font-bold uppercase leading-none mb-1 ${e.gradientColors ? 'text-white/90' : 'text-gray-400'}`}>
                                                     {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
@@ -189,7 +189,7 @@ export const EventsDirectory = () => {
                                         >
                                             <div
                                                 className={`w-16 h-16 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border transition-colors ${e.gradientColors ? 'border-transparent shadow-inner' : 'bg-gray-50 border-gray-200 group-hover:border-athos-orange/30'}`}
-                                                style={e.gradientColors ? { background: `linear-gradient(135deg, ${e.gradientColors[0]}, ${e.gradientColors[1]})` } : {}}
+                                                style={e.gradientColors ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : {}}
                                             >
                                                 <span className={`text-xs font-bold uppercase leading-none mb-1 ${e.gradientColors ? 'text-white/90' : 'text-gray-400'}`}>
                                                     {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
@@ -235,7 +235,7 @@ export const EventsDirectory = () => {
                             >
                                 <div
                                     className="h-64 overflow-hidden relative bg-gray-100"
-                                    style={event.gradientColors ? { background: `linear-gradient(135deg, ${event.gradientColors[0]}, ${event.gradientColors[1]})` } : {}}
+                                    style={event.gradientColors ? { background: `linear-gradient(135deg, ${event.gradientColors.join(', ')})` } : {}}
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-t from-athos-black/90 via-athos-black/20 to-transparent z-10" />
                                     {event.isFeatured && (
@@ -302,7 +302,7 @@ export const EventsDirectory = () => {
                             >
                                 <div
                                     className="w-20 h-20 rounded-2xl flex-shrink-0 relative overflow-hidden bg-gray-200 group-hover:shadow-md transition-shadow"
-                                    style={event.gradientColors ? { background: `linear-gradient(135deg, ${event.gradientColors[0]}, ${event.gradientColors[1]})` } : {}}
+                                    style={event.gradientColors ? { background: `linear-gradient(135deg, ${event.gradientColors.join(', ')})` } : {}}
                                 >
                                     <img src={event.image || '/medalleroverde.png'} alt={event.title} className={`w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all ${event.gradientColors ? 'mix-blend-overlay' : ''}`} />
                                 </div>
