@@ -74,10 +74,10 @@ export const Home = () => {
     }
 
     return (
-        <div className="min-h-screen bg-transparent pb-24 md:pb-0 animate-fade-in flex flex-col items-center">
+        <div className="w-full max-w-[100vw] overflow-hidden min-h-screen bg-transparent pb-24 md:pb-0 animate-fade-in flex flex-col items-center">
 
             {/* 1. SEARCH BAR SECTION (Mobile Only) */}
-            <div className="pt-4 px-6 pb-2 w-full max-w-[1400px] bg-transparent z-30 md:hidden">
+            <div className="pt-4 px-4 sm:px-6 pb-2 w-full max-w-[1400px] bg-transparent z-30 md:hidden">
                 <h1 className="text-2xl font-black italic text-athos-black mb-4 uppercase">
                     Hola, <span className="text-athos-orange">{user?.name.split(' ')[0] || 'Runner'}</span>
                 </h1>
@@ -106,38 +106,38 @@ export const Home = () => {
                     <div
                         ref={sliderRef}
                         {...dragHandlers}
-                        className={`w-full overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-5 md:px-0.5 snap-x snap-mandatory`}
+                        className={`w-full max-w-[100vw] overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-4 md:px-0.5`}
                         style={{ WebkitOverflowScrolling: 'touch' }}
                     >
                         {events.filter(e => e.status === 'upcoming').slice(0, 3).map((event, index) => (
                             <div
                                 key={event.id}
-                                className="shrink-0 w-[85vw] md:w-[850px] relative select-none snap-center md:snap-align-none"
+                                className="shrink-0 w-[88vw] md:w-[850px] relative select-none"
                                 onClick={() => handleItemClick(() => selectEvent(event.id))}
                             >
-                                <div className={`${index % 2 === 0 ? 'bg-athos-black' : 'bg-gray-100'} rounded-[24px] md:rounded-[40px] p-5 md:p-14 h-[150px] md:h-[450px] relative overflow-hidden flex items-center shadow-xl shadow-athos-black/20 group transition-transform active:scale-[0.99] border hover:shadow-[0_0_20px_rgba(255,77,0,0.1)] hover:border-athos-orange/30 ${index % 2 !== 0 ? 'border-gray-200' : 'border-transparent'}`}>
+                                <div className={`${index % 2 === 0 ? 'bg-athos-black' : 'bg-gray-100'} rounded-[20px] md:rounded-[40px] p-5 md:p-14 h-[160px] sm:h-[180px] md:h-[450px] relative overflow-hidden flex items-center shadow-md group border hover:border-athos-orange/30 ${index % 2 !== 0 ? 'border-gray-200' : 'border-transparent'}`}>
                                     <div className="relative z-10 w-[68%] md:w-[60%] pointer-events-none flex flex-col justify-center h-full">
-                                        <span className={`${index % 2 === 0 ? 'text-athos-orange' : 'text-gray-500'} font-bold uppercase tracking-widest text-[7px] md:text-sm mb-1 md:mb-3 block`}>Evento Destacado</span>
-                                        <h2 className={`${index % 2 === 0 ? 'text-white' : 'text-athos-black'} text-2xl md:text-5xl lg:text-5xl xl:text-6xl font-black italic tracking-tighter leading-[0.85] mb-1.5 md:mb-6 uppercase line-clamp-2`}>
+                                        <span className={`${index % 2 === 0 ? 'text-athos-orange' : 'text-gray-500'} font-bold uppercase tracking-widest text-[8px] md:text-sm mb-1.5 md:mb-3 block`}>Evento Destacado</span>
+                                        <h2 className={`${index % 2 === 0 ? 'text-white' : 'text-athos-black'} text-xl sm:text-2xl md:text-5xl lg:text-5xl xl:text-6xl font-black italic tracking-tighter leading-[0.9] mb-1.5 md:mb-6 uppercase line-clamp-2`}>
                                             {event.title}
                                         </h2>
-                                        <p className={`${index % 2 === 0 ? 'text-gray-400' : 'text-gray-500'} text-[8px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[140px] md:max-w-[250px] leading-tight line-clamp-2`}>
+                                        <p className={`${index % 2 === 0 ? 'text-gray-400' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[140px] md:max-w-[250px] leading-tight line-clamp-2 mt-0.5`}>
                                             {new Date(event.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })} <br /> {event.city}
                                         </p>
                                         <span
-                                            className={`inline-block ${index % 2 === 0 ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-2.5 py-1 md:px-10 md:py-4 rounded-lg md:rounded-2xl text-[7px] md:text-sm font-black uppercase tracking-widest transition-all shadow-lg w-fit`}
+                                            className={`inline-block ${index % 2 === 0 ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-3 py-1.5 md:px-10 md:py-4 rounded-lg md:rounded-2xl text-[8px] sm:text-[9px] md:text-sm font-black uppercase tracking-widest transition-all shadow-md w-fit mt-auto`}
                                         >
                                             Inscribirse
                                         </span>
                                     </div>
                                     <img
                                         src={event.image || "/imagen_bordes_difuminados.png"}
-                                        className="absolute -right-4 md:-right-12 -bottom-10 md:-bottom-28 w-[45%] md:w-[60%] h-[120%] object-cover object-left rotate-[-5deg] drop-shadow-2xl z-0 group-hover:scale-105 group-hover:translate-y-[-10px] transition-transform duration-700 pointer-events-none opacity-90"
-                                        style={{ clipPath: 'polygon(20% 0%, 100% 0%, 100% 100%, 0% 100%)', borderRadius: '40px' }}
+                                        className="absolute -right-4 md:-right-12 -bottom-8 sm:-bottom-12 md:-bottom-28 w-[50%] md:w-[60%] h-[120%] object-cover object-left rotate-[-5deg] drop-shadow-xl z-0 pointer-events-none opacity-90"
+                                        style={{ clipPath: 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%)', borderRadius: '40px' }}
                                         alt={event.title}
                                     />
                                     {index % 2 === 0 && (
-                                        <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-32 h-32 md:w-96 md:h-96 bg-gray-800 rounded-full blur-[60px] md:blur-[100px] opacity-50 pointer-events-none"></div>
+                                        <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-32 h-32 md:w-96 md:h-96 bg-gray-800 rounded-full blur-[60px] md:blur-[100px] opacity-40 pointer-events-none"></div>
                                     )}
                                 </div>
                             </div>
@@ -151,20 +151,20 @@ export const Home = () => {
                     </div>
                 </div>
 
-                {/* 4. NEW ARRIVALS (Strict 2 Columns Mobile) */}
-                <div className="mt-8 md:mt-12 px-4 md:px-0 mb-20 max-w-[1400px] mx-auto">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-8 pb-4">
+                {/* 4. NEW ARRIVALS (Strict Dimensions 2 Columns Mobile) */}
+                <div className="mt-6 md:mt-12 px-3 md:px-0 mb-20 max-w-[100vw] overflow-hidden md:max-w-[1400px] mx-auto">
+                    <div className="flex flex-wrap justify-between pb-4">
                         {displayProducts.map((product) => {
                             const isWishlisted = user?.wishlist.includes(product.id);
                             return (
-                                <div key={product.id} className="min-w-0 w-full group cursor-pointer bg-[#F8F9FA] md:bg-white p-2.5 sm:p-3 md:p-4 rounded-[16px] md:rounded-[24px] border border-gray-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => selectProduct(product.id)}>
+                                <div key={product.id} className="w-[calc(50%-4px)] md:w-[calc(25%-1.5rem)] mb-2 md:mb-8 group cursor-pointer bg-white p-2.5 md:p-4 rounded-[16px] md:rounded-[24px] border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => selectProduct(product.id)}>
                                     {/* Image Container */}
-                                    <div className="w-full bg-[#EBECEE] md:bg-[#f0f0f0] rounded-[12px] md:rounded-[16px] aspect-[4/5] relative mb-2.5 flex items-center justify-center p-3 overflow-hidden">
+                                    <div className="w-full bg-[#f4f4f4] md:bg-[#f0f0f0] rounded-[10px] md:rounded-[16px] aspect-[4/5] relative mb-2 flex items-center justify-center p-2.5 overflow-hidden">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
-                                            className="absolute top-1.5 right-1.5 z-10 bg-white/90 w-6 h-6 rounded-full shadow-sm hover:scale-110 flex items-center justify-center transition-transform"
+                                            className="absolute top-1.5 right-1.5 z-10 bg-white/90 w-6 h-6 md:w-8 md:h-8 rounded-full shadow-sm hover:scale-110 flex items-center justify-center transition-transform"
                                         >
-                                            <Heart size={11} className={isWishlisted ? "fill-red-500 text-red-500" : "text-gray-300"} />
+                                            <Heart size={11} className={isWishlisted ? "fill-red-500 text-red-500 md:w-[14px]" : "text-gray-300 md:w-[14px]"} />
                                         </button>
                                         <img
                                             src={product.image}
@@ -174,13 +174,13 @@ export const Home = () => {
                                     </div>
 
                                     {/* Info */}
-                                    <div className="w-full px-0.5 flex flex-col justify-between flex-1 overflow-hidden">
-                                        <h4 className="font-bold text-athos-black text-[10px] sm:text-[11px] md:text-sm uppercase tracking-tight leading-tight truncate w-full mb-1">{product.name}</h4>
-                                        <div className="flex justify-between items-end mt-auto w-full">
-                                            <span className="font-black text-[13px] sm:text-[14px] md:text-lg text-athos-black whitespace-nowrap">${product.price.toLocaleString('es-CO')}</span>
-                                            <div className="flex items-center gap-0.5 mb-0.5 shrink-0 ml-1">
-                                                <Star size={7} className="fill-athos-orange text-athos-orange" />
-                                                <span className="text-[9px] font-bold text-gray-500">{product.rating}</span>
+                                    <div className="w-full px-0.5 flex flex-col justify-between flex-1 overflow-hidden mt-0.5">
+                                        <h4 className="font-bold text-athos-black text-[10px] sm:text-[11px] md:text-sm uppercase tracking-tight leading-[1.15] truncate w-full mb-1">{product.name}</h4>
+                                        <div className="flex justify-between items-end mt-auto w-full pt-1 border-t border-gray-50">
+                                            <span className="font-black text-[11px] sm:text-[13px] md:text-lg text-athos-black whitespace-nowrap leading-none">${product.price.toLocaleString('es-CO')}</span>
+                                            <div className="flex items-center gap-0.5 border border-gray-100 px-1 py-0.5 rounded-sm bg-gray-50 shrink-0 ml-1">
+                                                <Star size={6} className="fill-athos-orange text-athos-orange" />
+                                                <span className="text-[8px] font-bold text-gray-400 leading-none">{product.rating}</span>
                                             </div>
                                         </div>
                                     </div>
