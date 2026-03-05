@@ -19,30 +19,32 @@ export const Home = () => {
         { id: 'accessories', label: 'Geles', icon: Zap },
     ];
 
-    // DRAG HANDLERS
-    const handleMouseDown = (e: React.MouseEvent) => {
-        if (!sliderRef.current) return;
+    // DRAG HANDLERS (Desktop Only)
+    const handlePointerDown = (e: React.PointerEvent) => {
+        if (e.pointerType !== 'mouse' || !sliderRef.current) return;
         setIsDown(true);
         setIsDragging(false);
         setStartX(e.pageX - sliderRef.current.offsetLeft);
         setScrollLeft(sliderRef.current.scrollLeft);
     };
 
-    const handleMouseLeave = () => {
+    const handlePointerLeave = (e: React.PointerEvent) => {
+        if (e.pointerType !== 'mouse') return;
         setIsDown(false);
         setIsDragging(false);
     };
 
-    const handleMouseUp = () => {
+    const handlePointerUp = (e: React.PointerEvent) => {
+        if (e.pointerType !== 'mouse') return;
         setIsDown(false);
         // setTimeout to clear dragging state after the click event phase
         setTimeout(() => setIsDragging(false), 50);
     };
 
-    const handleMouseMove = (e: React.MouseEvent) => {
-        if (!isDown || !sliderRef.current) return;
+    const handlePointerMove = (e: React.PointerEvent) => {
+        if (e.pointerType !== 'mouse' || !isDown || !sliderRef.current) return;
         const x = e.pageX - sliderRef.current.offsetLeft;
-        const walk = (x - startX) * 3; // Scroll-fastness
+        const walk = (x - startX) * 2; // Scroll-fastness
         sliderRef.current.scrollLeft = scrollLeft - walk;
 
         // If moved significantly, mark as dragging to prevent click events
@@ -92,21 +94,21 @@ export const Home = () => {
 
             <div className="max-w-[1400px] mx-auto md:px-10">
 
-                {/* 2. HERO CAROUSEL (DRAGGABLE) */}
+                {/* 2. HERO CAROUSEL (DRAGGABLE DESKTOP / SCROLL MOBILE) */}
                 <div className="mt-2 md:px-0">
                     <div
                         ref={sliderRef}
-                        onMouseDown={handleMouseDown}
-                        onMouseLeave={handleMouseLeave}
-                        onMouseUp={handleMouseUp}
-                        onMouseMove={handleMouseMove}
-                        className={`w-full overflow-x-auto hide-scrollbar flex gap-3 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} pl-6 pr-12 md:px-0.5`}
+                        onPointerDown={handlePointerDown}
+                        onPointerLeave={handlePointerLeave}
+                        onPointerUp={handlePointerUp}
+                        onPointerMove={handlePointerMove}
+                        className={`w-full overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} pl-5 pr-12 md:px-0.5 snap-x snap-mandatory`}
                         style={{ WebkitOverflowScrolling: 'touch' }}
                     >
                         {events.filter(e => e.status === 'upcoming').slice(0, 3).map((event, index) => (
                             <div
                                 key={event.id}
-                                className="shrink-0 w-[75vw] md:w-[850px] relative select-none"
+                                className="shrink-0 w-[85vw] md:w-[850px] relative select-none snap-center md:snap-align-none"
                                 onClick={() => handleItemClick(() => selectEvent(event.id))}
                             >
                                 <div className={`${index % 2 === 0 ? 'bg-athos-black' : 'bg-gray-100'} rounded-[24px] md:rounded-[40px] p-5 md:p-14 h-[150px] md:h-[450px] relative overflow-hidden flex items-center shadow-xl shadow-athos-black/20 group transition-transform active:scale-[0.99] border hover:shadow-[0_0_20px_rgba(255,77,0,0.1)] hover:border-athos-orange/30 ${index % 2 !== 0 ? 'border-gray-200' : 'border-transparent'}`}>
@@ -151,7 +153,7 @@ export const Home = () => {
                         {displayProducts.map((product) => {
                             const isWishlisted = user?.wishlist.includes(product.id);
                             return (
-                                <div key={product.id} className="group cursor-pointer bg-[#F8F9FA] md:bg-white p-2.5 sm:p-3 md:p-4 rounded-[16px] md:rounded-[24px] border border-gray-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => selectProduct(product.id)}>
+                                <div key={product.id} className="min-w-0 w-full group cursor-pointer bg-[#F8F9FA] md:bg-white p-2.5 sm:p-3 md:p-4 rounded-[16px] md:rounded-[24px] border border-gray-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => selectProduct(product.id)}>
                                     {/* Image Container */}
                                     <div className="bg-[#EBECEE] md:bg-[#f0f0f0] rounded-[12px] md:rounded-[16px] aspect-[4/5] relative mb-2.5 flex items-center justify-center p-3 overflow-hidden">
                                         <button
