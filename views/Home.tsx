@@ -151,10 +151,10 @@ export const Home = () => {
                     </div>
                 </div>
 
-                {/* 4. NEW ARRIVALS (Strict Dimensions 2 Columns Mobile) */}
+                {/* 4. NEW ARRIVALS (Strict Dimensions 2 Columns Mobile, Max 8 Items) */}
                 <div className="mt-6 md:mt-12 px-3 md:px-0 mb-20 max-w-[100vw] overflow-hidden md:max-w-[1400px] mx-auto">
                     <div className="flex flex-wrap justify-between pb-4">
-                        {displayProducts.map((product) => {
+                        {displayProducts.slice(0, 8).map((product) => {
                             const isWishlisted = user?.wishlist.includes(product.id);
                             return (
                                 <div key={product.id} className="w-[calc(50%-4px)] md:w-[calc(25%-1.5rem)] mb-2 md:mb-8 group cursor-pointer bg-white p-2.5 md:p-4 rounded-[16px] md:rounded-[24px] border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => selectProduct(product.id)}>
@@ -187,6 +187,16 @@ export const Home = () => {
                                 </div>
                             );
                         })}
+                    </div>
+
+                    {/* Ver Catálogo Completo Button */}
+                    <div className="mt-4 md:mt-8 flex justify-center pb-8">
+                        <button
+                            onClick={() => setView('shop')}
+                            className="bg-athos-orange text-white font-bold uppercase tracking-widest text-[11px] md:text-sm px-8 py-3.5 md:px-12 md:py-4 rounded-xl md:rounded-2xl shadow-[0_4px_14px_rgba(255,77,0,0.3)] hover:bg-athos-orangeHover hover:-translate-y-1 transition-all glow-effect"
+                        >
+                            Ver Catálogo Completo
+                        </button>
                     </div>
                 </div>
 
