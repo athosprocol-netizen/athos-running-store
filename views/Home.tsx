@@ -151,15 +151,15 @@ export const Home = () => {
                     </div>
                 </div>
 
-                {/* 4. NEW ARRIVALS (Bulletproof Flex 2 Columns Mobile) */}
-                <div className="mt-8 md:mt-12 px-4 md:px-0 mb-20 max-w-[1400px] mx-auto overflow-hidden">
-                    <div className="flex flex-wrap gap-3 sm:gap-4 md:gap-8 pb-4">
+                {/* 4. NEW ARRIVALS (Strict 2 Columns Mobile) */}
+                <div className="mt-8 md:mt-12 px-4 md:px-0 mb-20 max-w-[1400px] mx-auto">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-8 pb-4">
                         {displayProducts.map((product) => {
                             const isWishlisted = user?.wishlist.includes(product.id);
                             return (
-                                <div key={product.id} className="w-[calc(50%-0.375rem)] lg:w-[calc(25%-1.5rem)] group cursor-pointer bg-[#F8F9FA] md:bg-white p-2.5 sm:p-3 md:p-4 rounded-[16px] md:rounded-[24px] border border-gray-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => selectProduct(product.id)}>
+                                <div key={product.id} className="min-w-0 w-full group cursor-pointer bg-[#F8F9FA] md:bg-white p-2.5 sm:p-3 md:p-4 rounded-[16px] md:rounded-[24px] border border-gray-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => selectProduct(product.id)}>
                                     {/* Image Container */}
-                                    <div className="bg-[#EBECEE] md:bg-[#f0f0f0] rounded-[12px] md:rounded-[16px] aspect-[4/5] relative mb-2.5 flex items-center justify-center p-3 overflow-hidden">
+                                    <div className="w-full bg-[#EBECEE] md:bg-[#f0f0f0] rounded-[12px] md:rounded-[16px] aspect-[4/5] relative mb-2.5 flex items-center justify-center p-3 overflow-hidden">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
                                             className="absolute top-1.5 right-1.5 z-10 bg-white/90 w-6 h-6 rounded-full shadow-sm hover:scale-110 flex items-center justify-center transition-transform"
@@ -174,11 +174,11 @@ export const Home = () => {
                                     </div>
 
                                     {/* Info */}
-                                    <div className="px-0.5 flex flex-col justify-between flex-1">
-                                        <h4 className="font-bold text-athos-black text-[10px] sm:text-[11px] md:text-sm uppercase tracking-tight leading-tight truncate mb-1">{product.name}</h4>
-                                        <div className="flex justify-between items-end mt-auto">
-                                            <span className="font-black text-[13px] sm:text-[14px] md:text-lg text-athos-black">${product.price.toLocaleString('es-CO')}</span>
-                                            <div className="flex items-center gap-0.5 mb-0.5">
+                                    <div className="w-full px-0.5 flex flex-col justify-between flex-1 overflow-hidden">
+                                        <h4 className="font-bold text-athos-black text-[10px] sm:text-[11px] md:text-sm uppercase tracking-tight leading-tight truncate w-full mb-1">{product.name}</h4>
+                                        <div className="flex justify-between items-end mt-auto w-full">
+                                            <span className="font-black text-[13px] sm:text-[14px] md:text-lg text-athos-black whitespace-nowrap">${product.price.toLocaleString('es-CO')}</span>
+                                            <div className="flex items-center gap-0.5 mb-0.5 shrink-0 ml-1">
                                                 <Star size={7} className="fill-athos-orange text-athos-orange" />
                                                 <span className="text-[9px] font-bold text-gray-500">{product.rating}</span>
                                             </div>
