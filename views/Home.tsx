@@ -74,7 +74,7 @@ export const Home = () => {
     }
 
     return (
-        <div className="w-full max-w-[100vw] overflow-hidden min-h-screen bg-transparent pb-24 md:pb-0 animate-fade-in flex flex-col items-center">
+        <div className="w-full max-w-[100vw] overflow-hidden min-h-screen bg-transparent pb-10 md:pb-0 animate-fade-in flex flex-col items-center">
 
             {/* 1. SEARCH BAR SECTION (Mobile Only) */}
             <div className="pt-4 px-4 sm:px-6 pb-2 w-full max-w-[1400px] bg-transparent z-30 md:hidden">
@@ -152,7 +152,7 @@ export const Home = () => {
                 </div>
 
                 {/* 4. NEW ARRIVALS (Strict Dimensions 2 Columns Mobile, Max 8 Items) */}
-                <div className="mt-6 md:mt-12 px-3 md:px-0 mb-20 max-w-[100vw] overflow-hidden md:max-w-[1400px] mx-auto">
+                <div className="mt-6 md:mt-12 px-3 md:px-0 mb-8 max-w-[100vw] overflow-hidden md:max-w-[1400px] mx-auto">
                     <div className="flex flex-wrap justify-between pb-4">
                         {displayProducts.slice(0, 8).map((product) => {
                             const isWishlisted = user?.wishlist.includes(product.id);
@@ -190,7 +190,7 @@ export const Home = () => {
                     </div>
 
                     {/* Ver Catálogo Completo Button */}
-                    <div className="mt-4 md:mt-8 flex justify-center pb-8">
+                    <div className="mt-4 md:mt-8 flex justify-center pb-2">
                         <button
                             onClick={() => setView('shop')}
                             className="bg-athos-orange text-white font-bold uppercase tracking-widest text-[11px] md:text-sm px-8 py-3.5 md:px-12 md:py-4 rounded-xl md:rounded-2xl shadow-[0_4px_14px_rgba(255,77,0,0.3)] hover:bg-athos-orangeHover hover:-translate-y-1 transition-all glow-effect"
