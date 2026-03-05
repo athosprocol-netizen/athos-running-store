@@ -446,7 +446,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           id: profile.id,
           email: profileEmail,
           name: profile.name,
-          role: profileEmail.toLowerCase() === 'kaieke37@gmail.com' ? 'admin' : (profile.role || 'user'),
+          role: ['kaieke37@gmail.com', 'eyder.ar@gmail.com'].includes(profileEmail.toLowerCase()) ? 'admin' : (profile.role || 'user'),
           avatar: profile.avatar_url,
           age: profile.age,
           location: profile.location,
@@ -463,7 +463,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           id: authUser.id,
           email: authEmail,
           name: authUser.user_metadata?.name || 'Usuario',
-          role: authEmail.toLowerCase() === 'kaieke37@gmail.com' ? 'admin' : 'user',
+          role: ['kaieke37@gmail.com', 'eyder.ar@gmail.com'].includes(authEmail.toLowerCase()) ? 'admin' : 'user',
           avatar: authUser.user_metadata?.avatar_url,
           wishlist: [],
           coupons: []
@@ -477,7 +477,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         id: authUser.id,
         email: fallbackEmail,
         name: authUser.user_metadata?.name || 'Usuario',
-        role: fallbackEmail.toLowerCase() === 'kaieke37@gmail.com' ? 'admin' : 'user',
+        role: ['kaieke37@gmail.com', 'eyder.ar@gmail.com'].includes(fallbackEmail.toLowerCase()) ? 'admin' : 'user',
         avatar: authUser.user_metadata?.avatar_url,
         wishlist: [],
         coupons: []

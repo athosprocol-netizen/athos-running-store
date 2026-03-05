@@ -496,6 +496,28 @@ export const Admin = () => {
                                         onChange={e => setTempEvent({ ...tempEvent, description: e.target.value })}
                                     />
                                 </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Cupos Máximos (Total)</label>
+                                        <input
+                                            type="number"
+                                            className="w-full p-3 rounded-xl border-none bg-white font-bold text-sm focus:ring-2 focus:ring-athos-orange/20"
+                                            placeholder="Ej: 5000"
+                                            value={tempEvent.maxParticipants || ''}
+                                            onChange={e => setTempEvent({ ...tempEvent, maxParticipants: parseInt(e.target.value) || undefined })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Cupos Ocupados Mualmente (Opcional)</label>
+                                        <input
+                                            type="number"
+                                            className="w-full p-3 rounded-xl border-none bg-white font-bold text-sm focus:ring-2 focus:ring-athos-orange/20"
+                                            placeholder="Ej: 1500"
+                                            value={tempEvent.currentParticipants || ''}
+                                            onChange={e => setTempEvent({ ...tempEvent, currentParticipants: parseInt(e.target.value) || undefined })}
+                                        />
+                                    </div>
+                                </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
                                         <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Color Degradado 1</label>
