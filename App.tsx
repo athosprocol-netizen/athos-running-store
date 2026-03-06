@@ -39,41 +39,34 @@ const MainContent = () => {
   const [displayView, setDisplayView] = React.useState(view);
   const [isTransitioning, setIsTransitioning] = React.useState(false);
   const videoRef = React.useRef<HTMLVideoElement>(null);
-  const transitionTimerRef = React.useRef<NodeJS.Timeout | null>(null);
-  const endTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // Trigger page transition effect when view changes
   React.useEffect(() => {
     if (view !== displayView && !isLoading) {
-      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-      if (endTimerRef.current) clearTimeout(endTimerRef.current);
-
       setIsTransitioning(true);
 
       if (videoRef.current) {
-        videoRef.current.currentTime = 0;
-        videoRef.current.play().catch(e => console.log("Video play failed:", e));
+        // Skip first 0.5s to avoid pure black starting frames
+        videoRef.current.currentTime = 0.5;
+        videoRef.current.play().catch(e => console.log("Video autoplay prevented:", e));
       }
 
       // Change the actual view component at the peak of the transition
-      transitionTimerRef.current = setTimeout(() => {
+      const timerMid = setTimeout(() => {
         setDisplayView(view);
-        window.scrollTo(0, 0); // Scroll to top on route change
-      }, 400); // Midpoint
+        window.scrollTo(0, 0);
+      }, 400);
 
-      endTimerRef.current = setTimeout(() => {
+      const timerEnd = setTimeout(() => {
         setIsTransitioning(false);
-      }, 800);
+      }, 900);
+
+      return () => {
+        clearTimeout(timerMid);
+        clearTimeout(timerEnd);
+      };
     }
   }, [view, displayView, isLoading]);
-
-  // Clean up timers on unmount
-  React.useEffect(() => {
-    return () => {
-      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-      if (endTimerRef.current) clearTimeout(endTimerRef.current);
-    };
-  }, []);
 
   // Sync initial render correctly
   React.useEffect(() => {
@@ -117,12 +110,18 @@ const MainContent = () => {
     <div className="min-h-[100dvh] bg-athos-bg text-athos-black font-sans selection:bg-athos-orange selection:text-white flex flex-col relative overflow-x-hidden">
       <BackgroundGlows />
 
-      {/* Global Video Transition Overlay (Always rendered, but hidden when not transitioning to ensure video is cached and preloaded instantly) */}
+      {/* Global Video Transition Overlay (Always rendered, but hidden via inline styles to ensure video is cached and preloaded instantly) */}
       <div
-        className={`fixed inset-0 z-[200] pointer-events-none flex items-center justify-center overflow-hidden transition-opacity duration-300 ${isTransitioning ? 'opacity-100' : 'opacity-0'}`}
+        className="fixed inset-0 z-[500] pointer-events-none flex items-center justify-center overflow-hidden"
+        style={{
+          opacity: isTransitioning ? 1 : 0,
+          visibility: isTransitioning ? 'visible' : 'hidden',
+          transition: 'visibility 0s linear, opacity 0.3s ease-in-out',
+          transitionDelay: isTransitioning ? '0s, 0s' : '0.3s, 0s'
+        }}
       >
         {/* Dark backdrop so the mix-blend-screen fire actually appears over the white store background */}
-        <div className="absolute inset-0 bg-athos-dark/90"></div>
+        <div className="absolute inset-0 bg-black/95"></div>
 
         {/* Video overlay with screen blend to remove pure black background */}
         <video
@@ -130,7 +129,8 @@ const MainContent = () => {
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-90 object-center"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          style={{ mixBlendMode: 'screen', opacity: 0.95 }}
           src="/llamas.mp4"
         />
       </div>
