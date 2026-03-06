@@ -37,24 +37,39 @@ const Notification = () => {
 const MainContent = () => {
   const { view, isLoading } = useApp();
   const [displayView, setDisplayView] = React.useState(view);
-  const [transitionKey, setTransitionKey] = React.useState(0);
+  const [isTransitioning, setIsTransitioning] = React.useState(false);
+  const videoRef = React.useRef<HTMLVideoElement>(null);
 
   // Trigger page transition effect when view changes
   React.useEffect(() => {
     if (view !== displayView && !isLoading) {
-      setTransitionKey(prev => prev + 1);
-      // Change the actual view component at the peak of the transition (screen covered)
+      setIsTransitioning(true);
+
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        videoRef.current.play().catch(e => console.log("Video play failed:", e));
+      }
+
+      // Change the actual view component at the peak of the transition
       const timer = setTimeout(() => {
         setDisplayView(view);
         window.scrollTo(0, 0); // Scroll to top on route change
-      }, 400); // 400ms is the midpoint of the 0.8s animation when screen is fully covered by video
-      return () => clearTimeout(timer);
+      }, 400); // Midpoint
+
+      const timerEnd = setTimeout(() => {
+        setIsTransitioning(false);
+      }, 800);
+
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(timerEnd);
+      };
     }
   }, [view, displayView, isLoading]);
 
   // Sync initial render correctly
   React.useEffect(() => {
-    if (!isLoading && transitionKey === 0) setDisplayView(view);
+    if (!isLoading && !isTransitioning) setDisplayView(view);
   }, [isLoading]);
 
   const renderView = () => {
@@ -94,46 +109,30 @@ const MainContent = () => {
     <div className="min-h-[100dvh] bg-athos-bg text-athos-black font-sans selection:bg-athos-orange selection:text-white flex flex-col relative overflow-x-hidden">
       <BackgroundGlows />
 
-      {/* Global Video Transition Overlay */}
-      {transitionKey > 0 && (
+      {/* Global Video Transition Overlay (Always rendered, but hidden when not transitioning to ensure video is cached and preloaded instantly) */}
+      <div
+        className={`fixed inset-0 z-[200] pointer-events-none flex items-center justify-center overflow-hidden transition-opacity duration-300 ${isTransitioning ? 'opacity-100' : 'opacity-0'}`}
+      >
+        {/* Dark backdrop so the mix-blend-screen fire actually appears over the white store background */}
+        <div className="absolute inset-0 bg-athos-dark/90"></div>
+
+        {/* Video overlay with screen blend to remove pure black background */}
+        <video
+          ref={videoRef}
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-90 object-center"
+          src="/llamas.mp4"
+        />
+
+        {/* ATHOS Word appearing inside fire */}
         <div
-          key={transitionKey}
-          className="fixed inset-0 z-[200] pointer-events-none flex items-center justify-center overflow-hidden"
-          style={{ animation: 'fireFade 0.8s ease-in-out forwards' }}
+          className={`absolute text-white/90 font-black italic text-6xl md:text-[120px] uppercase tracking-tighter drop-shadow-[0_0_20px_rgba(255,40,0,0.8)] transition-all duration-300 ease-out ${isTransitioning ? 'scale-100 opacity-100 blur-0' : 'scale-75 opacity-0 blur-xl'}`}
         >
-          {/* Video overlay with screen blend to remove pure black background */}
-          <video
-            autoPlay
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-90 object-center"
-            src="/llamas.mp4"
-          />
-
-          {/* ATHOS Word appearing inside fire */}
-          <div
-            className="absolute text-white/90 font-black italic text-6xl md:text-[120px] uppercase tracking-tighter drop-shadow-[0_0_20px_rgba(255,77,0,0.8)]"
-            style={{ animation: 'textScale 0.8s cubic-bezier(0.8, 0, 0.2, 1) forwards' }}
-          >
-            ATHOS
-          </div>
-
-          <style>{`
-                @keyframes fireFade {
-                    0% { opacity: 0; backdrop-filter: blur(0px); background: rgba(0,0,0,0); }
-                    20% { opacity: 1; backdrop-filter: blur(8px); background: rgba(0,0,0,0.5); }
-                    80% { opacity: 1; backdrop-filter: blur(8px); background: rgba(0,0,0,0.5); }
-                    100% { opacity: 0; backdrop-filter: blur(0px); background: rgba(0,0,0,0); }
-                }
-                @keyframes textScale {
-                    0% { transform: scale(0.9); opacity: 0; }
-                    40% { transform: scale(1); opacity: 1; filter: blur(0px); text-shadow: 0 0 50px rgba(255,255,255,0.8); }
-                    60% { transform: scale(1); opacity: 1; filter: blur(0px); text-shadow: 0 0 50px rgba(255,255,255,0.8); }
-                    100% { transform: scale(1.2); opacity: 0; filter: blur(10px); text-shadow: 0 0 0 rgba(255,255,255,0); }
-                }
-            `}</style>
+          ATHOS
         </div>
-      )}
+      </div>
 
       {/* Main Content */}
       <div className="relative z-10 flex flex-col min-h-[100dvh]">
