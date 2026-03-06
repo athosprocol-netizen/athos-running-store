@@ -161,7 +161,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   const [view, _setView] = useState<ViewState>('home');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-  const [events, setEvents] = useState<Event[]>(MOCK_EVENTS);
+  const [events, setEvents] = useState<Event[]>([]);
   const [registrations, setRegistrations] = useState<EventRegistration[]>([]);
   const [results, setResults] = useState<EventResult[]>([]);
   const [notification, setNotification] = useState<string | null>(null);
@@ -266,11 +266,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
             type: e.type
           }));
 
-          setEvents(prev => {
-            const newIds = new Set(mappedEvents.map(me => me.id));
-            const filteredMocks = prev.filter(me => !newIds.has(me.id));
-            return [...filteredMocks, ...mappedEvents];
-          });
+          setEvents(mappedEvents);
         }
 
         // Check for active session

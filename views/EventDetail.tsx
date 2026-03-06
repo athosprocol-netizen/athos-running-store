@@ -91,8 +91,7 @@ export const EventDetail = () => {
                         </div>
                     </section>
 
-                    {/* Quick Stats Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
                             <MapPin className="text-athos-orange mb-2" size={28} />
                             <span className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Ciudad</span>
@@ -105,12 +104,7 @@ export const EventDetail = () => {
                                 {new Date(event.date).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })}
                             </span>
                         </div>
-                        <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
-                            <Users className="text-athos-orange mb-2" size={28} />
-                            <span className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Cupos</span>
-                            <span className="text-athos-black font-black text-lg">{event.maxParticipants ? `${event.currentParticipants || 0}/${event.maxParticipants}` : 'Ilimitados'}</span>
-                        </div>
-                        <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
+                        <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex flex-col items-center text-center max-md:col-span-2">
                             <MapIcon className="text-athos-orange mb-2" size={28} />
                             <span className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Distancias</span>
                             <span className="text-athos-black font-black text-lg">{event.distances.join(' • ')}</span>
@@ -154,17 +148,9 @@ export const EventDetail = () => {
 
                         {!isPast ? (
                             <div className="space-y-4">
-                                <button
-                                    onClick={() => setView('event-registration')}
-                                    className="w-full bg-athos-orange text-white font-black uppercase tracking-widest py-5 rounded-2xl shadow-[0_0_20px_rgba(255,77,0,0.3)] hover:shadow-[0_0_30px_rgba(255,77,0,0.5)] hover:-translate-y-1 transition-all glow-effect flex justify-center items-center gap-2"
-                                >
-                                    Inscríbete Ahora <ArrowRight size={18} />
-                                </button>
-                                <p className="text-center text-xs text-gray-500 font-bold">
-                                    {event.currentParticipants && event.maxParticipants
-                                        ? `¡Quedan ${event.maxParticipants - event.currentParticipants} cupos disponibles!`
-                                        : 'Asegura tu lugar hoy mismo'}
-                                </p>
+                                <div className="w-full bg-gray-50 text-gray-400 font-black uppercase tracking-widest py-5 rounded-2xl text-center border-2 border-dashed border-gray-200">
+                                    Próximamente
+                                </div>
                             </div>
                         ) : (
                             <div className="space-y-4">

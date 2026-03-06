@@ -131,7 +131,7 @@ export const Home = () => {
                                             className={`inline-block ${index % 2 === 0 || event.gradientColors ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-3 py-1.5 md:px-10 md:py-4 rounded-lg md:rounded-2xl text-[8px] sm:text-[9px] md:text-sm font-black uppercase tracking-widest transition-all shadow-md w-fit mt-auto cursor-pointer pointer-events-auto`}
                                             onClick={(e) => { e.stopPropagation(); selectEvent(event.id); }}
                                         >
-                                            Inscribirse
+                                            Ver Evento
                                         </span>
                                     </div>
                                     <img
