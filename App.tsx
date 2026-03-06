@@ -62,9 +62,10 @@ const MainContent = () => {
         window.scrollTo(0, 0);
       }, 600);
 
+      // Fallback in case onEnded fails to fire on mobile
       endTimerRef.current = setTimeout(() => {
         setIsTransitioning(false);
-      }, 1500);
+      }, 2000);
     }
   }, [view, displayView, isLoading]);
 
@@ -127,6 +128,9 @@ const MainContent = () => {
             autoPlay
             muted
             playsInline
+            webkit-playsinline="true"
+            disablePictureInPicture
+            onEnded={() => setIsTransitioning(false)}
             className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none brightness-110 contrast-125 saturate-150 -hue-rotate-15 drop-shadow-[0_0_50px_rgba(255,100,0,0.5)]"
             src="/llamas.webm"
           />
