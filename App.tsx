@@ -120,18 +120,14 @@ const MainContent = () => {
           transitionDelay: isTransitioning ? '0s, 0s' : '0.3s, 0s'
         }}
       >
-        {/* Dark backdrop so the mix-blend-screen fire actually appears over the white store background */}
-        <div className="absolute inset-0 bg-black/95"></div>
-
-        {/* Video overlay with screen blend to remove pure black background */}
+        {/* Transparent Video overlay */}
         <video
           ref={videoRef}
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{ mixBlendMode: 'screen', opacity: 0.95 }}
-          src="/llamas.mp4"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+          src="/llamas.mov"
         />
       </div>
 
