@@ -60,11 +60,11 @@ const MainContent = () => {
       transitionTimerRef.current = setTimeout(() => {
         setDisplayView(view);
         window.scrollTo(0, 0);
-      }, 400);
+      }, 600);
 
       endTimerRef.current = setTimeout(() => {
         setIsTransitioning(false);
-      }, 900);
+      }, 1500);
     }
   }, [view, displayView, isLoading]);
 
