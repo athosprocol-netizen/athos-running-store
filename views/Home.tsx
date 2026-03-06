@@ -107,6 +107,8 @@ export const Home = () => {
                         type: 'banner' as const,
                         title: b.title,
                         subtitle: b.subtitle,
+                        description: b.description,
+                        buttonText: b.buttonText,
                         image: b.image,
                         gradientColors: b.gradientColors,
                         link: b.link
@@ -118,6 +120,8 @@ export const Home = () => {
                         type: 'event' as const,
                         title: e.title,
                         subtitle: `${new Date(e.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}\n${e.city}`,
+                        description: undefined,
+                        buttonText: undefined,
                         image: e.image,
                         gradientColors: e.gradientColors,
                         link: undefined
@@ -157,11 +161,15 @@ export const Home = () => {
                                                     {item.title}
                                                 </h2>
 
-                                                {item.type === 'event' && (
+                                                {item.type === 'event' ? (
                                                     <p className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[140px] md:max-w-[250px] leading-tight line-clamp-2 mt-0.5`}>
                                                         {item.subtitle.split('\n').map((line, i) => <React.Fragment key={i}>{line}{i === 0 && <br />}</React.Fragment>)}
                                                     </p>
-                                                )}
+                                                ) : item.description ? (
+                                                    <p className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[140px] md:max-w-[250px] leading-tight line-clamp-2 mt-0.5`}>
+                                                        {item.description}
+                                                    </p>
+                                                ) : null}
 
                                                 {(item.type === 'event' || item.link) && (
                                                     <span
@@ -172,7 +180,7 @@ export const Home = () => {
                                                             else if (item.link) setView(item.link as any);
                                                         }}
                                                     >
-                                                        {item.type === 'event' ? 'Ver Evento' : 'Ver Más'}
+                                                        {item.type === 'event' ? 'Ver Evento' : (item.buttonText || 'Ver Más')}
                                                     </span>
                                                 )}
                                             </div>

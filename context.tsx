@@ -282,6 +282,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
             id: b.id,
             title: b.title || '',
             subtitle: b.subtitle || '',
+            description: b.description || '',
+            buttonText: b.button_text || '',
             image: b.image,
             gradientColors: b.gradient_colors || [],
             isActive: b.is_active,
@@ -1145,6 +1147,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       const cleanPayload = {
         title: bannerToSave.title,
         subtitle: bannerToSave.subtitle,
+        description: bannerToSave.description,
+        button_text: bannerToSave.buttonText,
         image: bannerToSave.image,
         gradient_colors: bannerToSave.gradientColors,
         is_active: bannerToSave.isActive,
@@ -1173,6 +1177,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       const cleanPayload = {
         title: bannerToSave.title,
         subtitle: bannerToSave.subtitle,
+        description: bannerToSave.description,
+        button_text: bannerToSave.buttonText,
         image: bannerToSave.image,
         gradient_colors: bannerToSave.gradientColors,
         is_active: bannerToSave.isActive,

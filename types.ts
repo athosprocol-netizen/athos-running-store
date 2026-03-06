@@ -127,6 +127,8 @@ export interface HeroBanner {
   id: string;
   title: string;
   subtitle: string;
+  description?: string;
+  buttonText?: string;
   image: string;
   gradientColors: string[];
   isActive: boolean;

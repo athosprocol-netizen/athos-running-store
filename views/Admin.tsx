@@ -663,8 +663,18 @@ export const Admin = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Enlace Destino (Link al tocar)</label>
-                                    <input type="text" className="w-full p-3 rounded-xl border-none bg-white font-bold text-sm focus:ring-2 focus:ring-athos-orange/20" placeholder="Ej: /shop" value={tempBanner.link || ''} onChange={e => setTempBanner({ ...tempBanner, link: e.target.value })} />
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Descripción (Opcional)</label>
+                                    <textarea className="w-full p-3 rounded-xl border-none bg-white font-bold text-sm focus:ring-2 focus:ring-athos-orange/20 h-20" placeholder="Un texto breve bajo el título..." value={tempBanner.description || ''} onChange={e => setTempBanner({ ...tempBanner, description: e.target.value })} />
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Enlace Destino (Link al tocar)</label>
+                                        <input type="text" className="w-full p-3 rounded-xl border-none bg-white font-bold text-sm focus:ring-2 focus:ring-athos-orange/20" placeholder="Ej: /shop" value={tempBanner.link || ''} onChange={e => setTempBanner({ ...tempBanner, link: e.target.value })} />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Texto del Botón (Opcional)</label>
+                                        <input type="text" className="w-full p-3 rounded-xl border-none bg-white font-bold text-sm focus:ring-2 focus:ring-athos-orange/20" placeholder="Ej: Ver Más" value={tempBanner.buttonText || ''} onChange={e => setTempBanner({ ...tempBanner, buttonText: e.target.value })} />
+                                    </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
