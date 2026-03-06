@@ -162,11 +162,11 @@ export const Home = () => {
                                                 </h2>
 
                                                 {item.type === 'event' ? (
-                                                    <p className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[140px] md:max-w-[250px] leading-tight line-clamp-2 mt-0.5`}>
+                                                    <p className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[180px] sm:max-w-[220px] md:max-w-[350px] leading-snug line-clamp-3 md:line-clamp-4 mt-0.5`}>
                                                         {item.subtitle.split('\n').map((line, i) => <React.Fragment key={i}>{line}{i === 0 && <br />}</React.Fragment>)}
                                                     </p>
                                                 ) : item.description ? (
-                                                    <p className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[140px] md:max-w-[250px] leading-tight line-clamp-2 mt-0.5`}>
+                                                    <p className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[180px] sm:max-w-[220px] md:max-w-[350px] leading-snug line-clamp-3 md:line-clamp-4 mt-0.5`}>
                                                         {item.description}
                                                     </p>
                                                 ) : null}
