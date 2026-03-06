@@ -141,18 +141,22 @@ export const EventDetail = () => {
                                 <span className="text-gray-400 text-xs font-bold uppercase tracking-widest block mb-1">Estado de la Carrera</span>
                                 <h3 className="text-2xl font-black text-athos-black italic tracking-tighter uppercase">{!isPast ? 'Inscripciones Abiertas' : 'Finalizada'}</h3>
                             </div>
-                            <button className="text-gray-400 hover:text-athos-orange transition-colors" title="Compartir Evento">
+                            <button onClick={() => {
+                                if (navigator.share) {
+                                    navigator.share({
+                                        title: event.title,
+                                        url: window.location.href
+                                    }).catch(console.error);
+                                } else {
+                                    navigator.clipboard.writeText(window.location.href);
+                                    alert('Enlace copiado al portapapeles');
+                                }
+                            }} className="text-gray-400 hover:text-athos-orange transition-colors" title="Compartir Evento">
                                 <Share2 size={24} />
                             </button>
                         </div>
 
-                        {!isPast ? (
-                            <div className="space-y-4">
-                                <div className="w-full bg-gray-50 text-gray-400 font-black uppercase tracking-widest py-5 rounded-2xl text-center border-2 border-dashed border-gray-200">
-                                    Próximamente
-                                </div>
-                            </div>
-                        ) : (
+                        {isPast && (
                             <div className="space-y-4">
                                 <div className="w-full bg-gray-100 text-gray-400 font-black uppercase tracking-widest py-5 rounded-2xl text-center cursor-not-allowed">
                                     Evento Finalizado
@@ -165,21 +169,6 @@ export const EventDetail = () => {
                                 </button>
                             </div>
                         )}
-
-                        <hr className="my-8 border-gray-100" />
-
-                        <div className="space-y-4">
-                            <h4 className="text-sm font-black text-athos-black uppercase tracing-wide">Organizador</h4>
-                            <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center font-bold text-gray-500 border border-gray-200">
-                                    {event.organizerId === 'org1' ? 'MCM' : 'TRA'}
-                                </div>
-                                <div>
-                                    <p className="font-bold text-athos-black">Athos Events Partner</p>
-                                    <p className="text-xs text-gray-500">Organizador Oficial</p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 

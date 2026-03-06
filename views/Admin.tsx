@@ -592,6 +592,18 @@ export const Admin = () => {
                                             onChange={handleImageUpload}
                                         />
                                     </div>
+                                    <div className="mt-6 flex items-center gap-3">
+                                        <input
+                                            type="checkbox"
+                                            id="isFeatured"
+                                            className="w-5 h-5 text-athos-orange rounded focus:ring-athos-orange border-gray-300"
+                                            checked={tempEvent.isFeatured || false}
+                                            onChange={e => setTempEvent({ ...tempEvent, isFeatured: e.target.checked })}
+                                        />
+                                        <label htmlFor="isFeatured" className="text-xs font-bold text-athos-black uppercase cursor-pointer">
+                                            Mostrar en Encabezado de Inicio (Destacado)
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         )}

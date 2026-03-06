@@ -109,7 +109,7 @@ export const Home = () => {
                         className={`w-full max-w-[100vw] overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-4 md:px-0.5`}
                         style={{ WebkitOverflowScrolling: 'touch' }}
                     >
-                        {events.filter(e => e.status === 'upcoming').slice(0, 3).map((event, index) => (
+                        {events.filter(e => e.status === 'upcoming' && e.isFeatured).map((event, index) => (
                             <div
                                 key={event.id}
                                 className="shrink-0 w-[88vw] md:w-[850px] relative select-none"
@@ -121,7 +121,7 @@ export const Home = () => {
                                 >
                                     <div className="relative z-10 w-[68%] md:w-[60%] pointer-events-none flex flex-col justify-center h-full">
                                         <span className={`${index % 2 === 0 || event.gradientColors ? 'text-white/80' : 'text-gray-500'} font-bold uppercase tracking-widest text-[8px] md:text-sm mb-1.5 md:mb-3 block`}>Evento Destacado</span>
-                                        <h2 className={`${index % 2 === 0 || event.gradientColors ? 'text-white' : 'text-athos-black'} text-xl sm:text-2xl md:text-5xl lg:text-5xl xl:text-6xl font-black italic tracking-tighter leading-[0.9] mb-1.5 md:mb-6 uppercase line-clamp-2`}>
+                                        <h2 className={`${index % 2 === 0 || event.gradientColors ? 'text-white' : 'text-athos-black'} text-xl sm:text-2xl md:text-4xl lg:text-4xl xl:text-5xl font-black italic tracking-tighter leading-[0.9] mb-1.5 md:mb-6 uppercase`}>
                                             {event.title}
                                         </h2>
                                         <p className={`${index % 2 === 0 || event.gradientColors ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[140px] md:max-w-[250px] leading-tight line-clamp-2 mt-0.5`}>
