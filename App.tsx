@@ -47,7 +47,7 @@ const MainContent = () => {
       const timer = setTimeout(() => {
         setDisplayView(view);
         window.scrollTo(0, 0); // Scroll to top on route change
-      }, 300); // 300ms is the midpoint of the 0.6s animation when screen is fully covered
+      }, 400); // 400ms is the midpoint of the 0.8s animation when screen is fully covered by video
       return () => clearTimeout(timer);
     }
   }, [view, displayView, isLoading]);
@@ -94,43 +94,42 @@ const MainContent = () => {
     <div className="min-h-[100dvh] bg-athos-bg text-athos-black font-sans selection:bg-athos-orange selection:text-white flex flex-col relative overflow-x-hidden">
       <BackgroundGlows />
 
-      {/* Global Sprint Blur Transition Overlay */}
+      {/* Global Video Transition Overlay */}
       {transitionKey > 0 && (
         <div
           key={transitionKey}
           className="fixed inset-0 z-[200] pointer-events-none flex items-center justify-center overflow-hidden"
+          style={{ animation: 'fireFade 0.8s ease-in-out forwards' }}
         >
-          {/* Blurred orange speed swoosh */}
-          <div
-            className="absolute inset-y-[-20%] w-[150%] md:w-[120%] bg-athos-orange/40 transform -skew-x-[25deg]"
-            style={{ filter: 'blur(40px)', animation: 'sprintWipe 0.6s cubic-bezier(0.8, 0, 0.2, 1) forwards' }}
-          ></div>
+          {/* Video overlay with screen blend to remove pure black background */}
+          <video
+            autoPlay
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-90 object-center"
+            src="/llamas.mp4"
+          />
 
-          {/* Subtler second swoosh for depth */}
-          <div
-            className="absolute inset-y-[-20%] w-[100%] bg-athos-orange/60 transform -skew-x-[25deg] mix-blend-overlay"
-            style={{ filter: 'blur(20px)', animation: 'sprintWipe 0.6s cubic-bezier(0.7, 0, 0.3, 1) forwards 0.05s' }}
-          ></div>
-
-          {/* ATHOS Word */}
+          {/* ATHOS Word appearing inside fire */}
           <div
             className="absolute text-white/90 font-black italic text-6xl md:text-[120px] uppercase tracking-tighter drop-shadow-[0_0_20px_rgba(255,77,0,0.8)]"
-            style={{ animation: 'sprintText 0.6s cubic-bezier(0.8, 0, 0.2, 1) forwards' }}
+            style={{ animation: 'textScale 0.8s cubic-bezier(0.8, 0, 0.2, 1) forwards' }}
           >
             ATHOS
           </div>
+
           <style>{`
-                @keyframes sprintWipe {
-                    0% { transform: translateX(-150%) skewX(-25deg); opacity: 0; }
-                    20% { opacity: 1; }
-                    80% { opacity: 1; }
-                    100% { transform: translateX(150%) skewX(-25deg); opacity: 0; }
+                @keyframes fireFade {
+                    0% { opacity: 0; backdrop-filter: blur(0px); background: rgba(0,0,0,0); }
+                    20% { opacity: 1; backdrop-filter: blur(8px); background: rgba(0,0,0,0.5); }
+                    80% { opacity: 1; backdrop-filter: blur(8px); background: rgba(0,0,0,0.5); }
+                    100% { opacity: 0; backdrop-filter: blur(0px); background: rgba(0,0,0,0); }
                 }
-                @keyframes sprintText {
-                    0% { transform: translateX(-100vw) scale(0.9); opacity: 0; }
-                    40% { transform: translateX(0) scale(1); opacity: 1; filter: blur(0px); }
-                    60% { transform: translateX(0) scale(1); opacity: 1; filter: blur(0px); }
-                    100% { transform: translateX(100vw) scale(1.1); opacity: 0; filter: blur(10px); }
+                @keyframes textScale {
+                    0% { transform: scale(0.9); opacity: 0; }
+                    40% { transform: scale(1); opacity: 1; filter: blur(0px); text-shadow: 0 0 50px rgba(255,255,255,0.8); }
+                    60% { transform: scale(1); opacity: 1; filter: blur(0px); text-shadow: 0 0 50px rgba(255,255,255,0.8); }
+                    100% { transform: scale(1.2); opacity: 0; filter: blur(10px); text-shadow: 0 0 0 rgba(255,255,255,0); }
                 }
             `}</style>
         </div>
