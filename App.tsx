@@ -39,10 +39,15 @@ const MainContent = () => {
   const [displayView, setDisplayView] = React.useState(view);
   const [isTransitioning, setIsTransitioning] = React.useState(false);
   const videoRef = React.useRef<HTMLVideoElement>(null);
+  const transitionTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const endTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // Trigger page transition effect when view changes
   React.useEffect(() => {
     if (view !== displayView && !isLoading) {
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+      if (endTimerRef.current) clearTimeout(endTimerRef.current);
+
       setIsTransitioning(true);
 
       if (videoRef.current) {
@@ -51,21 +56,24 @@ const MainContent = () => {
       }
 
       // Change the actual view component at the peak of the transition
-      const timer = setTimeout(() => {
+      transitionTimerRef.current = setTimeout(() => {
         setDisplayView(view);
         window.scrollTo(0, 0); // Scroll to top on route change
       }, 400); // Midpoint
 
-      const timerEnd = setTimeout(() => {
+      endTimerRef.current = setTimeout(() => {
         setIsTransitioning(false);
       }, 800);
-
-      return () => {
-        clearTimeout(timer);
-        clearTimeout(timerEnd);
-      };
     }
   }, [view, displayView, isLoading]);
+
+  // Clean up timers on unmount
+  React.useEffect(() => {
+    return () => {
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+      if (endTimerRef.current) clearTimeout(endTimerRef.current);
+    };
+  }, []);
 
   // Sync initial render correctly
   React.useEffect(() => {
@@ -125,13 +133,6 @@ const MainContent = () => {
           className="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-90 object-center"
           src="/llamas.mp4"
         />
-
-        {/* ATHOS Word appearing inside fire */}
-        <div
-          className={`absolute text-white/90 font-black italic text-6xl md:text-[120px] uppercase tracking-tighter drop-shadow-[0_0_20px_rgba(255,40,0,0.8)] transition-all duration-300 ease-out ${isTransitioning ? 'scale-100 opacity-100 blur-0' : 'scale-75 opacity-0 blur-xl'}`}
-        >
-          ATHOS
-        </div>
       </div>
 
       {/* Main Content */}
