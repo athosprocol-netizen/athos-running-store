@@ -45,10 +45,13 @@ const MainContent = () => {
     if (view !== displayView && !isLoading) {
       setIsTransitioning(true);
 
+      let playPromise: Promise<void> | undefined;
       if (videoRef.current) {
-        // Skip first 0.5s to avoid pure black starting frames
-        videoRef.current.currentTime = 0.5;
-        videoRef.current.play().catch(e => console.log("Video autoplay prevented:", e));
+        videoRef.current.currentTime = 0;
+        playPromise = videoRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(e => console.log("Video autoplay prevented:", e));
+        }
       }
 
       // Change the actual view component at the peak of the transition
@@ -110,32 +113,23 @@ const MainContent = () => {
     <div className="min-h-[100dvh] bg-athos-bg text-athos-black font-sans selection:bg-athos-orange selection:text-white flex flex-col relative overflow-x-hidden">
       <BackgroundGlows />
 
-      {/* Global Video Transition Overlay (Always rendered, but hidden via inline styles to ensure video is cached and preloaded instantly) */}
-      <div
-        className="fixed inset-0 z-[500] pointer-events-none flex items-center justify-center overflow-hidden"
-        style={{
-          opacity: isTransitioning ? 1 : 0,
-          visibility: isTransitioning ? 'visible' : 'hidden',
-          transition: 'visibility 0s linear, opacity 0.3s ease-in-out',
-          transitionDelay: isTransitioning ? '0s, 0s' : '0.3s, 0s'
-        }}
-      >
-        {/* Transparent Video overlay */}
-        <video
-          ref={videoRef}
-          muted
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
-          src="/llamas.webm"
-        />
-      </div>
+      {/* Global Video Transition Overlay */}
+      {isTransitioning && (
+        <div className="fixed inset-0 z-[500] pointer-events-none flex items-center justify-center overflow-hidden">
+          <video
+            autoPlay
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+            src="/llamas.webm"
+          />
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="relative z-10 flex flex-col min-h-[100dvh]">
         <Navbar />
         <div className="mt-[67px] md:mt-[92px]"> {/* Exact Spacer for fixed navbar height */}
-          <Marquee />
         </div>
         <Notification />
         <main className="w-full flex-grow"> {/* Removed pt-0 md:pt-4 gap */}
