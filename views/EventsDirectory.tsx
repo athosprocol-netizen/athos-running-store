@@ -6,13 +6,21 @@ export const EventsDirectory = () => {
     const { events, selectEvent } = useApp();
     const [searchTerm, setSearchTerm] = useState('');
 
+    const matchesSearch = (event: any, term: string) => {
+        if (!term.trim()) return true;
+        const searchWords = term.toLowerCase().split(/\s+/).filter(w => w.trim() !== '');
+        const eventString = `${event.title} ${event.city} ${event.location || ''}`.toLowerCase();
+
+        return searchWords.every(word => eventString.includes(word));
+    };
+
     const upcomingEvents = events
-        .filter(e => e.status === 'upcoming' && e.title.toLowerCase().includes(searchTerm.toLowerCase()))
+        .filter(e => e.status === 'upcoming' && matchesSearch(e, searchTerm))
         .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
         .slice(0, 5);
 
     const pastEvents = events
-        .filter(e => e.status === 'past' && e.title.toLowerCase().includes(searchTerm.toLowerCase()));
+        .filter(e => e.status === 'past' && matchesSearch(e, searchTerm));
 
     // --- CALENDAR LOGIC ---
     const [currentMonth, setCurrentMonth] = useState(new Date());
