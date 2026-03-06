@@ -1,48 +1,38 @@
 import React from 'react';
 
 export const Marquee = () => {
-    const phrases = ["DESATA TU VELOCIDAD", "SUPERA TUS LÍMITES", "CORRE MÁS LEJOS", "EQUIPAMIENTO RETADOR"];
-    // Repeat enough arrays to ensure smooth infinite scrolling
-    const repeated = Array(12).fill(phrases).flat();
+    // Clean, minimal message requested
+    const phrases = ["ATHOS RUNNING STORE", "ENVÍO GRATIS $300K+", "SUPERA TUS LÍMITES"];
+    const repeated = Array(6).fill(phrases).flat();
 
     return (
-        <div className="w-full bg-athos-black text-white py-1.5 md:py-2 overflow-hidden flex items-center shadow-[0_4px_20px_rgba(255,77,0,0.15)] z-40 relative border-y-2 border-athos-orange/30">
-            {/* Track background pattern */}
-            <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(255,255,255,0.1) 4px, rgba(255,255,255,0.1) 5px)', backgroundSize: '100% 12px' }}></div>
+        <div className="w-full bg-[#111] text-white py-1 overflow-hidden flex items-center shadow-sm z-40 relative border-b border-athos-orange/20 h-8">
+            {/* Running Track Lanes Background */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+                backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 6px, rgba(255,77,0,0.15) 6px, rgba(255,77,0,0.15) 7px)',
+                backgroundSize: '100% 7px'
+            }}></div>
 
-            <div className="whitespace-nowrap flex items-center animate-marquee relative z-10 w-[200%]">
+            <div className="whitespace-nowrap flex items-center animate-marquee relative z-10 w-[200%] h-full">
                 {repeated.map((phrase, i) => (
-                    <div key={i} className="flex items-center mx-4 md:mx-6">
-                        <span className="text-[10px] md:text-sm font-black italic tracking-widest uppercase hover:text-athos-orange transition-colors duration-300 drop-shadow-md">
+                    <div key={i} className="flex items-center mx-6 h-full">
+                        <span className="text-[9px] md:text-[10px] font-medium tracking-[0.2em] uppercase text-gray-300">
                             {phrase}
                         </span>
-                        {/* Runner animation figures */}
-                        <div className="mx-4 md:mx-8 flex items-center gap-1.5 text-athos-orange drop-shadow-md">
-                            <span className="text-sm md:text-lg animate-bounce" style={{ animationDuration: i % 2 === 0 ? '0.4s' : '0.5s', animationDelay: `${i * 0.1}s` }}>
-                                {i % 2 === 0 ? '🏃‍♂️' : '🏃‍♀️'}
-                            </span>
-                            <span className="text-xs md:text-sm opacity-80 animate-pulse">💨</span>
+                        {/* Minimal SVG Runner */}
+                        <div className="mx-8 flex items-center text-athos-orange opacity-80" style={{ transform: i % 2 === 0 ? 'translateY(-2px)' : 'translateY(2px)' }}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-run-cycle">
+                                <path d="M12 4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"></path>
+                                <path d="M14 6l-2 3-3-1"></path>
+                                <path d="M12 9l2 3 2 1"></path>
+                                <path d="M14 12l-2 4-1 6"></path>
+                                <path d="M12 16l-3 5"></path>
+                                <path d="M6 14l2-3"></path>
+                            </svg>
                         </div>
                     </div>
                 ))}
             </div>
-
-            <style>{`
-                @keyframes marquee {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
-                }
-                .animate-marquee {
-                    animation: marquee 35s linear infinite;
-                }
-                .animate-bounce {
-                    animation: bounce 0.4s infinite alternate cubic-bezier(0.3, 0.1, 0.4, 1);
-                }
-                @keyframes bounce {
-                    0% { transform: translateY(0) rotate(0deg); }
-                    100% { transform: translateY(-3px) rotate(5deg); }
-                }
-            `}</style>
         </div>
     );
 };

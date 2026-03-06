@@ -94,20 +94,38 @@ const MainContent = () => {
     <div className="min-h-[100dvh] bg-athos-bg text-athos-black font-sans selection:bg-athos-orange selection:text-white flex flex-col relative overflow-x-hidden">
       <BackgroundGlows />
 
-      {/* Global Speed Transition Overlay */}
+      {/* Global Smoke/Blur Transition Overlay */}
       {transitionKey > 0 && (
         <div
           key={transitionKey}
-          className="fixed inset-0 z-[200] pointer-events-none flex"
-          style={{ animation: 'sprintWipe 0.6s cubic-bezier(0.8, 0, 0.2, 1) forwards' }}
+          className="fixed inset-0 z-[200] pointer-events-none flex items-center justify-center overflow-hidden"
+          style={{ animation: 'fireFade 0.7s ease-in-out forwards' }}
         >
-          <div className="w-[150%] md:w-[120%] h-[120%] -top-[10%] bg-athos-orange transform -skew-x-[15deg] shadow-[0_0_80px_rgba(255,77,0,0.8)] border-r-8 md:border-r-[16px] border-athos-black relative flex items-center justify-end pr-32">
-            <div className="text-athos-black/20 font-black italic text-8xl md:text-[150px] uppercase tracking-tighter mix-blend-overlay transform skew-x-[15deg]">ATHOS</div>
-          </div>
+          <div className="absolute inset-x-0 inset-y-[-50%] bg-athos-orange mix-blend-multiply opacity-80" style={{ filter: 'blur(100px)', animation: 'smokeRise 0.7s ease-in-out' }}></div>
+          <div className="absolute inset-x-0 inset-y-[100%] bg-pink-600 mix-blend-screen opacity-60" style={{ filter: 'blur(80px)', animation: 'smokeRiseFast 0.7s ease-out' }}></div>
+          <div className="text-white/40 font-black italic text-6xl md:text-8xl uppercase tracking-widest mix-blend-overlay drop-shadow-[0_0_30px_rgba(255,255,255,0.8)]" style={{ animation: 'textScale 0.7s ease-out' }}>ATHOS</div>
           <style>{`
-                @keyframes sprintWipe {
-                    0% { transform: translateX(-150%); }
-                    100% { transform: translateX(150%); }
+                @keyframes fireFade {
+                    0% { opacity: 0; backdrop-filter: blur(0px); background: rgba(255,77,0,0); }
+                    40% { opacity: 1; backdrop-filter: blur(20px); background: rgba(255,50,0,0.4); }
+                    60% { opacity: 1; backdrop-filter: blur(20px); background: rgba(255,50,0,0.4); }
+                    100% { opacity: 0; backdrop-filter: blur(0px); background: rgba(255,77,0,0); }
+                }
+                @keyframes smokeRise {
+                    0% { transform: translateY(100%) scale(1); }
+                    50% { transform: translateY(0%) scale(1.5); }
+                    100% { transform: translateY(-100%) scale(2); }
+                }
+                @keyframes smokeRiseFast {
+                    0% { transform: translateY(100%) scale(0.8); }
+                    50% { transform: translateY(-20%) scale(1.2); opacity: 0.8; }
+                    100% { transform: translateY(-150%) scale(1.5); opacity: 0; }
+                }
+                @keyframes textScale {
+                    0% { transform: scale(0.9); opacity: 0; }
+                    40% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 50px white; }
+                    60% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 50px white; }
+                    100% { transform: scale(1.2); opacity: 0; }
                 }
             `}</style>
         </div>

@@ -39,6 +39,7 @@
             'float-up': 'floatUp var(--duration, 10s) linear infinite',
             'flicker': 'flicker 3s linear infinite',
             'marquee': 'marquee 25s linear infinite',
+            'run-cycle': 'run-cycle 0.3s infinite',
           },
           keyframes: {
             fadeIn: {
@@ -80,6 +81,11 @@
             marquee: {
               '0%': { transform: 'translateX(0%)' },
               '100%': { transform: 'translateX(-50%)' },
+            },
+            'run-cycle': {
+              '0%': { transform: 'skewX(-5deg) translateY(0)' },
+              '50%': { transform: 'skewX(5deg) translateY(-1px)' },
+              '100%': { transform: 'skewX(-5deg) translateY(0)' },
             }
           }
         }
