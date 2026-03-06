@@ -40,36 +40,40 @@ const MainContent = () => {
   const [isTransitioning, setIsTransitioning] = React.useState(false);
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
+  const transitionTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const endTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+
   // Trigger page transition effect when view changes
   React.useEffect(() => {
     if (view !== displayView && !isLoading) {
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+      if (endTimerRef.current) clearTimeout(endTimerRef.current);
+
       setIsTransitioning(true);
 
-      let playPromise: Promise<void> | undefined;
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
-        playPromise = videoRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(e => console.log("Video autoplay prevented:", e));
-        }
+        videoRef.current.play().catch(e => console.log("Video autoplay prevented:", e));
       }
 
       // Change the actual view component at the peak of the transition
-      const timerMid = setTimeout(() => {
+      transitionTimerRef.current = setTimeout(() => {
         setDisplayView(view);
         window.scrollTo(0, 0);
       }, 400);
 
-      const timerEnd = setTimeout(() => {
+      endTimerRef.current = setTimeout(() => {
         setIsTransitioning(false);
       }, 900);
-
-      return () => {
-        clearTimeout(timerMid);
-        clearTimeout(timerEnd);
-      };
     }
   }, [view, displayView, isLoading]);
+
+  React.useEffect(() => {
+    return () => {
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+      if (endTimerRef.current) clearTimeout(endTimerRef.current);
+    }
+  }, []);
 
   // Sync initial render correctly
   React.useEffect(() => {
@@ -123,7 +127,7 @@ const MainContent = () => {
             autoPlay
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none brightness-110 contrast-125 drop-shadow-[0_0_50px_rgba(255,100,0,0.5)]"
+            className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none brightness-110 contrast-125 saturate-150 -hue-rotate-15 drop-shadow-[0_0_50px_rgba(255,100,0,0.5)]"
             src="/llamas.webm"
           />
         </div>
