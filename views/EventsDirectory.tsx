@@ -106,23 +106,36 @@ export const EventsDirectory = () => {
                             const dayEvents = getEventsForDay(day);
                             const isCurr = isToday(day);
                             const hasEvents = dayEvents.length > 0;
+                            const isMultiple = dayEvents.length > 1;
 
                             let btnClass = 'p-3 w-full aspect-square flex flex-col items-center justify-center rounded-2xl relative transition-all ';
-                            let style = {};
+                            let style: React.CSSProperties = {};
                             let showDot = false;
 
-                            if (hasEvents && dayEvents.length === 1 && dayEvents[0].gradientColors && dayEvents[0].gradientColors.length > 0) {
-                                btnClass += 'text-white font-bold shadow-md hover:-translate-y-1 border-transparent shadow-inner';
-                                style = { background: `linear-gradient(135deg, ${dayEvents[0].gradientColors.join(', ')})` };
-                            } else if (hasEvents && dayEvents.length > 1) {
-                                btnClass += 'bg-athos-black text-white shadow-lg hover:-translate-y-1';
-                                showDot = true;
+                            if (hasEvents) {
+                                if (isMultiple) {
+                                    btnClass += 'text-white font-bold shadow-md hover:-translate-y-1 border-transparent shadow-inner';
+                                    const colors = dayEvents.map(e => (e.gradientColors && e.gradientColors.length > 0) ? e.gradientColors[0] : '#FF4D00');
+                                    if (colors.length === 2) {
+                                        style = { background: `linear-gradient(135deg, ${colors[0]} 50%, ${colors[1]} 50%)` };
+                                    } else if (colors.length === 3) {
+                                        style = { background: `linear-gradient(135deg, ${colors[0]} 33.3%, ${colors[1]} 33.3% 66.6%, ${colors[2]} 66.6%)` };
+                                    } else {
+                                        style = { background: `linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 50%, ${colors[2]} 100%)` };
+                                    }
+                                    showDot = true;
+                                } else if (dayEvents[0].gradientColors && dayEvents[0].gradientColors.length > 0) {
+                                    btnClass += 'text-white font-bold shadow-md hover:-translate-y-1 border-transparent shadow-inner';
+                                    style = { background: `linear-gradient(135deg, ${dayEvents[0].gradientColors.join(', ')})` };
+                                } else if (isCurr) {
+                                    btnClass += 'bg-athos-black text-white shadow-lg';
+                                    showDot = true;
+                                } else {
+                                    btnClass += 'bg-athos-orange/10 text-athos-black font-bold border border-athos-orange/30 hover:bg-athos-orange/20 hover:-translate-y-1';
+                                    showDot = true;
+                                }
                             } else if (isCurr) {
                                 btnClass += 'bg-athos-black text-white shadow-lg';
-                                if (hasEvents) showDot = true;
-                            } else if (hasEvents) {
-                                btnClass += 'bg-athos-orange/10 text-athos-black font-bold border border-athos-orange/30 hover:bg-athos-orange/20 hover:-translate-y-1';
-                                showDot = true;
                             } else {
                                 btnClass += 'text-gray-500 hover:bg-gray-50 border border-gray-100 hover:border-gray-300';
                             }

@@ -420,6 +420,34 @@ export const Navbar = () => {
                                 const dayEvents = getEventsForDay(day);
                                 const isCurr = isToday(day);
                                 const hasEvents = dayEvents.length > 0;
+                                const isMultiple = dayEvents.length > 1;
+
+                                let backgroundStyle: React.CSSProperties = {};
+                                let textClass = 'text-gray-500 hover:bg-gray-50 border border-transparent';
+
+                                if (isCurr) {
+                                    textClass = 'bg-athos-black text-white shadow-md font-black';
+                                } else if (hasEvents) {
+                                    textClass = 'text-white shadow-md font-bold hover:scale-105 border border-transparent';
+
+                                    if (isMultiple) {
+                                        const colors = dayEvents.map(e => (e.gradientColors && e.gradientColors.length > 0) ? e.gradientColors[0] : '#FF4D00');
+                                        if (colors.length === 2) {
+                                            backgroundStyle = { background: `linear-gradient(135deg, ${colors[0]} 50%, ${colors[1]} 50%)` };
+                                        } else if (colors.length === 3) {
+                                            backgroundStyle = { background: `linear-gradient(135deg, ${colors[0]} 33.3%, ${colors[1]} 33.3% 66.6%, ${colors[2]} 66.6%)` };
+                                        } else {
+                                            backgroundStyle = { background: `linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 50%, ${colors[2]} 100%)` };
+                                        }
+                                    } else {
+                                        const event = dayEvents[0];
+                                        if (event.gradientColors && event.gradientColors.length > 0) {
+                                            backgroundStyle = { background: `linear-gradient(135deg, ${event.gradientColors.join(', ')})` };
+                                        } else {
+                                            backgroundStyle = { backgroundColor: '#111' };
+                                        }
+                                    }
+                                }
 
                                 return (
                                     <button
@@ -435,14 +463,12 @@ export const Navbar = () => {
                                                 }
                                             }
                                         }}
-                                        className={`p-1.5 md:p-2 w-full aspect-square flex flex-col items-center justify-center rounded-xl relative transition-all ${isCurr ? 'bg-athos-black text-white shadow-md' :
-                                            hasEvents ? 'bg-athos-orange/10 text-athos-black font-bold border border-athos-orange/30 hover:bg-athos-orange/20' :
-                                                'text-gray-500 hover:bg-gray-50 border border-transparent'
-                                            }`}
+                                        className={`p-1.5 md:p-2 w-full aspect-square flex flex-col items-center justify-center rounded-xl relative transition-all ${textClass}`}
+                                        style={backgroundStyle}
                                     >
-                                        <span className={`text-xs md:text-sm tracking-tighter ${isCurr ? 'font-black' : ''}`}>{day.getDate()}</span>
+                                        <span className={`text-xs md:text-sm tracking-tighter ${!hasEvents && isCurr ? 'font-black' : ''}`}>{day.getDate()}</span>
                                         {hasEvents && (
-                                            <div className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-athos-orange" />
+                                            <div className={`absolute bottom-1 w-1.5 h-1.5 rounded-full ${isCurr ? 'bg-athos-orange' : 'bg-white shadow-sm'}`} />
                                         )}
                                     </button>
                                 );
