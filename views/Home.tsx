@@ -3,7 +3,7 @@ import { useApp } from '../context';
 import { Search, Filter, Star, Heart, ArrowRight, Flame, Shirt, Footprints, Trophy, Zap } from 'lucide-react';
 
 export const Home = () => {
-    const { setView, selectProduct, products, events, selectEvent, toggleWishlist, user, setSearchQuery, setActiveCategory } = useApp();
+    const { setView, selectProduct, products, events, selectEvent, toggleWishlist, user, setSearchQuery, setActiveCategory, banners } = useApp();
     const displayProducts = products;
 
     // DRAGGABLE LOGIC REFS & STATE
@@ -100,60 +100,104 @@ export const Home = () => {
             <div className="hidden md:block h-6"></div>
 
             <div className="max-w-[1400px] mx-auto md:px-10">
+                {(() => {
+                    // Filter active banners
+                    const activeBanners = banners.filter(b => b.isActive).map(b => ({
+                        id: b.id,
+                        type: 'banner' as const,
+                        title: b.title,
+                        subtitle: b.subtitle,
+                        image: b.image,
+                        gradientColors: b.gradientColors,
+                        link: b.link
+                    }));
 
-                {/* 2. HERO CAROUSEL (DRAGGABLE DESKTOP / SCROLL MOBILE) */}
-                <div className="mt-2 md:px-0">
-                    <div
-                        ref={sliderRef}
-                        {...dragHandlers}
-                        className={`w-full max-w-[100vw] overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-4 md:px-0.5`}
-                        style={{ WebkitOverflowScrolling: 'touch' }}
-                    >
-                        {events.filter(e => e.status === 'upcoming' && e.isFeatured).map((event, index) => (
+                    // Filter featured events
+                    const featuredEvents = events.filter(e => e.status === 'upcoming' && e.isFeatured).map(e => ({
+                        id: e.id,
+                        type: 'event' as const,
+                        title: e.title,
+                        subtitle: `${new Date(e.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}\n${e.city}`,
+                        image: e.image,
+                        gradientColors: e.gradientColors,
+                        link: undefined
+                    }));
+
+                    // Combine them
+                    const heroItems = [...activeBanners, ...featuredEvents];
+
+                    if (heroItems.length === 0) return null;
+
+                    return (
+                        <div className="mt-2 md:px-0">
                             <div
-                                key={event.id}
-                                className="shrink-0 w-[88vw] md:w-[850px] relative select-none"
-                                onClick={() => handleItemClick(() => selectEvent(event.id))}
+                                ref={sliderRef}
+                                {...dragHandlers}
+                                className={`w-full max-w-[100vw] overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-4 md:px-0.5`}
+                                style={{ WebkitOverflowScrolling: 'touch' }}
                             >
-                                <div
-                                    className={`rounded-[20px] md:rounded-[40px] p-5 md:p-14 h-[160px] sm:h-[180px] md:h-[450px] relative overflow-hidden flex items-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] group border hover:shadow-xl transition-all ${index % 2 !== 0 && !event.gradientColors ? 'border-gray-200 bg-gray-100' : 'border-transparent'}`}
-                                    style={event.gradientColors ? { background: `linear-gradient(135deg, ${event.gradientColors.join(', ')})` } : (index % 2 === 0 ? { backgroundColor: '#111' } : {})}
-                                >
-                                    <div className="relative z-10 w-[68%] md:w-[60%] pointer-events-none flex flex-col justify-center h-full">
-                                        <span className={`${index % 2 === 0 || event.gradientColors ? 'text-white/80' : 'text-gray-500'} font-bold uppercase tracking-widest text-[8px] md:text-sm mb-1.5 md:mb-3 block`}>Evento Destacado</span>
-                                        <h2 className={`${index % 2 === 0 || event.gradientColors ? 'text-white' : 'text-athos-black'} text-xl sm:text-2xl md:text-4xl lg:text-4xl xl:text-5xl font-black italic tracking-tighter leading-[0.9] mb-1.5 md:mb-6 uppercase`}>
-                                            {event.title}
-                                        </h2>
-                                        <p className={`${index % 2 === 0 || event.gradientColors ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[140px] md:max-w-[250px] leading-tight line-clamp-2 mt-0.5`}>
-                                            {new Date(event.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })} <br /> {event.city}
-                                        </p>
-                                        <span
-                                            className={`inline-block ${index % 2 === 0 || event.gradientColors ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-3 py-1.5 md:px-10 md:py-4 rounded-lg md:rounded-2xl text-[8px] sm:text-[9px] md:text-sm font-black uppercase tracking-widest transition-all shadow-md w-fit mt-auto cursor-pointer pointer-events-auto`}
-                                            onClick={(e) => { e.stopPropagation(); selectEvent(event.id); }}
+                                {heroItems.map((item, index) => (
+                                    <div
+                                        key={item.id}
+                                        className="shrink-0 w-[88vw] md:w-[850px] relative select-none"
+                                        onClick={() => handleItemClick(() => {
+                                            if (item.type === 'event') selectEvent(item.id);
+                                            else if (item.link) setView(item.link as any);
+                                        })}
+                                    >
+                                        <div
+                                            className={`rounded-[20px] md:rounded-[40px] p-5 md:p-14 h-[160px] sm:h-[180px] md:h-[450px] relative overflow-hidden flex items-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] group border hover:shadow-xl transition-all ${index % 2 !== 0 && (!item.gradientColors || item.gradientColors.length === 0) ? 'border-gray-200 bg-gray-100' : 'border-transparent'}`}
+                                            style={item.gradientColors && item.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${item.gradientColors.join(', ')})` } : (index % 2 === 0 ? { backgroundColor: '#111' } : {})}
                                         >
-                                            Ver Evento
-                                        </span>
-                                    </div>
-                                    <img
-                                        src={event.image || "/imagen_bordes_difuminados.png"}
-                                        className="absolute -right-4 md:-right-12 -bottom-8 sm:-bottom-12 md:-bottom-28 w-[50%] md:w-[60%] h-[120%] object-cover object-left rotate-[-5deg] drop-shadow-xl z-0 pointer-events-none opacity-90"
-                                        style={{ clipPath: 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%)', borderRadius: '40px' }}
-                                        alt={event.title}
-                                    />
-                                    {index % 2 === 0 && (
-                                        <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-32 h-32 md:w-96 md:h-96 bg-gray-800 rounded-full blur-[60px] md:blur-[100px] opacity-40 pointer-events-none"></div>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                                            <div className="relative z-10 w-[68%] md:w-[60%] pointer-events-none flex flex-col justify-center h-full">
+                                                <span className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/80' : 'text-gray-500'} font-bold uppercase tracking-widest text-[8px] md:text-sm mb-1.5 md:mb-3 block`}>
+                                                    {item.type === 'event' ? 'Evento Destacado' : (item.subtitle || '')}
+                                                </span>
+                                                <h2 className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white' : 'text-athos-black'} text-xl sm:text-2xl md:text-4xl lg:text-4xl xl:text-5xl font-black italic tracking-tighter leading-[0.9] mb-1.5 md:mb-6 uppercase`}>
+                                                    {item.title}
+                                                </h2>
 
-                    {/* Dots Indicator */}
-                    <div className="flex justify-center gap-2 mt-4 md:mt-8">
-                        <div className={`w-6 h-1.5 rounded-full transition-all ${scrollLeft < 200 ? 'bg-athos-orange w-8' : 'bg-gray-300'}`}></div>
-                        <div className={`w-1.5 h-1.5 rounded-full transition-all ${scrollLeft >= 200 ? 'bg-athos-orange w-8' : 'bg-gray-300'}`}></div>
-                    </div>
-                </div>
+                                                {item.type === 'event' && (
+                                                    <p className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[140px] md:max-w-[250px] leading-tight line-clamp-2 mt-0.5`}>
+                                                        {item.subtitle.split('\n').map((line, i) => <React.Fragment key={i}>{line}{i === 0 && <br />}</React.Fragment>)}
+                                                    </p>
+                                                )}
+
+                                                {(item.type === 'event' || item.link) && (
+                                                    <span
+                                                        className={`inline-block ${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-3 py-1.5 md:px-10 md:py-4 rounded-lg md:rounded-2xl text-[8px] sm:text-[9px] md:text-sm font-black uppercase tracking-widest transition-all shadow-md w-fit mt-auto cursor-pointer pointer-events-auto`}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (item.type === 'event') selectEvent(item.id);
+                                                            else if (item.link) setView(item.link as any);
+                                                        }}
+                                                    >
+                                                        {item.type === 'event' ? 'Ver Evento' : 'Ver Más'}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <img
+                                                src={item.image || "/imagen_bordes_difuminados.png"}
+                                                className="absolute -right-4 md:-right-12 -bottom-8 sm:-bottom-12 md:-bottom-28 w-[50%] md:w-[60%] h-[120%] object-cover object-left rotate-[-5deg] drop-shadow-xl z-0 pointer-events-none opacity-90"
+                                                style={{ clipPath: 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%)', borderRadius: '40px' }}
+                                                alt={item.title || ''}
+                                            />
+                                            {index % 2 === 0 && (
+                                                <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-32 h-32 md:w-96 md:h-96 bg-gray-800 rounded-full blur-[60px] md:blur-[100px] opacity-40 pointer-events-none"></div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Dots Indicator */}
+                            <div className="flex justify-center gap-2 mt-4 md:mt-8">
+                                <div className={`w-6 h-1.5 rounded-full transition-all ${scrollLeft < 200 ? 'bg-athos-orange w-8' : 'bg-gray-300'}`}></div>
+                                <div className={`w-1.5 h-1.5 rounded-full transition-all ${scrollLeft >= 200 ? 'bg-athos-orange w-8' : 'bg-gray-300'}`}></div>
+                            </div>
+                        </div>
+                    )
+                })()}
 
                 {/* 4. NEW ARRIVALS (Strict Dimensions 2 Columns Mobile, Max 8 Items) */}
                 <div className="mt-6 md:mt-12 px-3 md:px-0 mb-8 max-w-[100vw] overflow-hidden md:max-w-[1400px] mx-auto">

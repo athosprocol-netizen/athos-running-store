@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useApp } from '../context';
 import { Plus, Trash2, Edit2, Upload, X, Check, Package, DollarSign, Image } from 'lucide-react';
-import { Product, Event as AthosEvent } from '../types';
+import { Product, Event as AthosEvent, HeroBanner } from '../types';
 
 export const Admin = () => {
     const { products, updateProduct, addProduct, deleteProduct, user, showNotification } = useApp();
@@ -9,7 +9,7 @@ export const Admin = () => {
     const [isAdding, setIsAdding] = useState(false);
 
     // Tab state
-    const [activeTab, setActiveTab] = useState<'products' | 'events'>('products');
+    const [activeTab, setActiveTab] = useState<'products' | 'events' | 'banners'>('products');
 
     // Product state
     const [tempProduct, setTempProduct] = useState<Partial<Product>>({});
@@ -18,6 +18,11 @@ export const Admin = () => {
     const { events, addEvent, updateEvent, deleteEvent } = useApp();
     const [editingEventId, setEditingEventId] = useState<string | null>(null);
     const [tempEvent, setTempEvent] = useState<Partial<AthosEvent>>({});
+
+    // Banner state
+    const { banners, addBanner, updateBanner, deleteBanner } = useApp();
+    const [editingBannerId, setEditingBannerId] = useState<string | null>(null);
+    const [tempBanner, setTempBanner] = useState<Partial<HeroBanner>>({});
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,6 +42,12 @@ export const Admin = () => {
         setIsAdding(false);
     };
 
+    const handleEditBannerClick = (banner: HeroBanner) => {
+        setEditingBannerId(banner.id);
+        setTempBanner(banner);
+        setIsAdding(false);
+    };
+
     const handleAddClick = () => {
         if (activeTab === 'products') {
             setEditingId(null);
@@ -51,7 +62,7 @@ export const Admin = () => {
                 tags: [],
                 variants: []
             });
-        } else {
+        } else if (activeTab === 'events') {
             setEditingEventId(null);
             setTempEvent({
                 id: Math.random().toString(36).substr(2, 9),
@@ -66,6 +77,17 @@ export const Admin = () => {
                 price: 0,
                 organizerId: user?.id || 'org1',
                 gradientColors: ['#FF4D00', '#FF8A00']
+            });
+        } else if (activeTab === 'banners') {
+            setEditingBannerId(null);
+            setTempBanner({
+                id: Math.random().toString(36).substr(2, 9),
+                title: '',
+                subtitle: '',
+                image: '',
+                gradientColors: ['#000000', '#222222'],
+                isActive: true,
+                link: ''
             });
         }
         setIsAdding(true);
@@ -91,7 +113,7 @@ export const Admin = () => {
 
             setEditingId(null);
             setTempProduct({});
-        } else {
+        } else if (activeTab === 'events') {
             if (!tempEvent.title || tempEvent.title.trim() === '') {
                 showNotification("❌ Error: Necesitas ponerle un nombre al evento.");
                 return;
@@ -105,6 +127,20 @@ export const Admin = () => {
 
             setEditingEventId(null);
             setTempEvent({});
+        } else if (activeTab === 'banners') {
+            if (!tempBanner.image || tempBanner.image === '') {
+                showNotification("❌ Error: Debes subir una imagen para el encabezado.");
+                return;
+            }
+
+            if (isAdding) {
+                addBanner(tempBanner as HeroBanner);
+            } else if (editingBannerId) {
+                updateBanner(tempBanner as HeroBanner);
+            }
+
+            setEditingBannerId(null);
+            setTempBanner({});
         }
 
         setIsAdding(false);
@@ -117,8 +153,10 @@ export const Admin = () => {
             reader.onloadend = () => {
                 if (activeTab === 'products') {
                     setTempProduct(prev => ({ ...prev, image: reader.result as string }));
-                } else {
+                } else if (activeTab === 'events') {
                     setTempEvent(prev => ({ ...prev, image: reader.result as string }));
+                } else if (activeTab === 'banners') {
+                    setTempBanner(prev => ({ ...prev, image: reader.result as string }));
                 }
             };
             reader.readAsDataURL(file);
@@ -234,6 +272,12 @@ export const Admin = () => {
                         >
                             Eventos
                         </button>
+                        <button
+                            onClick={() => { setActiveTab('banners'); setIsAdding(false); setEditingBannerId(null); }}
+                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === 'banners' ? 'bg-white text-athos-black shadow-sm' : 'text-gray-500 hover:text-athos-black'}`}
+                        >
+                            Encabezados
+                        </button>
                     </div>
                 </div>
 
@@ -241,15 +285,15 @@ export const Admin = () => {
                     onClick={handleAddClick}
                     className="bg-athos-black text-white px-6 py-3 rounded-xl font-bold uppercase text-xs tracking-wider flex items-center gap-2 hover:bg-athos-orange transition-colors"
                 >
-                    <Plus size={16} /> {activeTab === 'products' ? 'Nuevo Producto' : 'Nuevo Evento'}
+                    <Plus size={16} /> {activeTab === 'products' ? 'Nuevo Producto' : activeTab === 'events' ? 'Nuevo Evento' : 'Nuevo Encabezado'}
                 </button>
             </div>
 
             {/* Editor Form Modal/Inline */}
-            {((activeTab === 'products' && (editingId || isAdding)) || (activeTab === 'events' && (editingEventId || isAdding))) && (
+            {((activeTab === 'products' && (editingId || isAdding)) || (activeTab === 'events' && (editingEventId || isAdding)) || (activeTab === 'banners' && (editingBannerId || isAdding))) && (
                 <div className="bg-gray-50 p-8 rounded-[40px] mb-8 shadow-sm animate-slide-up border border-gray-100">
                     <h3 className="font-black text-lg mb-6 flex items-center gap-2 uppercase">
-                        {activeTab === 'products' ? (isAdding ? 'Crear Producto' : 'Editar Producto') : (isAdding ? 'Crear Evento' : 'Editar Evento')}
+                        {activeTab === 'products' ? (isAdding ? 'Crear Producto' : 'Editar Producto') : activeTab === 'events' ? (isAdding ? 'Crear Evento' : 'Editar Evento') : (isAdding ? 'Crear Encabezado' : 'Editar Encabezado')}
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {activeTab === 'products' ? (
@@ -444,7 +488,7 @@ export const Admin = () => {
                                     </div>
                                 </div>
                             </>
-                        ) : (
+                        ) : activeTab === 'events' ? (
                             <div className="space-y-4">
                                 <div>
                                     <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Título del Evento</label>
@@ -606,7 +650,54 @@ export const Admin = () => {
                                     </div>
                                 </div>
                             </div>
-                        )}
+                        ) : activeTab === 'banners' ? (
+                            <div className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Título Central (Opcional)</label>
+                                        <input type="text" className="w-full p-3 rounded-xl border-none bg-white font-bold text-sm focus:ring-2 focus:ring-athos-orange/20" value={tempBanner.title || ''} onChange={e => setTempBanner({ ...tempBanner, title: e.target.value })} />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Subtítulo (Opcional)</label>
+                                        <input type="text" className="w-full p-3 rounded-xl border-none bg-white font-bold text-sm focus:ring-2 focus:ring-athos-orange/20" value={tempBanner.subtitle || ''} onChange={e => setTempBanner({ ...tempBanner, subtitle: e.target.value })} />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Enlace Destino (Link al tocar)</label>
+                                    <input type="text" className="w-full p-3 rounded-xl border-none bg-white font-bold text-sm focus:ring-2 focus:ring-athos-orange/20" placeholder="Ej: /shop" value={tempBanner.link || ''} onChange={e => setTempBanner({ ...tempBanner, link: e.target.value })} />
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Color Degradado 1</label>
+                                        <input type="color" className="w-full h-12 p-1 rounded-xl border-none bg-white cursor-pointer" value={tempBanner.gradientColors?.[0] || '#000000'} onChange={e => setTempBanner({ ...tempBanner, gradientColors: [e.target.value, tempBanner.gradientColors?.[1] || '#222222'] })} />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Color Degradado 2</label>
+                                        <input type="color" className="w-full h-12 p-1 rounded-xl border-none bg-white cursor-pointer" value={tempBanner.gradientColors?.[1] || '#222222'} onChange={e => setTempBanner({ ...tempBanner, gradientColors: [tempBanner.gradientColors?.[0] || '#000000', e.target.value] })} />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Imagen del Encabezado (Punto focal derecho)</label>
+                                    <div className="relative aspect-video bg-white rounded-3xl overflow-hidden flex items-center justify-center border-2 border-dashed border-gray-200 group hover:border-athos-orange transition-colors">
+                                        {tempBanner.image ? (
+                                            <img src={tempBanner.image} className="w-full h-full object-contain p-4" />
+                                        ) : (
+                                            <Image size={48} className="text-gray-300" />
+                                        )}
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                                            <span className="text-white font-bold flex items-center gap-2 uppercase text-xs tracking-widest">
+                                                <Upload size={20} /> Subir Foto
+                                            </span>
+                                        </div>
+                                        <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
+                                    </div>
+                                    <div className="mt-6 flex items-center gap-3">
+                                        <input type="checkbox" id="isActive" className="w-5 h-5 text-athos-orange rounded focus:ring-athos-orange border-gray-300" checked={tempBanner.isActive ?? true} onChange={e => setTempBanner({ ...tempBanner, isActive: e.target.checked })} />
+                                        <label htmlFor="isActive" className="text-xs font-bold text-athos-black uppercase cursor-pointer">Activo (Mostrar en Inicio)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
                         <div className="flex justify-end gap-2 mt-8 md:col-span-2">
                             <button onClick={() => { setIsAdding(false); setEditingId(null); setEditingEventId(null); }} className="px-6 py-3 bg-white text-gray-500 rounded-xl font-bold uppercase text-xs hover:bg-gray-100">
                                 Cancelar
@@ -661,7 +752,7 @@ export const Admin = () => {
                         </tbody>
                     </table>
                 </div>
-            ) : (
+            ) : activeTab === 'events' ? (
                 <div className="bg-white rounded-[30px] p-2 overflow-hidden border border-gray-100">
                     <table className="w-full text-left border-collapse">
                         <thead className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">
@@ -697,6 +788,52 @@ export const Admin = () => {
                                     </td>
                                 </tr>
                             ))}
+                        </tbody>
+                    </table>
+                </div>
+            ) : (
+                <div className="bg-white rounded-[30px] p-2 overflow-hidden border border-gray-100">
+                    <table className="w-full text-left border-collapse">
+                        <thead className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">
+                            <tr>
+                                <th className="p-4 pl-6">Encabezado</th>
+                                <th className="p-4">Estado</th>
+                                <th className="p-4 text-right pr-6">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-sm">
+                            {banners.map(banner => (
+                                <tr key={banner.id} className="group">
+                                    <td className="p-2">
+                                        <div className="bg-white rounded-2xl p-2 flex items-center gap-4 group-hover:shadow-sm transition-shadow">
+                                            <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-gray-50" style={{ background: `linear-gradient(135deg, ${banner.gradientColors[0]}, ${banner.gradientColors[1]})` }}>
+                                                {banner.image ? (
+                                                    <img src={banner.image} className="w-full h-full object-contain mix-blend-overlay" />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-white/50"><Image size={16} /></div>
+                                                )}
+                                            </div>
+                                            <span className="font-bold text-athos-black truncate max-w-[200px] block">{banner.title || 'Encabezado sin texto'}</span>
+                                        </div>
+                                    </td>
+                                    <td className="p-4 font-bold">
+                                        <span className={`text-[10px] px-2 py-1 rounded-md ${banner.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                                            {banner.isActive ? 'Activo' : 'Inactivo'}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <button onClick={() => handleEditBannerClick(banner)} className="bg-white p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"><Edit2 size={16} /></button>
+                                            <button onClick={() => deleteBanner(banner.id)} className="bg-white p-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors"><Trash2 size={16} /></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            {banners.length === 0 && (
+                                <tr>
+                                    <td colSpan={3} className="p-8 text-center text-gray-400 font-bold uppercase text-xs">No hay encabezados creados</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

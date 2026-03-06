@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, PropsWithChildren, useEffect, useRef } from 'react';
-import { UserProfile, CartItem, Product, ViewState, CustomizationOptions, Review, Event, EventRegistration, EventResult } from './types';
+import { UserProfile, CartItem, Product, ViewState, CustomizationOptions, Review, Event, EventRegistration, EventResult, HeroBanner } from './types';
 import { INITIAL_USER, MOCK_PRODUCTS } from './constants';
 import { supabase } from './lib/supabase';
 
@@ -116,6 +116,11 @@ interface AppContextType {
   addEvent: (event: Event) => void;
   updateEvent: (event: Event) => void;
   deleteEvent: (id: string) => void;
+  // Banners
+  banners: HeroBanner[];
+  addBanner: (banner: HeroBanner) => void;
+  updateBanner: (banner: HeroBanner) => void;
+  deleteBanner: (id: string) => void;
   registerForEvent: (registration: EventRegistration) => void;
   joinChallenge: (id: string) => void;
   checkout: () => void;
@@ -162,6 +167,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
+  const [banners, setBanners] = useState<HeroBanner[]>([]);
   const [registrations, setRegistrations] = useState<EventRegistration[]>([]);
   const [results, setResults] = useState<EventResult[]>([]);
   const [notification, setNotification] = useState<string | null>(null);
@@ -267,6 +273,21 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           }));
 
           setEvents(mappedEvents);
+        }
+
+        // Fetch banners from Supabase
+        const { data: dbBanners } = await supabase.from('banners').select('*');
+        if (dbBanners && dbBanners.length > 0) {
+          const mappedBanners = dbBanners.map(b => ({
+            id: b.id,
+            title: b.title || '',
+            subtitle: b.subtitle || '',
+            image: b.image,
+            gradientColors: b.gradient_colors || [],
+            isActive: b.is_active,
+            link: b.link
+          }));
+          setBanners(mappedBanners);
         }
 
         // Check for active session
@@ -1113,6 +1134,68 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     showNotification("Evento eliminado");
   };
 
+  const addBanner = async (banner: HeroBanner) => {
+    try {
+      let mainImg = banner.image;
+      if (mainImg?.startsWith('data:')) {
+        mainImg = await uploadProductImage(mainImg, banner.id, '-banner');
+      }
+      const bannerToSave = { ...banner, image: mainImg };
+
+      const cleanPayload = {
+        title: bannerToSave.title,
+        subtitle: bannerToSave.subtitle,
+        image: bannerToSave.image,
+        gradient_colors: bannerToSave.gradientColors,
+        is_active: bannerToSave.isActive,
+        link: bannerToSave.link
+      };
+
+      const { data, error } = await supabase.from('banners').insert(cleanPayload).select().single();
+      if (error) throw error;
+
+      setBanners(prev => [...prev, { ...bannerToSave, id: data.id }]);
+      showNotification("Encabezado creado exitosamente");
+    } catch (e: any) {
+      console.error("Error creating banner:", e);
+      showNotification("Error: No se pudo crear el encabezado.");
+    }
+  };
+
+  const updateBanner = async (banner: HeroBanner) => {
+    try {
+      let mainImg = banner.image;
+      if (mainImg?.startsWith('data:')) {
+        mainImg = await uploadProductImage(mainImg, banner.id, '-banner');
+      }
+      const bannerToSave = { ...banner, image: mainImg };
+
+      const cleanPayload = {
+        title: bannerToSave.title,
+        subtitle: bannerToSave.subtitle,
+        image: bannerToSave.image,
+        gradient_colors: bannerToSave.gradientColors,
+        is_active: bannerToSave.isActive,
+        link: bannerToSave.link
+      };
+
+      const { error } = await supabase.from('banners').update(cleanPayload).eq('id', banner.id);
+      if (error) throw error;
+
+      setBanners(prev => prev.map(b => b.id === banner.id ? bannerToSave : b));
+      showNotification("Encabezado actualizado exitosamente");
+    } catch (e: any) {
+      console.error("Error updating banner:", e);
+      showNotification("Error: No se pudo actualizar el encabezado.");
+    }
+  };
+
+  const deleteBanner = async (id: string) => {
+    setBanners(prev => prev.filter(b => b.id !== id));
+    await supabase.from('banners').delete().eq('id', id);
+    showNotification("Encabezado eliminado");
+  };
+
   const registerForEvent = (registration: EventRegistration) => {
     setRegistrations(prev => [...prev, registration]);
     // update user history logic would go here if backend supported
@@ -1170,6 +1253,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       clearCart,
       selectEvent,
       addEvent,
+      banners,
+      addBanner,
+      updateBanner,
+      deleteBanner,
       updateEvent,
       deleteEvent,
       registerForEvent,

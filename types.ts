@@ -123,6 +123,16 @@ export interface Event {
   type?: string;
 }
 
+export interface HeroBanner {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  gradientColors: string[];
+  isActive: boolean;
+  link?: string;
+}
+
 export interface EventRegistration {
   id: string;
   userId: string;
