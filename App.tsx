@@ -127,7 +127,7 @@ const MainContent = () => {
           playsInline
           preload="auto"
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
-          src="/llamas.mov"
+          src="/llamas.webm"
         />
       </div>
 
