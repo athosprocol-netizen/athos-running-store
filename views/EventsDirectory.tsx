@@ -107,6 +107,26 @@ export const EventsDirectory = () => {
                             const isCurr = isToday(day);
                             const hasEvents = dayEvents.length > 0;
 
+                            let btnClass = 'p-3 w-full aspect-square flex flex-col items-center justify-center rounded-2xl relative transition-all ';
+                            let style = {};
+                            let showDot = false;
+
+                            if (hasEvents && dayEvents.length === 1 && dayEvents[0].gradientColors && dayEvents[0].gradientColors.length > 0) {
+                                btnClass += 'text-white font-bold shadow-md hover:-translate-y-1 border-transparent shadow-inner';
+                                style = { background: `linear-gradient(135deg, ${dayEvents[0].gradientColors.join(', ')})` };
+                            } else if (hasEvents && dayEvents.length > 1) {
+                                btnClass += 'bg-athos-black text-white shadow-lg hover:-translate-y-1';
+                                showDot = true;
+                            } else if (isCurr) {
+                                btnClass += 'bg-athos-black text-white shadow-lg';
+                                if (hasEvents) showDot = true;
+                            } else if (hasEvents) {
+                                btnClass += 'bg-athos-orange/10 text-athos-black font-bold border border-athos-orange/30 hover:bg-athos-orange/20 hover:-translate-y-1';
+                                showDot = true;
+                            } else {
+                                btnClass += 'text-gray-500 hover:bg-gray-50 border border-gray-100 hover:border-gray-300';
+                            }
+
                             return (
                                 <button
                                     key={idx}
@@ -119,13 +139,11 @@ export const EventsDirectory = () => {
                                             }
                                         }
                                     }}
-                                    className={`p-3 w-full aspect-square flex flex-col items-center justify-center rounded-2xl relative transition-all ${isCurr ? 'bg-athos-black text-white shadow-lg' :
-                                        hasEvents ? 'bg-athos-orange/10 text-athos-black font-bold border border-athos-orange/30 hover:bg-athos-orange/20 hover:-translate-y-1' :
-                                            'text-gray-500 hover:bg-gray-50 border border-gray-100 hover:border-gray-300'
-                                        }`}
+                                    className={btnClass}
+                                    style={style}
                                 >
                                     <span className={`text-base tracking-tighter ${isCurr || hasEvents ? 'font-black' : 'font-medium'}`}>{day.getDate()}</span>
-                                    {hasEvents && (
+                                    {showDot && (
                                         <div className="absolute bottom-2 w-2 h-2 rounded-full bg-athos-orange animate-pulse" />
                                     )}
                                 </button>

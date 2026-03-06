@@ -161,14 +161,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   const [view, _setView] = useState<ViewState>('home');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-  const [events, setEvents] = useState<Event[]>(() => {
-    try {
-      const saved = localStorage.getItem('athos_events');
-      return saved ? JSON.parse(saved) : MOCK_EVENTS;
-    } catch {
-      return MOCK_EVENTS;
-    }
-  });
+  const [events, setEvents] = useState<Event[]>(MOCK_EVENTS);
   const [registrations, setRegistrations] = useState<EventRegistration[]>([]);
   const [results, setResults] = useState<EventResult[]>([]);
   const [notification, setNotification] = useState<string | null>(null);
@@ -245,6 +238,41 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           });
         }
 
+        // Fetch events from Supabase
+        const { data: dbEvents } = await supabase.from('events').select('*');
+        if (dbEvents && dbEvents.length > 0) {
+          const mappedEvents = dbEvents.map(e => ({
+            id: e.id,
+            title: e.title,
+            date: e.date,
+            location: e.location,
+            city: e.city,
+            description: e.description || '',
+            distances: e.distances || [],
+            image: e.image || '',
+            status: e.status || 'upcoming',
+            isFeatured: e.is_featured,
+            maxParticipants: e.max_participants,
+            currentParticipants: e.current_participants,
+            organizerId: e.organizer_id,
+            photosLink: e.photos_link,
+            price: e.price || 0,
+            duration: e.duration,
+            gradientColors: e.gradient_colors || [],
+            reward: e.reward,
+            daysLeft: e.days_left,
+            participants: e.participants,
+            difficulty: e.difficulty,
+            type: e.type
+          }));
+
+          setEvents(prev => {
+            const newIds = new Set(mappedEvents.map(me => me.id));
+            const filteredMocks = prev.filter(me => !newIds.has(me.id));
+            return [...filteredMocks, ...mappedEvents];
+          });
+        }
+
         // Check for active session
         const { data: { session } } = await supabase.auth.getSession();
 
@@ -318,9 +346,6 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     localStorage.setItem('athos_recent', JSON.stringify(recentlyViewed));
   }, [recentlyViewed]);
 
-  useEffect(() => {
-    localStorage.setItem('athos_events', JSON.stringify(events));
-  }, [events]);
 
   const setViewWithHistory = (newView: ViewState) => {
     if (view !== newView) {
@@ -1000,11 +1025,39 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         mainImg = await uploadProductImage(mainImg, event.id, '-event');
       }
       const eventToSave = { ...event, image: mainImg };
-      setEvents(prev => [...prev, eventToSave]);
+
+      const cleanPayload = {
+        title: eventToSave.title,
+        date: eventToSave.date,
+        location: eventToSave.location,
+        city: eventToSave.city,
+        description: eventToSave.description,
+        distances: eventToSave.distances,
+        image: eventToSave.image,
+        status: eventToSave.status,
+        is_featured: eventToSave.isFeatured,
+        max_participants: eventToSave.maxParticipants,
+        current_participants: eventToSave.currentParticipants,
+        organizer_id: eventToSave.organizerId,
+        photos_link: eventToSave.photosLink,
+        price: eventToSave.price,
+        duration: eventToSave.duration,
+        gradient_colors: eventToSave.gradientColors,
+        reward: eventToSave.reward,
+        days_left: eventToSave.daysLeft,
+        participants: eventToSave.participants,
+        difficulty: eventToSave.difficulty,
+        type: eventToSave.type
+      };
+
+      const { data, error } = await supabase.from('events').insert(cleanPayload).select().single();
+      if (error) throw error;
+
+      setEvents(prev => [...prev, { ...eventToSave, id: data.id }]);
       showNotification("Evento creado exitosamente");
     } catch (e: any) {
       console.error("Error creating event:", e);
-      showNotification("Error: No se pudo subir la foto del evento.");
+      showNotification("Error: No se pudo crear el evento en la nube.");
     }
   };
 
@@ -1015,16 +1068,52 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         mainImg = await uploadProductImage(mainImg, updatedEvent.id, '-event');
       }
       const eventToSave = { ...updatedEvent, image: mainImg };
+
+      const cleanPayload = {
+        title: eventToSave.title,
+        date: eventToSave.date,
+        location: eventToSave.location,
+        city: eventToSave.city,
+        description: eventToSave.description,
+        distances: eventToSave.distances,
+        image: eventToSave.image,
+        status: eventToSave.status,
+        is_featured: eventToSave.isFeatured,
+        max_participants: eventToSave.maxParticipants,
+        current_participants: eventToSave.currentParticipants,
+        organizer_id: eventToSave.organizerId,
+        photos_link: eventToSave.photosLink,
+        price: eventToSave.price,
+        duration: eventToSave.duration,
+        gradient_colors: eventToSave.gradientColors,
+        reward: eventToSave.reward,
+        days_left: eventToSave.daysLeft,
+        participants: eventToSave.participants,
+        difficulty: eventToSave.difficulty,
+        type: eventToSave.type
+      };
+
+      // Ensure we have an ID for updating
+      if (eventToSave.id.startsWith('e') && isNaN(Number(eventToSave.id.replace('e', '')))) {
+        // Fallback if it's a mock event being updated
+        const { error } = await supabase.from('events').update(cleanPayload).eq('id', eventToSave.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('events').update(cleanPayload).eq('id', eventToSave.id);
+        if (error) throw error;
+      }
+
       setEvents(prev => prev.map(e => e.id === eventToSave.id ? eventToSave : e));
       showNotification("Evento actualizado exitosamente");
     } catch (e: any) {
       console.error("Error updating event:", e);
-      showNotification("Error: No se pudo subir la foto del evento.");
+      showNotification("Error: No se pudo actualizar el evento.");
     }
   };
 
-  const deleteEvent = (id: string) => {
+  const deleteEvent = async (id: string) => {
     setEvents(prev => prev.filter(e => e.id !== id));
+    await supabase.from('events').delete().eq('id', id);
     showNotification("Evento eliminado");
   };
 
