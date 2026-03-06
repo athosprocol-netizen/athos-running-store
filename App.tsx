@@ -94,38 +94,43 @@ const MainContent = () => {
     <div className="min-h-[100dvh] bg-athos-bg text-athos-black font-sans selection:bg-athos-orange selection:text-white flex flex-col relative overflow-x-hidden">
       <BackgroundGlows />
 
-      {/* Global Smoke/Blur Transition Overlay */}
+      {/* Global Sprint Blur Transition Overlay */}
       {transitionKey > 0 && (
         <div
           key={transitionKey}
           className="fixed inset-0 z-[200] pointer-events-none flex items-center justify-center overflow-hidden"
-          style={{ animation: 'fireFade 0.7s ease-in-out forwards' }}
         >
-          <div className="absolute inset-x-0 inset-y-[-50%] bg-athos-orange mix-blend-multiply opacity-80" style={{ filter: 'blur(100px)', animation: 'smokeRise 0.7s ease-in-out' }}></div>
-          <div className="absolute inset-x-0 inset-y-[100%] bg-pink-600 mix-blend-screen opacity-60" style={{ filter: 'blur(80px)', animation: 'smokeRiseFast 0.7s ease-out' }}></div>
-          <div className="text-white/40 font-black italic text-6xl md:text-8xl uppercase tracking-widest mix-blend-overlay drop-shadow-[0_0_30px_rgba(255,255,255,0.8)]" style={{ animation: 'textScale 0.7s ease-out' }}>ATHOS</div>
+          {/* Blurred orange speed swoosh */}
+          <div
+            className="absolute inset-y-[-20%] w-[150%] md:w-[120%] bg-athos-orange/40 transform -skew-x-[25deg]"
+            style={{ filter: 'blur(40px)', animation: 'sprintWipe 0.6s cubic-bezier(0.8, 0, 0.2, 1) forwards' }}
+          ></div>
+
+          {/* Subtler second swoosh for depth */}
+          <div
+            className="absolute inset-y-[-20%] w-[100%] bg-athos-orange/60 transform -skew-x-[25deg] mix-blend-overlay"
+            style={{ filter: 'blur(20px)', animation: 'sprintWipe 0.6s cubic-bezier(0.7, 0, 0.3, 1) forwards 0.05s' }}
+          ></div>
+
+          {/* ATHOS Word */}
+          <div
+            className="absolute text-white/90 font-black italic text-6xl md:text-[120px] uppercase tracking-tighter drop-shadow-[0_0_20px_rgba(255,77,0,0.8)]"
+            style={{ animation: 'sprintText 0.6s cubic-bezier(0.8, 0, 0.2, 1) forwards' }}
+          >
+            ATHOS
+          </div>
           <style>{`
-                @keyframes fireFade {
-                    0% { opacity: 0; backdrop-filter: blur(0px); background: rgba(255,77,0,0); }
-                    40% { opacity: 1; backdrop-filter: blur(20px); background: rgba(255,50,0,0.4); }
-                    60% { opacity: 1; backdrop-filter: blur(20px); background: rgba(255,50,0,0.4); }
-                    100% { opacity: 0; backdrop-filter: blur(0px); background: rgba(255,77,0,0); }
+                @keyframes sprintWipe {
+                    0% { transform: translateX(-150%) skewX(-25deg); opacity: 0; }
+                    20% { opacity: 1; }
+                    80% { opacity: 1; }
+                    100% { transform: translateX(150%) skewX(-25deg); opacity: 0; }
                 }
-                @keyframes smokeRise {
-                    0% { transform: translateY(100%) scale(1); }
-                    50% { transform: translateY(0%) scale(1.5); }
-                    100% { transform: translateY(-100%) scale(2); }
-                }
-                @keyframes smokeRiseFast {
-                    0% { transform: translateY(100%) scale(0.8); }
-                    50% { transform: translateY(-20%) scale(1.2); opacity: 0.8; }
-                    100% { transform: translateY(-150%) scale(1.5); opacity: 0; }
-                }
-                @keyframes textScale {
-                    0% { transform: scale(0.9); opacity: 0; }
-                    40% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 50px white; }
-                    60% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 50px white; }
-                    100% { transform: scale(1.2); opacity: 0; }
+                @keyframes sprintText {
+                    0% { transform: translateX(-100vw) scale(0.9); opacity: 0; }
+                    40% { transform: translateX(0) scale(1); opacity: 1; filter: blur(0px); }
+                    60% { transform: translateX(0) scale(1); opacity: 1; filter: blur(0px); }
+                    100% { transform: translateX(100vw) scale(1.1); opacity: 0; filter: blur(10px); }
                 }
             `}</style>
         </div>
