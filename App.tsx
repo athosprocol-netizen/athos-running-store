@@ -115,12 +115,15 @@ const MainContent = () => {
 
       {/* Global Video Transition Overlay */}
       {isTransitioning && (
-        <div className="fixed inset-0 z-[500] pointer-events-none flex items-center justify-center overflow-hidden">
+        <div key={Date.now()} className="fixed inset-0 z-[500] pointer-events-none flex items-center justify-center overflow-hidden">
+          {/* Dark backdrop to guarantee the semi-transparent flames are highly visible against bright backgrounds */}
+          <div className="absolute inset-0 bg-black/90"></div>
+
           <video
             autoPlay
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+            className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none brightness-110 contrast-125 drop-shadow-[0_0_50px_rgba(255,100,0,0.5)]"
             src="/llamas.webm"
           />
         </div>
