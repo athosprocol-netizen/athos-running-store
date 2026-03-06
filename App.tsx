@@ -60,12 +60,12 @@ const MainContent = () => {
       transitionTimerRef.current = setTimeout(() => {
         setDisplayView(view);
         window.scrollTo(0, 0);
-      }, 600);
+      }, 400);
 
-      // Fallback in case onEnded fails to fire on mobile, rigidly set to user's 1040ms request
+      // Restore user's preferred 900ms length
       endTimerRef.current = setTimeout(() => {
         setIsTransitioning(false);
-      }, 1040);
+      }, 900);
     }
   }, [view, displayView, isLoading]);
 
@@ -118,32 +118,25 @@ const MainContent = () => {
     <div className="min-h-[100dvh] bg-athos-bg text-athos-black font-sans selection:bg-athos-orange selection:text-white flex flex-col relative overflow-x-hidden">
       <BackgroundGlows />
 
-      {/* Global Video Transition Overlay */}
-      {isTransitioning && (
-        <div
-          key={Date.now()}
-          className="fixed inset-0 z-[500] pointer-events-none flex items-center justify-center overflow-hidden"
-        >
-          {/* Dark backdrop */}
-          <div className="absolute inset-0 bg-black/90"></div>
+      {/* Global Video Transition Overlay (Permanently mounted for iOS video play policy safety) */}
+      <div
+        className={`fixed inset-0 z-[500] flex items-center justify-center overflow-hidden transition-opacity duration-300 ${isTransitioning ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
+      >
+        {/* Dark backdrop */}
+        <div className="absolute inset-0 bg-black/90"></div>
 
-          <video
-            ref={(el) => {
-              if (el) {
-                // Aggressively force play on mount for strict mobile browsers
-                el.play().catch(e => console.log("Mobile autoplay prevented:", e));
-              }
-            }}
-            autoPlay
-            muted
-            playsInline
-            webkit-playsinline="true"
-            disablePictureInPicture
-            className="absolute min-w-full min-h-full object-cover object-center pointer-events-none brightness-110 contrast-125 saturate-150 -hue-rotate-15 drop-shadow-[0_0_50px_rgba(255,100,0,0.5)]"
-            src="/llamas.webm"
-          />
-        </div>
-      )}
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          playsInline
+          webkit-playsinline="true"
+          disablePictureInPicture
+          className="absolute min-w-full min-h-full object-cover object-center pointer-events-none brightness-110 contrast-125 saturate-200 -hue-rotate-30 drop-shadow-[0_0_50px_rgba(255,100,0,0.5)]"
+          src="/llamas.webm"
+        />
+      </div>
 
       {/* Main Content */}
       <div className="relative z-10 flex flex-col min-h-[100dvh]">
