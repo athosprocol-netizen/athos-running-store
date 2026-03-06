@@ -182,22 +182,27 @@ export const EventsDirectory = () => {
                                         <div
                                             key={e.id}
                                             onClick={() => selectEvent(e.id)}
-                                            className="flex items-center gap-4 p-4 bg-white rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-gray-100 hover:border-athos-orange/30 shadow-sm hover:shadow-md hover:-translate-y-1"
+                                            className="relative flex items-center gap-4 p-4 overflow-hidden rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md hover:-translate-y-1 group bg-white"
                                         >
+                                            {/* Background Gradient with Low Opacity */}
                                             <div
-                                                className={`w-16 h-16 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border ${e.gradientColors ? 'border-transparent shadow-inner' : 'bg-gray-50 border-gray-200'}`}
-                                                style={e.gradientColors ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : {}}
+                                                className="absolute inset-0 opacity-[0.10] pointer-events-none transition-opacity group-hover:opacity-[0.20]"
+                                                style={e.gradientColors && e.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : { backgroundColor: '#f9fafb' }}
+                                            />
+
+                                            <div
+                                                className={`relative w-16 h-16 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 border z-10 transition-colors ${e.gradientColors ? 'border-transparent shadow-sm' : 'border-gray-100 group-hover:border-athos-orange/30'}`}
                                             >
-                                                <span className={`text-xs font-bold uppercase leading-none mb-1 ${e.gradientColors ? 'text-white/90' : 'text-gray-400'}`}>
+                                                <span className={`text-xs font-bold uppercase leading-none mb-1 ${e.gradientColors ? 'text-gray-500' : 'text-gray-400'}`}>
                                                     {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
                                                 </span>
-                                                <span className={`text-2xl font-black leading-none ${e.gradientColors ? 'text-white shadow-sm' : 'text-athos-orange'}`}>{new Date(e.date).getDate()}</span>
+                                                <span className={`text-2xl font-black leading-none ${e.gradientColors ? 'text-athos-black' : 'text-athos-orange'}`}>{new Date(e.date).getDate()}</span>
                                             </div>
-                                            <div className="flex-grow">
+                                            <div className="relative flex-grow z-10">
                                                 <h5 className="font-bold text-base text-athos-black line-clamp-1">{e.title}</h5>
-                                                <p className="text-sm text-gray-500 font-medium flex items-center gap-1.5 mt-1"><MapPin size={14} className="text-athos-orange" /> {e.city}</p>
+                                                <p className="text-sm text-gray-600 font-medium flex items-center gap-1.5 mt-1"><MapPin size={14} className="text-gray-400 group-hover:text-athos-orange transition-colors" /> {e.city}</p>
                                             </div>
-                                            <ChevronRight size={20} className="text-gray-300 group-hover:text-athos-orange" />
+                                            <ChevronRight size={20} className="relative z-10 text-gray-300 group-hover:text-athos-black transition-colors" />
                                         </div>
                                     ))}
                                 </div>
@@ -216,22 +221,27 @@ export const EventsDirectory = () => {
                                         <div
                                             key={e.id}
                                             onClick={() => selectEvent(e.id)}
-                                            className="flex items-center gap-4 p-4 bg-white rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-gray-100 hover:border-athos-orange/30 shadow-sm hover:shadow-md hover:-translate-y-1 group"
+                                            className="relative flex items-center gap-4 p-4 overflow-hidden rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md hover:-translate-y-1 group bg-white"
                                         >
+                                            {/* Background Gradient with Low Opacity */}
                                             <div
-                                                className={`w-16 h-16 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border transition-colors ${e.gradientColors ? 'border-transparent shadow-inner' : 'bg-gray-50 border-gray-200 group-hover:border-athos-orange/30'}`}
-                                                style={e.gradientColors ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : {}}
+                                                className="absolute inset-0 opacity-[0.10] pointer-events-none transition-opacity group-hover:opacity-[0.20]"
+                                                style={e.gradientColors && e.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : { backgroundColor: '#f9fafb' }}
+                                            />
+
+                                            <div
+                                                className={`relative w-16 h-16 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 border z-10 transition-colors ${e.gradientColors ? 'border-transparent shadow-sm' : 'border-gray-100 group-hover:border-athos-orange/30'}`}
                                             >
-                                                <span className={`text-xs font-bold uppercase leading-none mb-1 ${e.gradientColors ? 'text-white/90' : 'text-gray-400'}`}>
+                                                <span className={`text-xs font-bold uppercase leading-none mb-1 ${e.gradientColors ? 'text-gray-500' : 'text-gray-400'}`}>
                                                     {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
                                                 </span>
-                                                <span className={`text-2xl font-black leading-none ${e.gradientColors ? 'text-white drop-shadow-sm' : 'text-athos-orange'}`}>{new Date(e.date).getDate()}</span>
+                                                <span className={`text-2xl font-black leading-none ${e.gradientColors ? 'text-athos-black' : 'text-athos-orange'}`}>{new Date(e.date).getDate()}</span>
                                             </div>
-                                            <div className="flex-grow">
+                                            <div className="relative flex-grow z-10">
                                                 <h5 className="font-bold text-base text-athos-black line-clamp-1">{e.title}</h5>
-                                                <p className="text-sm text-gray-500 font-medium flex items-center gap-1.5 mt-1"><MapPin size={14} className="text-athos-orange" /> {e.city}</p>
+                                                <p className="text-sm text-gray-600 font-medium flex items-center gap-1.5 mt-1"><MapPin size={14} className="text-gray-400 group-hover:text-athos-orange transition-colors" /> {e.city}</p>
                                             </div>
-                                            <ChevronRight size={20} className="text-gray-300 group-hover:text-athos-orange transition-colors" />
+                                            <ChevronRight size={20} className="relative z-10 text-gray-300 group-hover:text-athos-black transition-colors" />
                                         </div>
                                     ))}
                                     {events.filter(e => {

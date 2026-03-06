@@ -494,19 +494,25 @@ export const Navbar = () => {
                                                     setIsCalendarOpen(false);
                                                     setIsMobileMenuOpen(false);
                                                 }}
-                                                className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-transparent hover:border-athos-orange/20"
+                                                className="relative flex items-center gap-3 p-3 overflow-hidden rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md group mb-3"
                                             >
-                                                <div className="w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-gray-100">
-                                                    <span className="text-[10px] font-bold text-gray-400 uppercase leading-none mb-0.5">
+                                                {/* Background Gradient with Low Opacity */}
+                                                <div
+                                                    className="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-[0.25]"
+                                                    style={e.gradientColors && e.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : { backgroundColor: '#f9fafb' }}
+                                                />
+
+                                                <div className="relative w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
+                                                    <span className="text-[10px] font-bold text-gray-500 uppercase leading-none mb-0.5">
                                                         {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
                                                     </span>
-                                                    <span className="text-base font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
+                                                    <span className="text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
                                                 </div>
-                                                <div className="flex-grow">
+                                                <div className="relative flex-grow z-10">
                                                     <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
-                                                    <p className="text-xs text-gray-500 font-medium flex items-center gap-1">📍 {e.city}</p>
+                                                    <p className="text-xs text-gray-600 font-medium flex items-center gap-1">📍 {e.city}</p>
                                                 </div>
-                                                <ChevronRight size={16} className="text-gray-300" />
+                                                <ChevronRight size={16} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors" />
                                             </div>
                                         ))}
                                     </>
@@ -524,19 +530,25 @@ export const Navbar = () => {
                                                     setIsCalendarOpen(false);
                                                     setIsMobileMenuOpen(false);
                                                 }}
-                                                className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl cursor-pointer hover:bg-athos-orange/10 transition-colors border border-transparent hover:border-athos-orange/20"
+                                                className="relative flex items-center gap-3 p-3 overflow-hidden rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md group mb-3"
                                             >
-                                                <div className="w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-gray-100">
-                                                    <span className="text-[10px] font-bold text-gray-400 uppercase leading-none mb-0.5">
+                                                {/* Background Gradient with Low Opacity */}
+                                                <div
+                                                    className="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-[0.25]"
+                                                    style={e.gradientColors && e.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : { backgroundColor: '#f9fafb' }}
+                                                />
+
+                                                <div className="relative w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
+                                                    <span className="text-[10px] font-bold text-gray-500 uppercase leading-none mb-0.5">
                                                         {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
                                                     </span>
-                                                    <span className="text-base font-black text-athos-orange leading-none">{new Date(e.date).getDate()}</span>
+                                                    <span className="text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
                                                 </div>
-                                                <div className="flex-grow">
+                                                <div className="relative flex-grow z-10">
                                                     <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
-                                                    <p className="text-xs text-gray-500 font-medium flex items-center gap-1">📍 {e.city}</p>
+                                                    <p className="text-xs text-gray-600 font-medium flex items-center gap-1">📍 {e.city}</p>
                                                 </div>
-                                                <ChevronRight size={16} className="text-gray-300" />
+                                                <ChevronRight size={16} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors" />
                                             </div>
                                         ))}
                                         {events.filter(e => {
