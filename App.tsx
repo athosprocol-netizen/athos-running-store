@@ -62,10 +62,10 @@ const MainContent = () => {
         window.scrollTo(0, 0);
       }, 600);
 
-      // Fallback in case onEnded fails to fire on mobile
+      // Fallback in case onEnded fails to fire on mobile, rigidly set to user's 1040ms request
       endTimerRef.current = setTimeout(() => {
         setIsTransitioning(false);
-      }, 2000);
+      }, 1040);
     }
   }, [view, displayView, isLoading]);
 
@@ -120,18 +120,26 @@ const MainContent = () => {
 
       {/* Global Video Transition Overlay */}
       {isTransitioning && (
-        <div key={Date.now()} className="fixed inset-0 z-[500] pointer-events-none flex items-center justify-center overflow-hidden">
-          {/* Dark backdrop to guarantee the semi-transparent flames are highly visible against bright backgrounds */}
+        <div
+          key={Date.now()}
+          className="fixed inset-0 z-[500] pointer-events-none flex items-center justify-center overflow-hidden"
+        >
+          {/* Dark backdrop */}
           <div className="absolute inset-0 bg-black/90"></div>
 
           <video
+            ref={(el) => {
+              if (el) {
+                // Aggressively force play on mount for strict mobile browsers
+                el.play().catch(e => console.log("Mobile autoplay prevented:", e));
+              }
+            }}
             autoPlay
             muted
             playsInline
             webkit-playsinline="true"
             disablePictureInPicture
-            onEnded={() => setIsTransitioning(false)}
-            className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none brightness-110 contrast-125 saturate-150 -hue-rotate-15 drop-shadow-[0_0_50px_rgba(255,100,0,0.5)]"
+            className="absolute min-w-full min-h-full object-cover object-center pointer-events-none brightness-110 contrast-125 saturate-150 -hue-rotate-15 drop-shadow-[0_0_50px_rgba(255,100,0,0.5)]"
             src="/llamas.webm"
           />
         </div>
