@@ -108,7 +108,7 @@ export const EventsDirectory = () => {
                             <div key={i} className="text-xs font-black text-gray-400 uppercase">{d}</div>
                         ))}
                     </div>
-                    <div className="grid grid-cols-7 gap-2">
+                    <div className="grid grid-cols-7 gap-1 md:gap-2">
                         {generateCalendarDays().map((day, idx) => {
                             if (!day) return <div key={idx} className="p-3" />;
                             const dayEvents = getEventsForDay(day);
@@ -174,8 +174,8 @@ export const EventsDirectory = () => {
                 </div>
 
                 {/* Event List aside */}
-                <div className="w-full lg:w-1/2 bg-gray-50 rounded-[32px] p-8 border border-gray-100">
-                    <div className="h-full max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="w-full lg:w-1/2 bg-gray-50 rounded-[24px] md:rounded-[32px] p-5 md:p-8 border border-gray-100 flex-grow">
+                    <div className="h-full max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                         {selectedDayEvents ? (
                             <>
                                 <div className="flex justify-between items-center mb-6 sticky top-0 bg-gray-50 z-10 py-2">
