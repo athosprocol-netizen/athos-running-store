@@ -144,11 +144,8 @@ export const EventDetail = () => {
                 {/* Right Column: Sticky Action Card */}
                 <div className="lg:col-span-1">
                     <div className="sticky top-[100px] bg-white rounded-[32px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-gray-100 p-8">
-                        <div className="flex justify-between items-start mb-6">
-                            <div>
-                                <span className="text-gray-400 text-xs font-bold uppercase tracking-widest block mb-1">Compartir Evento</span>
-                                <h3 className="text-2xl font-black text-athos-black italic tracking-tighter uppercase">Comparte tu evento</h3>
-                            </div>
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-2xl font-black text-athos-orange italic tracking-tighter uppercase">COMPARTIR EVENTO</h3>
                             <button onClick={() => {
                                 const shareUrl = `${window.location.origin}/?event=${event.id}`;
                                 if (navigator.share) {
