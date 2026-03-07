@@ -27,7 +27,15 @@ export const EventDetail = () => {
             {/* Hero Image */}
             <div className="w-full h-[40vh] md:h-[60vh] relative">
                 <div className="absolute inset-0 bg-gradient-to-t from-athos-black via-athos-black/40 to-transparent z-10" />
-                <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
+                <img
+                    src={event.image}
+                    alt={event.title}
+                    className="w-full h-full object-cover"
+                    style={{
+                        maskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)',
+                        WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)'
+                    }}
+                />
 
                 <div className="absolute top-4 left-4 z-20 md:top-8 md:left-8">
                     <button
@@ -138,22 +146,27 @@ export const EventDetail = () => {
                     <div className="sticky top-[100px] bg-white rounded-[32px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-gray-100 p-8">
                         <div className="flex justify-between items-start mb-6">
                             <div>
-                                <span className="text-gray-400 text-xs font-bold uppercase tracking-widest block mb-1">Estado de la Carrera</span>
-                                <h3 className="text-2xl font-black text-athos-black italic tracking-tighter uppercase">{!isPast ? 'Inscripciones Abiertas' : 'Finalizada'}</h3>
+                                <span className="text-gray-400 text-xs font-bold uppercase tracking-widest block mb-1">Compartir Evento</span>
+                                <h3 className="text-2xl font-black text-athos-black italic tracking-tighter uppercase">Comparte tu evento</h3>
                             </div>
                             <button onClick={() => {
+                                const shareUrl = `${window.location.origin}/?event=${event.id}`;
                                 if (navigator.share) {
                                     navigator.share({
                                         title: event.title,
-                                        url: window.location.href
+                                        url: shareUrl
                                     }).catch(console.error);
                                 } else {
-                                    navigator.clipboard.writeText(window.location.href);
+                                    navigator.clipboard.writeText(shareUrl);
                                     alert('Enlace copiado al portapapeles');
                                 }
                             }} className="text-gray-400 hover:text-athos-orange transition-colors" title="Compartir Evento">
                                 <Share2 size={24} />
                             </button>
+                        </div>
+                        <div className="mb-6 border-t border-gray-100 pt-6">
+                            <span className="text-gray-400 text-xs font-bold uppercase tracking-widest block mb-1">Estado de la Carrera</span>
+                            <h3 className="text-xl font-black text-athos-black italic tracking-tighter uppercase">{!isPast ? 'Inscripciones Abiertas' : 'Finalizada'}</h3>
                         </div>
 
                         {isPast && (

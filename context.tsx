@@ -163,9 +163,22 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     }
   });
 
-  const [view, _setView] = useState<ViewState>('home');
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
-  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [view, _setView] = useState<ViewState>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get('view') as ViewState;
+    if (viewParam) return viewParam;
+    if (params.get('event')) return 'event-detail';
+    if (params.get('product')) return 'product';
+    return 'home';
+  });
+
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(() => {
+    return new URLSearchParams(window.location.search).get('product') || null;
+  });
+
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(() => {
+    return new URLSearchParams(window.location.search).get('event') || null;
+  });
   const [events, setEvents] = useState<Event[]>([]);
   const [banners, setBanners] = useState<HeroBanner[]>([]);
   const [registrations, setRegistrations] = useState<EventRegistration[]>([]);
