@@ -143,7 +143,7 @@ export const EventDetail = () => {
 
                 {/* Right Column: Sticky Action Card */}
                 <div className="lg:col-span-1">
-                    <div className="sticky top-[100px] bg-white rounded-[32px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-gray-100 p-8">
+                    <div className="sticky top-[100px] bg-white rounded-[32px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-gray-100 p-6">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-2xl font-black text-athos-orange italic tracking-tighter uppercase">COMPARTIR EVENTO</h3>
                             <button onClick={() => {
@@ -161,7 +161,7 @@ export const EventDetail = () => {
                                 <Share2 size={24} />
                             </button>
                         </div>
-                        <div className="mb-6 border-t border-gray-100 pt-6"></div>
+                        {isPast && <div className="mb-6 border-t border-gray-100 pt-6"></div>}
 
                         {isPast && (
                             <div className="space-y-4">

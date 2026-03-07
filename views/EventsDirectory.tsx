@@ -292,7 +292,7 @@ export const EventsDirectory = () => {
                                             Destacado
                                         </span>
                                     )}
-                                    <img src={event.image || '/imagen_bordes_difuminados.png'} alt={event.title} className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${event.gradientColors ? 'mix-blend-overlay opacity-80' : ''}`} />
+                                    <img src={event.image || '/imagen_bordes_difuminados.png'} alt={event.title} className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${event.gradientColors ? 'mix-blend-overlay opacity-80' : ''}`} style={{ maskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)' }} />
                                     <div className="absolute bottom-4 left-4 z-20">
                                         <h3 className="text-white text-2xl font-black italic tracking-tight">{event.title}</h3>
                                     </div>
@@ -353,7 +353,7 @@ export const EventsDirectory = () => {
                                     className="w-20 h-20 rounded-2xl flex-shrink-0 relative overflow-hidden bg-gray-200 group-hover:shadow-md transition-shadow"
                                     style={event.gradientColors ? { background: `linear-gradient(135deg, ${event.gradientColors.join(', ')})` } : {}}
                                 >
-                                    <img src={event.image || '/medalleroverde.png'} alt={event.title} className={`w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all ${event.gradientColors ? 'mix-blend-overlay' : ''}`} />
+                                    <img src={event.image || '/medalleroverde.png'} alt={event.title} className={`w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all ${event.gradientColors ? 'mix-blend-overlay' : ''}`} style={{ maskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)' }} />
                                 </div>
                                 <div className="z-10 relative">
                                     <h4 className="font-black italic text-athos-black leading-tight mb-1 group-hover:text-athos-orange transition-colors">{event.title}</h4>
