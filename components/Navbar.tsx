@@ -408,13 +408,12 @@ export const Navbar = () => {
                             <button onClick={nextMonth} className="p-1 hover:text-athos-orange"><ChevronRight size={20} /></button>
                         </div>
 
-                        {/* Calendar Grid */}
-                        <div className="grid grid-cols-7 gap-1 mb-2 text-center border-b border-gray-100 pb-2">
+                        <div className="grid grid-cols-7 gap-1 md:gap-1 mb-2 text-center border-b border-gray-100 pb-2">
                             {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, i) => (
                                 <div key={i} className="text-[10px] font-black text-gray-400 uppercase">{d}</div>
                             ))}
                         </div>
-                        <div className="grid grid-cols-7 gap-1 mb-6">
+                        <div className="grid grid-cols-7 gap-[2px] md:gap-1 mb-4 md:mb-6">
                             {generateCalendarDays().map((day, idx) => {
                                 if (!day) return <div key={idx} className="p-2" />;
                                 const dayEvents = getEventsForDay(day);
@@ -463,12 +462,12 @@ export const Navbar = () => {
                                                 }
                                             }
                                         }}
-                                        className={`p-1.5 md:p-2 w-full aspect-square flex flex-col items-center justify-center rounded-xl relative transition-all ${textClass}`}
+                                        className={`p-1 md:p-2 w-full aspect-square flex flex-col items-center justify-center rounded-xl relative transition-all ${textClass}`}
                                         style={backgroundStyle}
                                     >
-                                        <span className={`text-xs md:text-sm tracking-tighter ${!hasEvents && isCurr ? 'font-black' : ''}`}>{day.getDate()}</span>
+                                        <span className={`text-[11px] md:text-sm tracking-tighter ${!hasEvents && isCurr ? 'font-black' : ''}`}>{day.getDate()}</span>
                                         {hasEvents && (
-                                            <div className={`absolute bottom-1 w-1.5 h-1.5 rounded-full ${isCurr ? 'bg-athos-orange' : 'bg-white shadow-sm'}`} />
+                                            <div className={`absolute bottom-0.5 md:bottom-1 w-1 md:w-1.5 h-1 md:h-1.5 rounded-full ${isCurr ? 'bg-athos-orange' : 'bg-white shadow-sm'}`} />
                                         )}
                                     </button>
                                 );
@@ -477,7 +476,7 @@ export const Navbar = () => {
 
                         {/* Selected Month Events List */}
                         <div className="relative">
-                            <div className="space-y-2 md:space-y-3 max-h-[140px] md:max-h-[180px] overflow-y-auto pr-1">
+                            <div className="space-y-2 md:space-y-3 max-h-[260px] md:max-h-[280px] overflow-y-auto pr-1" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y', overscrollBehavior: 'contain' }}>
                                 {selectedDayEvents ? (
                                     <>
                                         <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
