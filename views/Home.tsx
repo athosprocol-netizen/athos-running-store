@@ -187,7 +187,7 @@ export const Home = () => {
                                             <img
                                                 src={item.image || "/imagen_bordes_difuminados.png"}
                                                 className="absolute -right-4 md:-right-12 -bottom-8 sm:-bottom-12 md:-bottom-28 w-[50%] md:w-[60%] h-[120%] object-cover object-left rotate-[-5deg] drop-shadow-xl z-0 pointer-events-none opacity-90"
-                                                style={{ clipPath: 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%)', borderRadius: '40px' }}
+                                                style={{ clipPath: 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%)', borderRadius: '40px', maskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)' }}
                                                 alt={item.title || ''}
                                             />
                                             {index % 2 === 0 && (
