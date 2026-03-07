@@ -88,18 +88,18 @@ export const EventsDirectory = () => {
 
                 {/* Calendar Grid */}
                 <div className="w-full lg:w-1/2">
-                    <div className="flex items-center gap-3 mb-6">
-                        <Calendar size={28} className="text-athos-orange" />
-                        <h2 className="text-3xl font-black italic text-athos-black uppercase">Calendario</h2>
+                    <div className="flex items-center gap-3 mb-4 md:mb-6">
+                        <Calendar size={24} className="text-athos-orange md:w-7 md:h-7" />
+                        <h2 className="text-2xl md:text-3xl font-black italic text-athos-black uppercase">Calendario</h2>
                     </div>
 
                     {/* Month Selector */}
-                    <div className="flex justify-between items-center mb-6 px-4 py-3 bg-gray-50 rounded-2xl">
-                        <button onClick={prevMonth} className="p-2 hover:bg-white rounded-xl shadow-sm border border-transparent hover:border-gray-200 transition-all text-athos-black hover:text-athos-orange"><ChevronRight size={24} className="rotate-180" /></button>
-                        <span className="font-black text-lg uppercase tracking-widest text-athos-black">
+                    <div className="flex justify-between items-center mb-4 md:mb-6 px-3 py-2 md:px-4 md:py-3 bg-gray-50 rounded-xl md:rounded-2xl">
+                        <button onClick={prevMonth} className="p-1.5 md:p-2 hover:bg-white rounded-lg md:rounded-xl shadow-sm border border-transparent hover:border-gray-200 transition-all text-athos-black hover:text-athos-orange"><ChevronRight size={20} className="rotate-180 md:w-6 md:h-6" /></button>
+                        <span className="font-black text-sm md:text-lg uppercase tracking-widest text-athos-black">
                             {currentMonth.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' })}
                         </span>
-                        <button onClick={nextMonth} className="p-2 hover:bg-white rounded-xl shadow-sm border border-transparent hover:border-gray-200 transition-all text-athos-black hover:text-athos-orange"><ChevronRight size={24} /></button>
+                        <button onClick={nextMonth} className="p-1.5 md:p-2 hover:bg-white rounded-lg md:rounded-xl shadow-sm border border-transparent hover:border-gray-200 transition-all text-athos-black hover:text-athos-orange"><ChevronRight size={20} className="md:w-6 md:h-6" /></button>
                     </div>
 
                     {/* Calendar Days */}
@@ -116,7 +116,7 @@ export const EventsDirectory = () => {
                             const hasEvents = dayEvents.length > 0;
                             const isMultiple = dayEvents.length > 1;
 
-                            let btnClass = 'p-3 w-full aspect-square flex flex-col items-center justify-center rounded-2xl relative transition-all ';
+                            let btnClass = 'p-1.5 md:p-3 w-full aspect-square flex flex-col items-center justify-center rounded-xl md:rounded-2xl relative transition-all ';
                             let style: React.CSSProperties = {};
                             let showDot = false;
 
@@ -163,9 +163,9 @@ export const EventsDirectory = () => {
                                     className={btnClass}
                                     style={style}
                                 >
-                                    <span className={`text-base tracking-tighter ${isCurr || hasEvents ? 'font-black' : 'font-medium'}`}>{day.getDate()}</span>
+                                    <span className={`text-xs md:text-base tracking-tighter ${isCurr || hasEvents ? 'font-black' : 'font-medium'}`}>{day.getDate()}</span>
                                     {showDot && (
-                                        <div className="absolute bottom-2 w-2 h-2 rounded-full bg-athos-orange animate-pulse" />
+                                        <div className="absolute bottom-1 md:bottom-2 w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-athos-orange animate-pulse" />
                                     )}
                                 </button>
                             );
