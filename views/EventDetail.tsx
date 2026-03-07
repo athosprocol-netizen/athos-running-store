@@ -164,10 +164,7 @@ export const EventDetail = () => {
                                 <Share2 size={24} />
                             </button>
                         </div>
-                        <div className="mb-6 border-t border-gray-100 pt-6">
-                            <span className="text-gray-400 text-xs font-bold uppercase tracking-widest block mb-1">Estado de la Carrera</span>
-                            <h3 className="text-xl font-black text-athos-black italic tracking-tighter uppercase">{!isPast ? 'Inscripciones Abiertas' : 'Finalizada'}</h3>
-                        </div>
+                        <div className="mb-6 border-t border-gray-100 pt-6"></div>
 
                         {isPast && (
                             <div className="space-y-4">
