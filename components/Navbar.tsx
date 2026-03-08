@@ -385,9 +385,9 @@ export const Navbar = () => {
             {/* CALENDAR MODAL (Mobile & Desktop) */}
             {isCalendarOpen && (
                 <>
-                    <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setIsCalendarOpen(false)} />
+                    <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setIsCalendarOpen(false)} style={{ touchAction: 'none' }} />
                     <div
-                        className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[300px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 pb-4 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top max-h-[85vh] md:max-h-none"
+                        className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[300px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 pb-4 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top max-h-[85vh] md:max-h-none overflow-y-auto overscroll-contain"
                     >
                         <div className="flex justify-between items-center mb-3 md:mb-6">
                             <h3 className="text-lg md:text-xl font-black italic uppercase text-athos-black flex items-center gap-2">
