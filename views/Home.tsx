@@ -136,14 +136,14 @@ export const Home = () => {
                         <div className="mt-2 md:px-0">
                             <div
                                 ref={sliderRef}
-                                {...dragHandlers}
-                                className={`w-full max-w-[100vw] overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-4 md:px-0.5`}
+                                {...(typeof window !== 'undefined' && window.innerWidth > 768 ? dragHandlers : {})}
+                                className={`w-full max-w-[100vw] overflow-x-auto flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-4 md:px-0.5 snap-x snap-mandatory md:snap-none`}
                                 style={{ WebkitOverflowScrolling: 'touch' }}
                             >
                                 {heroItems.map((item, index) => (
                                     <div
                                         key={item.id}
-                                        className="shrink-0 w-[88vw] md:w-[850px] relative select-none"
+                                        className="shrink-0 w-[88vw] md:w-[850px] relative select-none snap-center md:snap-align-none"
                                         onClick={() => handleItemClick(() => {
                                             if (item.type === 'event') selectEvent(item.id);
                                             else if (item.link) setView(item.link as any);
