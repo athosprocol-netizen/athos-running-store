@@ -138,7 +138,7 @@ export const Home = () => {
                                 ref={sliderRef}
                                 {...dragHandlers}
                                 className={`w-full max-w-[100vw] overflow-x-auto hide-scrollbar flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-4 md:px-0.5`}
-                                style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x' }}
+                                style={{ WebkitOverflowScrolling: 'touch' }}
                             >
                                 {heroItems.map((item, index) => (
                                     <div
