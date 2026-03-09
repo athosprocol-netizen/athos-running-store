@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Home, ShoppingBag, User, ShoppingCart, Search, X, LogIn, Flame, Menu, ChevronRight, LogOut, Settings, Ruler, HelpCircle, Calendar } from 'lucide-react';
 import { useApp } from '../context';
 
@@ -94,6 +94,26 @@ export const Navbar = () => {
     };
 
     const [selectedDayEvents, setSelectedDayEvents] = useState<any[] | null>(null);
+
+    // Manual Touch Scroll for Events List
+    const eventsListRef = useRef<HTMLDivElement>(null);
+    const [touchStart, setTouchStart] = useState(0);
+    const [scrollStart, setScrollStart] = useState(0);
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStart(e.targetTouches[0].clientY);
+        if (eventsListRef.current) {
+            setScrollStart(eventsListRef.current.scrollTop);
+        }
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!eventsListRef.current) return;
+        const currentTouch = e.targetTouches[0].clientY;
+        const diff = touchStart - currentTouch;
+        eventsListRef.current.scrollTop = scrollStart + diff;
+        e.stopPropagation(); // Prevent Chrome/Safari body scroll
+    };
 
     // Reset day events list if month or modal changes
     useEffect(() => {
@@ -388,6 +408,7 @@ export const Navbar = () => {
                     <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setIsCalendarOpen(false)} />
                     <div
                         className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[290px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-2 md:p-6 pb-2 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top h-[580px] md:h-auto max-h-[92vh] md:max-h-[85vh]"
+                        style={{ touchAction: 'none' }} // Intercept all mobile browser default scrolling behaviors
                     >
                         <div className="flex justify-between items-center mb-2 md:mb-6 px-1 md:px-0">
                             <h3 className="text-base md:text-xl font-black italic uppercase text-athos-black flex items-center gap-1 md:gap-2">
@@ -475,7 +496,12 @@ export const Navbar = () => {
                         </div>
 
                         {/* Selected Month Events List */}
-                        <div className="mt-2 md:mt-3 h-[300px] md:h-[350px] overflow-y-auto pr-1 block" style={{ WebkitOverflowScrolling: 'touch' }}>
+                        <div
+                            ref={eventsListRef}
+                            onTouchStart={handleTouchStart}
+                            onTouchMove={handleTouchMove}
+                            className="mt-2 md:mt-3 h-[300px] md:h-[350px] overflow-y-auto pr-1 block"
+                        >
                             {selectedDayEvents ? (
                                 <>
                                     <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
