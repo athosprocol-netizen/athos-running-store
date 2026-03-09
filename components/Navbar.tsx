@@ -110,7 +110,7 @@ export const Navbar = () => {
         : [];
 
     useEffect(() => {
-        if (isMobileMenuOpen || isSearchOpen) {
+        if (isMobileMenuOpen || isCalendarOpen || isSearchOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
@@ -387,7 +387,7 @@ export const Navbar = () => {
                 <>
                     <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setIsCalendarOpen(false)} />
                     <div
-                        className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[300px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 pb-4 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top max-h-[85vh] md:max-h-none overflow-y-auto overscroll-contain"
+                        className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[300px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 pb-4 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top"
                     >
                         <div className="flex justify-between items-center mb-3 md:mb-6">
                             <h3 className="text-lg md:text-xl font-black italic uppercase text-athos-black flex items-center gap-2">
@@ -475,7 +475,7 @@ export const Navbar = () => {
                         </div>
 
                         {/* Selected Month Events List */}
-                        <div className="mt-2 md:mt-4 space-y-2 md:space-y-3 h-[200px] md:h-[280px] overflow-y-scroll overflow-x-hidden pr-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+                        <div className="mt-2 md:mt-4 space-y-2 md:space-y-3 h-[200px] md:h-[280px] overflow-y-auto overscroll-contain pr-1 touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
                             {selectedDayEvents ? (
                                 <>
                                     <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
