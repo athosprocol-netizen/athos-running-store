@@ -387,7 +387,7 @@ export const Navbar = () => {
                 <>
                     <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setIsCalendarOpen(false)} />
                     <div
-                        className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[300px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 pb-4 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top"
+                        className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[300px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-3 md:p-6 pb-3 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top max-h-[90vh] md:max-h-[85vh] overflow-hidden"
                     >
                         <div className="flex justify-between items-center mb-3 md:mb-6">
                             <h3 className="text-lg md:text-xl font-black italic uppercase text-athos-black flex items-center gap-2">
@@ -462,7 +462,7 @@ export const Navbar = () => {
                                                 }
                                             }
                                         }}
-                                        className={`p-1 md:p-2 w-full aspect-square flex flex-col items-center justify-center rounded-lg md:rounded-xl relative transition-all ${textClass}`}
+                                        className={`p-0.5 md:p-2 w-full aspect-square flex flex-col items-center justify-center rounded-lg md:rounded-xl relative transition-all ${textClass}`}
                                         style={backgroundStyle}
                                     >
                                         <span className={`text-[11px] md:text-sm tracking-tighter leading-none ${!hasEvents && isCurr ? 'font-black' : ''}`}>{day.getDate()}</span>
@@ -475,7 +475,7 @@ export const Navbar = () => {
                         </div>
 
                         {/* Selected Month Events List */}
-                        <div className="mt-4 flex-1 overflow-y-auto max-h-[40vh] md:max-h-[300px] overscroll-contain pr-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+                        <div className="mt-3 flex-1 overflow-y-auto max-h-[55vh] md:max-h-[350px] overscroll-contain pr-1" style={{ WebkitOverflowScrolling: 'touch' }}>
                             {selectedDayEvents ? (
                                 <>
                                     <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
@@ -507,7 +507,7 @@ export const Navbar = () => {
                                                 <span className="text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
                                             </div>
                                             <div className="relative flex-grow z-10">
-                                                <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
+                                                <h5 className="font-bold text-sm text-athos-black leading-tight">{e.title}</h5>
                                                 <p className="text-xs text-gray-600 font-medium flex items-center gap-1">📍 {e.city}</p>
                                             </div>
                                             <ChevronRight size={14} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors" />
@@ -543,7 +543,7 @@ export const Navbar = () => {
                                                 <span className="text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
                                             </div>
                                             <div className="relative flex-grow z-10">
-                                                <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
+                                                <h5 className="font-bold text-sm text-athos-black leading-tight">{e.title}</h5>
                                                 <p className="text-xs text-gray-600 font-medium flex items-center gap-1">📍 {e.city}</p>
                                             </div>
                                             <ChevronRight size={14} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors" />
