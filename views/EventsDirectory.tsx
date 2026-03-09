@@ -14,13 +14,20 @@ export const EventsDirectory = () => {
         return searchWords.every(word => eventString.includes(word));
     };
 
+    const isFutureEvent = (dateString: string) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Include events happening today as upcoming
+        return new Date(dateString).getTime() >= today.getTime();
+    };
+
     const upcomingEvents = events
-        .filter(e => e.status === 'upcoming' && matchesSearch(e, searchTerm))
+        .filter(e => isFutureEvent(e.date) && matchesSearch(e, searchTerm))
         .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
         .slice(0, 5);
 
     const pastEvents = events
-        .filter(e => e.status === 'past' && matchesSearch(e, searchTerm));
+        .filter(e => !isFutureEvent(e.date) && matchesSearch(e, searchTerm))
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     // --- CALENDAR LOGIC ---
     const [currentMonth, setCurrentMonth] = useState(new Date());

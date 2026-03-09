@@ -28,7 +28,7 @@ export const Footer = () => {
                             <div className="flex items-center justify-center gap-2 mb-6 group cursor-pointer" onClick={() => setView('home')}>
                                 <img src="/logo.png" alt="ATHOS" className="h-32 w-auto object-contain hover:brightness-110 transition-all" />
                             </div>
-                            <p className="text-gray-400 text-sm leading-relaxed mb-8 max-w-sm font-medium">
+                            <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-sm font-medium">
                                 Rendimiento, estilo y comunidad. Diseñamos equipamiento de running para quienes buscan superar sus propios límites.
                             </p>
                             <div className="flex gap-4">
@@ -49,8 +49,8 @@ export const Footer = () => {
 
                         {/* Links Column 1 */}
                         <div className="col-span-2">
-                            <h4 className="font-black italic text-lg uppercase mb-6 tracking-wide">Tienda</h4>
-                            <ul className="space-y-4 text-sm font-bold text-gray-500">
+                            <h4 className="font-black italic text-xl uppercase mb-6 tracking-wide">Tienda</h4>
+                            <ul className="space-y-4 text-base font-bold text-gray-500">
                                 <li><button onClick={() => setView('shop')} className="hover:text-athos-orange transition-colors">Calzado</button></li>
                                 <li><button onClick={() => setView('shop')} className="hover:text-athos-orange transition-colors">Ropa Técnica</button></li>
                                 <li><button onClick={() => setView('shop')} className="hover:text-athos-orange transition-colors">Accesorios</button></li>
@@ -59,8 +59,8 @@ export const Footer = () => {
 
                         {/* Links Column 2 */}
                         <div className="col-span-2">
-                            <h4 className="font-black italic text-lg uppercase mb-6 tracking-wide">Soporte</h4>
-                            <ul className="space-y-4 text-sm font-bold text-gray-500">
+                            <h4 className="font-black italic text-xl uppercase mb-6 tracking-wide">Soporte</h4>
+                            <ul className="space-y-4 text-base font-bold text-gray-500">
                                 <li><button onClick={() => setView('size-guide')} className="hover:text-athos-orange transition-colors">Guía de Tallas</button></li>
                                 <li><button onClick={() => setView('support')} className="hover:text-athos-orange transition-colors">Envíos y Devoluciones</button></li>
                                 <li><button onClick={() => setView('support')} className="hover:text-athos-orange transition-colors">Garantía</button></li>
@@ -70,19 +70,19 @@ export const Footer = () => {
 
                         {/* Newsletter / Contact */}
                         <div className="col-span-4">
-                            <h4 className="font-black italic text-lg uppercase mb-6 tracking-wide">Únete al Club</h4>
-                            <p className="text-gray-400 text-sm mb-4">Recibe acceso anticipado a lanzamientos y eventos exclusivos.</p>
+                            <h4 className="font-black italic text-xl uppercase mb-6 tracking-wide">Únete al Club</h4>
+                            <p className="text-gray-400 text-base mb-4">Recibe acceso anticipado a lanzamientos y eventos exclusivos.</p>
                             <div className="flex bg-gray-900 p-2 rounded-xl border border-gray-800 mb-8 focus-within:border-athos-orange transition-colors">
                                 <input
                                     type="email"
                                     placeholder="Tu correo electrónico"
-                                    className="bg-transparent border-none text-white w-full px-4 focus:ring-0 placeholder:text-gray-600 font-bold text-sm"
+                                    className="bg-transparent border-none text-white w-full px-4 focus:ring-0 placeholder:text-gray-600 font-bold text-base"
                                 />
                                 <button className="bg-athos-orange text-white px-6 py-2 rounded-lg font-black uppercase text-xs tracking-widest hover:bg-white hover:text-athos-black transition-colors">
                                     Suscribir
                                 </button>
                             </div>
-                            <div className="space-y-2 text-sm font-bold text-gray-500">
+                            <div className="space-y-2 text-base font-bold text-gray-500">
                                 <p className="flex items-center gap-2"><MapPin size={16} className="text-athos-orange" /> Cartago, Valle del Cauca</p>
                                 <p className="flex items-center gap-2"><Mail size={16} className="text-athos-orange" /> athospro.col@gmail.com</p>
                             </div>
@@ -90,7 +90,7 @@ export const Footer = () => {
                     </div>
 
                     {/* Bottom Bar */}
-                    <div className="flex justify-between items-center text-[10px] font-bold text-gray-600 uppercase tracking-widest">
+                    <div className="flex justify-between items-center text-xs font-bold text-gray-600 uppercase tracking-widest">
                         <p>© 2026 ATHOS RUNNING. TODOS LOS DERECHOS RESERVADOS.</p>
                         <div className="flex gap-6">
                             <span className="cursor-pointer hover:text-white transition-colors">Privacidad</span>
@@ -129,10 +129,10 @@ export const Footer = () => {
 
                     {/* Copyright */}
                     <div className="text-center">
-                        <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">
+                        <p className="text-xs font-bold text-gray-600 uppercase tracking-widest">
                             © 2026 ATHOS Running.
                         </p>
-                        <p className="text-[10px] font-bold text-gray-700 uppercase tracking-widest mt-1">
+                        <p className="text-xs font-bold text-gray-700 uppercase tracking-widest mt-1">
                             Cartago, Valle del Cauca
                         </p>
                     </div>
