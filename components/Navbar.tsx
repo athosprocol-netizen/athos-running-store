@@ -475,96 +475,94 @@ export const Navbar = () => {
                         </div>
 
                         {/* Selected Month Events List */}
-                        <div className="relative mt-2 md:mt-4 pointer-events-auto">
-                            <div className="space-y-2 md:space-y-3 max-h-[220px] md:max-h-[280px] overflow-y-auto overscroll-contain pr-1" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
-                                {selectedDayEvents ? (
-                                    <>
-                                        <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
-                                            <h4 className="text-xs font-black text-athos-orange uppercase tracking-widest flex items-center gap-1">
-                                                Eventos del {new Date(selectedDayEvents[0].date).getDate()}
-                                            </h4>
-                                            <button onClick={() => setSelectedDayEvents(null)} className="text-[10px] font-bold text-gray-500 hover:text-athos-black underline">Volver al mes</button>
+                        <div className="mt-2 md:mt-4 space-y-2 md:space-y-3 h-[200px] md:h-[280px] overflow-y-auto pr-1 pointer-events-auto touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
+                            {selectedDayEvents ? (
+                                <>
+                                    <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
+                                        <h4 className="text-xs font-black text-athos-orange uppercase tracking-widest flex items-center gap-1">
+                                            Eventos del {new Date(selectedDayEvents[0].date).getDate()}
+                                        </h4>
+                                        <button onClick={() => setSelectedDayEvents(null)} className="text-[10px] font-bold text-gray-500 hover:text-athos-black underline">Volver al mes</button>
+                                    </div>
+                                    {selectedDayEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
+                                        <div
+                                            key={e.id}
+                                            onClick={() => {
+                                                selectEvent(e.id);
+                                                setIsCalendarOpen(false);
+                                                setIsMobileMenuOpen(false);
+                                            }}
+                                            className="relative flex items-center gap-3 p-3 overflow-hidden rounded-xl md:rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md group mb-2 md:mb-3"
+                                        >
+                                            {/* Background Gradient with Low Opacity */}
+                                            <div
+                                                className="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-[0.25]"
+                                                style={e.gradientColors && e.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : { backgroundColor: '#f9fafb' }}
+                                            />
+
+                                            <div className="relative w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
+                                                <span className="text-[10px] font-bold text-gray-500 uppercase leading-none mb-0.5">
+                                                    {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
+                                                </span>
+                                                <span className="text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
+                                            </div>
+                                            <div className="relative flex-grow z-10">
+                                                <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
+                                                <p className="text-xs text-gray-600 font-medium flex items-center gap-1">📍 {e.city}</p>
+                                            </div>
+                                            <ChevronRight size={14} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors" />
                                         </div>
-                                        {selectedDayEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
+                                    ))}
+                                </>
+                            ) : (
+                                <>
+                                    <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 sticky top-0 bg-white z-10 py-1">Eventos del Mes</h4>
+                                    {events.filter(e => {
+                                        const d = new Date(e.date);
+                                        return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
+                                    }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
+                                        <div
+                                            key={e.id}
+                                            onClick={() => {
+                                                selectEvent(e.id);
+                                                setIsCalendarOpen(false);
+                                                setIsMobileMenuOpen(false);
+                                            }}
+                                            className="relative flex items-center gap-3 p-3 overflow-hidden rounded-xl md:rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md group mb-2 md:mb-3"
+                                        >
+                                            {/* Background Gradient with Low Opacity */}
                                             <div
-                                                key={e.id}
-                                                onClick={() => {
-                                                    selectEvent(e.id);
-                                                    setIsCalendarOpen(false);
-                                                    setIsMobileMenuOpen(false);
-                                                }}
-                                                className="relative flex items-center gap-3 p-3 overflow-hidden rounded-xl md:rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md group mb-2 md:mb-3"
-                                            >
-                                                {/* Background Gradient with Low Opacity */}
-                                                <div
-                                                    className="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-[0.25]"
-                                                    style={e.gradientColors && e.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : { backgroundColor: '#f9fafb' }}
-                                                />
+                                                className="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-[0.25]"
+                                                style={e.gradientColors && e.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : { backgroundColor: '#f9fafb' }}
+                                            />
 
-                                                <div className="relative w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
-                                                    <span className="text-[10px] font-bold text-gray-500 uppercase leading-none mb-0.5">
-                                                        {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
-                                                    </span>
-                                                    <span className="text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
-                                                </div>
-                                                <div className="relative flex-grow z-10">
-                                                    <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
-                                                    <p className="text-xs text-gray-600 font-medium flex items-center gap-1">📍 {e.city}</p>
-                                                </div>
-                                                <ChevronRight size={14} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors" />
+                                            <div className="relative w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
+                                                <span className="text-[10px] font-bold text-gray-500 uppercase leading-none mb-0.5">
+                                                    {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
+                                                </span>
+                                                <span className="text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
                                             </div>
-                                        ))}
-                                    </>
-                                ) : (
-                                    <>
-                                        <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 sticky top-0 bg-white z-10 py-1">Eventos del Mes</h4>
-                                        {events.filter(e => {
-                                            const d = new Date(e.date);
-                                            return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
-                                        }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(e => (
-                                            <div
-                                                key={e.id}
-                                                onClick={() => {
-                                                    selectEvent(e.id);
-                                                    setIsCalendarOpen(false);
-                                                    setIsMobileMenuOpen(false);
-                                                }}
-                                                className="relative flex items-center gap-3 p-3 overflow-hidden rounded-xl md:rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md group mb-2 md:mb-3"
-                                            >
-                                                {/* Background Gradient with Low Opacity */}
-                                                <div
-                                                    className="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-[0.25]"
-                                                    style={e.gradientColors && e.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : { backgroundColor: '#f9fafb' }}
-                                                />
-
-                                                <div className="relative w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
-                                                    <span className="text-[10px] font-bold text-gray-500 uppercase leading-none mb-0.5">
-                                                        {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
-                                                    </span>
-                                                    <span className="text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
-                                                </div>
-                                                <div className="relative flex-grow z-10">
-                                                    <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
-                                                    <p className="text-xs text-gray-600 font-medium flex items-center gap-1">📍 {e.city}</p>
-                                                </div>
-                                                <ChevronRight size={14} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors" />
+                                            <div className="relative flex-grow z-10">
+                                                <h5 className="font-bold text-sm text-athos-black line-clamp-1">{e.title}</h5>
+                                                <p className="text-xs text-gray-600 font-medium flex items-center gap-1">📍 {e.city}</p>
                                             </div>
-                                        ))}
-                                        {events.filter(e => {
-                                            const d = new Date(e.date);
-                                            return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
-                                        }).length === 0 && (
-                                                <div className="text-center text-xs text-gray-400 py-6 font-medium italic border-2 border-dashed border-gray-100 rounded-2xl">
-                                                    No hay eventos programados en este mes.
-                                                </div>
-                                            )}
-                                    </>
-                                )}
-                            </div>
-                            {/* Scroll Indicator (Only active if there's enough content to overflow visually) */}
-                            <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-white to-transparent pointer-events-none flex items-end justify-center pb-1 md:hidden">
-                                <span className="text-[8px] font-black uppercase tracking-widest text-gray-400 bg-white/80 px-2 rounded-full shadow-sm border border-gray-100 pb-0.5">Desliza para ver más</span>
-                            </div>
+                                            <ChevronRight size={14} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors" />
+                                        </div>
+                                    ))}
+                                    {events.filter(e => {
+                                        const d = new Date(e.date);
+                                        return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
+                                    }).length === 0 && (
+                                            <div className="text-center text-xs text-gray-400 py-6 font-medium italic border-2 border-dashed border-gray-100 rounded-2xl">
+                                                No hay eventos programados en este mes.
+                                            </div>
+                                        )}
+                                </>
+                            )}
+                        </div>
+                        {/* Scroll Indicator (Only active if there's enough content to overflow visually) */}
+                        <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-white to-transparent pointer-events-none flex items-end justify-center pb-1 md:hidden">
+                            <span className="text-[8px] font-black uppercase tracking-widest text-gray-400 bg-white/80 px-2 rounded-full shadow-sm border border-gray-100 pb-0.5">Desliza para ver más</span>
                         </div>
                     </div>
                     <style>{`
