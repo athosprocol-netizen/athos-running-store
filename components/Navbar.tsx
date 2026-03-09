@@ -110,7 +110,7 @@ export const Navbar = () => {
         : [];
 
     useEffect(() => {
-        if (isMobileMenuOpen || isCalendarOpen || isSearchOpen) {
+        if (isMobileMenuOpen || isSearchOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
@@ -475,7 +475,7 @@ export const Navbar = () => {
                         </div>
 
                         {/* Selected Month Events List */}
-                        <div className="mt-2 md:mt-4 space-y-2 md:space-y-3 h-[200px] md:h-[280px] overflow-y-auto pr-1 pointer-events-auto touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
+                        <div className="mt-2 md:mt-4 space-y-2 md:space-y-3 h-[200px] md:h-[280px] overflow-y-scroll overflow-x-hidden pr-1" style={{ WebkitOverflowScrolling: 'touch' }}>
                             {selectedDayEvents ? (
                                 <>
                                     <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
