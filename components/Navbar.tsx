@@ -387,7 +387,7 @@ export const Navbar = () => {
                 <>
                     <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setIsCalendarOpen(false)} />
                     <div
-                        className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[300px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 pb-4 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top max-h-[85vh] md:max-h-none overflow-hidden"
+                        className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[300px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 pb-4 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top max-h-[85vh] md:max-h-none overflow-y-auto overscroll-contain"
                     >
                         <div className="flex justify-between items-center mb-3 md:mb-6">
                             <h3 className="text-lg md:text-xl font-black italic uppercase text-athos-black flex items-center gap-2">
@@ -475,8 +475,8 @@ export const Navbar = () => {
                         </div>
 
                         {/* Selected Month Events List */}
-                        <div className="relative flex-1 overflow-hidden flex flex-col min-h-0">
-                            <div className="space-y-2 md:space-y-3 flex-1 overflow-y-auto overscroll-contain pr-1" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
+                        <div className="relative mt-2 md:mt-4 pointer-events-auto">
+                            <div className="space-y-2 md:space-y-3 max-h-[220px] md:max-h-[280px] overflow-y-auto overscroll-contain pr-1" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
                                 {selectedDayEvents ? (
                                     <>
                                         <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
