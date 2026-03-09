@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context';
 import { Calendar, MapPin, Search, ChevronRight } from 'lucide-react';
 
@@ -25,6 +25,26 @@ export const EventsDirectory = () => {
     // --- CALENDAR LOGIC ---
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDayEvents, setSelectedDayEvents] = useState<any[] | null>(null);
+
+    // Manual Touch Scroll for Events List in Mobile
+    const eventsListRef = useRef<HTMLDivElement>(null);
+    const [touchStart, setTouchStart] = useState(0);
+    const [scrollStart, setScrollStart] = useState(0);
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStart(e.targetTouches[0].clientY);
+        if (eventsListRef.current) {
+            setScrollStart(eventsListRef.current.scrollTop);
+        }
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!eventsListRef.current) return;
+        const currentTouch = e.targetTouches[0].clientY;
+        const diff = touchStart - currentTouch;
+        eventsListRef.current.scrollTop = scrollStart + diff;
+        e.stopPropagation(); // Prevent Chrome/Safari body scroll
+    };
 
     // Reset day events list if month changes
     useEffect(() => {
@@ -175,7 +195,12 @@ export const EventsDirectory = () => {
 
                 {/* Event List aside */}
                 <div className="w-full lg:w-1/2 bg-gray-50 rounded-[24px] md:rounded-[32px] p-3 md:p-8 border border-gray-100 flex-grow">
-                    <div className="h-full max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div
+                        ref={eventsListRef}
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        className="h-full max-h-[600px] overflow-y-auto pr-2 custom-scrollbar block"
+                    >
                         {selectedDayEvents ? (
                             <>
                                 <div className="flex justify-between items-center mb-6 sticky top-0 bg-gray-50 z-10 py-2">
