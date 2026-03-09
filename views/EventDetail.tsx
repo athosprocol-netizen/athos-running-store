@@ -144,8 +144,7 @@ export const EventDetail = () => {
                 {/* Right Column: Sticky Action Card */}
                 <div className="lg:col-span-1">
                     <div className="sticky top-[100px] bg-white rounded-[32px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-gray-100 p-6">
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-2xl font-black text-athos-orange italic tracking-tighter uppercase">COMPARTIR EVENTO</h3>
+                        <div className="flex flex-col gap-4 mb-6">
                             <button onClick={() => {
                                 const shareUrl = `${window.location.origin}/?event=${event.id}`;
                                 if (navigator.share) {
@@ -157,9 +156,15 @@ export const EventDetail = () => {
                                     navigator.clipboard.writeText(shareUrl);
                                     alert('Enlace copiado al portapapeles');
                                 }
-                            }} className="text-gray-400 hover:text-athos-orange transition-colors" title="Compartir Evento">
-                                <Share2 size={24} />
+                            }} className="w-full bg-athos-orange text-white font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-orange-600 transition-colors flex justify-center items-center gap-2 glow-effect">
+                                <Share2 size={20} /> Compartir Evento
                             </button>
+
+                            {event.externalUrl && (
+                                <button onClick={() => window.open(event.externalUrl, '_blank')} className="w-full bg-athos-black text-white font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-gray-800 transition-colors flex justify-center items-center gap-2">
+                                    Ir a la página del evento <ArrowRight size={20} />
+                                </button>
+                            )}
                         </div>
                         {isPast && <div className="mb-6 border-t border-gray-100 pt-6"></div>}
 

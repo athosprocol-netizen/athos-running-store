@@ -572,6 +572,16 @@ export const Admin = () => {
                                         onChange={e => setTempEvent({ ...tempEvent, distances: e.target.value.split(',').map(d => d.trim()).filter(Boolean) })}
                                     />
                                 </div>
+                                <div>
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">URL Externa del Evento (Opcional)</label>
+                                    <input
+                                        type="url"
+                                        className="w-full p-3 rounded-xl border-none bg-white font-bold text-sm focus:ring-2 focus:ring-athos-orange/20 placeholder:text-gray-300"
+                                        placeholder="Ej: https://www.maratonmedellin.com"
+                                        value={tempEvent.externalUrl || ''}
+                                        onChange={e => setTempEvent({ ...tempEvent, externalUrl: e.target.value })}
+                                    />
+                                </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
                                         <label className="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Color Degradado 1</label>

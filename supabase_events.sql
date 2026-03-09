@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS public.events (
     price INTEGER DEFAULT 0,
     duration TEXT,
     gradient_colors TEXT[] DEFAULT '{}',
+    external_url TEXT,
     reward TEXT,
     days_left INTEGER,
     participants INTEGER,

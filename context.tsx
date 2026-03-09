@@ -282,7 +282,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
             daysLeft: e.days_left,
             participants: e.participants,
             difficulty: e.difficulty,
-            type: e.type
+            type: e.type,
+            externalUrl: e.external_url
           }));
 
           setEvents(mappedEvents);
@@ -1075,6 +1076,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         price: eventToSave.price,
         duration: eventToSave.duration,
         gradient_colors: eventToSave.gradientColors,
+        external_url: eventToSave.externalUrl,
         reward: eventToSave.reward,
         days_left: eventToSave.daysLeft,
         participants: eventToSave.participants,
@@ -1118,6 +1120,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         price: eventToSave.price,
         duration: eventToSave.duration,
         gradient_colors: eventToSave.gradientColors,
+        external_url: eventToSave.externalUrl,
         reward: eventToSave.reward,
         days_left: eventToSave.daysLeft,
         participants: eventToSave.participants,

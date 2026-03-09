@@ -19,7 +19,8 @@ export const OrganizerDashboard = () => {
         price: '',
         maxParticipants: '',
         description: '',
-        image: ''
+        image: '',
+        externalUrl: ''
     });
 
     useEffect(() => {
@@ -56,6 +57,7 @@ export const OrganizerDashboard = () => {
                 currentParticipants: 0,
                 organizerId: user.id,
                 image: formData.image || 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                externalUrl: formData.externalUrl,
                 status: 'upcoming'
             };
 
@@ -67,7 +69,7 @@ export const OrganizerDashboard = () => {
                 setShowSuccess(false);
                 setActiveTab('mis-eventos');
                 setFormData({
-                    title: '', date: '', city: 'Bogotá', location: '', distances: '5K, 10K', price: '', maxParticipants: '', description: '', image: ''
+                    title: '', date: '', city: 'Bogotá', location: '', distances: '5K, 10K', price: '', maxParticipants: '', description: '', image: '', externalUrl: ''
                 });
             }, 3000);
         }, 1200);
@@ -254,6 +256,16 @@ export const OrganizerDashboard = () => {
                                         value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })}
                                         className="w-full bg-gray-50 border border-gray-200 text-athos-black font-bold p-4 rounded-2xl focus:ring-2 focus:ring-athos-orange/20 outline-none resize-none"
                                     ></textarea>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">URL Externa del Evento (Opcional)</label>
+                                    <input
+                                        type="url"
+                                        placeholder="E.g. https://www.maratonmedellin.com"
+                                        value={formData.externalUrl} onChange={e => setFormData({ ...formData, externalUrl: e.target.value })}
+                                        className="w-full bg-gray-50 border border-gray-200 text-athos-black font-bold p-4 rounded-2xl focus:ring-2 focus:ring-athos-orange/20 outline-none"
+                                    />
                                 </div>
 
                                 <div className="space-y-2">

@@ -114,6 +114,7 @@ export interface Event {
   price: number;
   duration?: string;
   gradientColors?: string[]; // Array of colors for UI gradients (up to 3)
+  externalUrl?: string; // Link to external registration pages
 
   // Custom properties for UI Mock
   reward?: string;
