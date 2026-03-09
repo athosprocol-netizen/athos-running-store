@@ -199,11 +199,12 @@ export const EventsDirectory = () => {
                         ref={eventsListRef}
                         onTouchStart={handleTouchStart}
                         onTouchMove={handleTouchMove}
+                        style={{ touchAction: 'none' }}
                         className="h-full max-h-[600px] overflow-y-auto pr-2 custom-scrollbar block"
                     >
                         {selectedDayEvents ? (
                             <>
-                                <div className="flex justify-between items-center mb-6 sticky top-0 bg-gray-50 z-10 py-2">
+                                <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-50 z-[20] pb-4 pt-2">
                                     <h4 className="text-lg font-black text-athos-orange uppercase tracking-widest flex items-center gap-2">
                                         <div className="w-1.5 h-6 bg-athos-orange rounded-full"></div>
                                         Eventos del {new Date(selectedDayEvents[0].date).getDate()}
@@ -242,7 +243,7 @@ export const EventsDirectory = () => {
                             </>
                         ) : (
                             <>
-                                <div className="flex items-center gap-2 mb-6 sticky top-0 bg-gray-50 z-10 py-2">
+                                <div className="flex items-center gap-2 mb-4 sticky top-0 bg-gray-50 z-[20] pb-4 pt-2">
                                     <div className="w-1.5 h-6 bg-gray-400 rounded-full"></div>
                                     <h4 className="text-lg font-black text-gray-500 uppercase tracking-widest">Eventos del Mes</h4>
                                 </div>
