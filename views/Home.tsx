@@ -19,29 +19,26 @@ export const Home = () => {
         { id: 'accessories', label: 'Geles', icon: Zap },
     ];
 
-    // DRAG HANDLERS (Desktop Only)
-    const handleMouseDown = (e: React.MouseEvent) => {
+    // DRAG HANDLERS (Universal)
+    const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
         if (!sliderRef.current) return;
         setIsDown(true);
         setIsDragging(false);
-        setStartX(e.pageX - sliderRef.current.offsetLeft);
+        const pageX = 'touches' in e ? e.touches[0].pageX : (e as React.MouseEvent).pageX;
+        setStartX(pageX - sliderRef.current.offsetLeft);
         setScrollLeft(sliderRef.current.scrollLeft);
     };
 
-    const handleMouseLeave = () => {
-        setIsDown(false);
-        setIsDragging(false);
-    };
-
-    const handleMouseUp = () => {
+    const handleDragEnd = () => {
         setIsDown(false);
         // setTimeout to clear dragging state after the click event phase
         setTimeout(() => setIsDragging(false), 50);
     };
 
-    const handleMouseMove = (e: React.MouseEvent) => {
+    const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
         if (!isDown || !sliderRef.current) return;
-        const x = e.pageX - sliderRef.current.offsetLeft;
+        const pageX = 'touches' in e ? e.touches[0].pageX : (e as React.MouseEvent).pageX;
+        const x = pageX - sliderRef.current.offsetLeft;
         const walk = (x - startX) * 2; // Scroll-fastness
         sliderRef.current.scrollLeft = scrollLeft - walk;
 
@@ -51,14 +48,15 @@ export const Home = () => {
         }
     };
 
-    // Detach drag on mobile entirely for pure native swipe
-    const isDesktop = typeof window !== 'undefined' ? window.innerWidth > 768 : true;
-    const dragHandlers = isDesktop ? {
-        onMouseDown: handleMouseDown,
-        onMouseLeave: handleMouseLeave,
-        onMouseUp: handleMouseUp,
-        onMouseMove: handleMouseMove
-    } : {};
+    const dragHandlers = {
+        onMouseDown: handleDragStart,
+        onTouchStart: handleDragStart,
+        onMouseLeave: handleDragEnd,
+        onMouseUp: handleDragEnd,
+        onTouchEnd: handleDragEnd,
+        onMouseMove: handleDragMove,
+        onTouchMove: handleDragMove
+    };
 
     // Wrapper for click events that checks if we were dragging
     const handleItemClick = (action: () => void) => {
@@ -136,9 +134,9 @@ export const Home = () => {
                         <div className="mt-2 md:px-0">
                             <div
                                 ref={sliderRef}
-                                {...(typeof window !== 'undefined' && window.innerWidth > 768 ? dragHandlers : {})}
-                                className={`w-full max-w-[100vw] overflow-x-auto flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-4 md:px-0.5 snap-x snap-mandatory md:snap-none`}
-                                style={{ WebkitOverflowScrolling: 'touch' }}
+                                {...dragHandlers}
+                                className={`w-full max-w-[100vw] overflow-x-auto flex gap-4 md:gap-6 ${isDown ? 'cursor-grabbing' : 'cursor-grab'} px-4 md:px-0.5`}
+                                style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: isDragging ? 'auto' : 'smooth', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                             >
                                 {heroItems.map((item, index) => (
                                     <div
