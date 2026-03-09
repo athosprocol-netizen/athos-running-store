@@ -66,7 +66,7 @@ export const EventDetail = () => {
             <div className="max-w-[1400px] mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
 
                 {/* Left Column: Details */}
-                <div className="lg:col-span-2 space-y-12">
+                <div className="lg:col-span-2 space-y-12 order-2 lg:order-1">
                     {/* About */}
                     <section>
                         <h2 className="text-2xl font-black italic text-athos-black uppercase mb-4 flex items-center gap-2">
@@ -142,7 +142,7 @@ export const EventDetail = () => {
                 </div>
 
                 {/* Right Column: Sticky Action Card */}
-                <div className="lg:col-span-1">
+                <div className="lg:col-span-1 order-1 lg:order-2">
                     <div className="sticky top-[100px] bg-white rounded-[32px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-gray-100 p-6">
                         <div className="flex flex-col gap-4 mb-6">
                             <button onClick={() => {
@@ -162,7 +162,7 @@ export const EventDetail = () => {
 
                             {event.externalUrl && (
                                 <button onClick={() => window.open(event.externalUrl, '_blank')} className="w-full bg-athos-black text-white font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-gray-800 transition-colors flex justify-center items-center gap-2">
-                                    Ir a la página del evento <ArrowRight size={20} />
+                                    INSCRIBIRSE <ArrowRight size={20} />
                                 </button>
                             )}
                         </div>
