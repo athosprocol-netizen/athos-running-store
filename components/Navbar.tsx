@@ -475,7 +475,7 @@ export const Navbar = () => {
                         </div>
 
                         {/* Selected Month Events List */}
-                        <div className="mt-2 md:mt-4 space-y-2 md:space-y-3 h-[200px] md:h-[280px] overflow-y-auto overscroll-contain pr-1 touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
+                        <div className="mt-4 flex-1 overflow-y-auto max-h-[40vh] md:max-h-[300px] overscroll-contain pr-1" style={{ WebkitOverflowScrolling: 'touch' }}>
                             {selectedDayEvents ? (
                                 <>
                                     <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
@@ -559,10 +559,6 @@ export const Navbar = () => {
                                         )}
                                 </>
                             )}
-                        </div>
-                        {/* Scroll Indicator (Only active if there's enough content to overflow visually) */}
-                        <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-white to-transparent pointer-events-none flex items-end justify-center pb-1 md:hidden">
-                            <span className="text-[8px] font-black uppercase tracking-widest text-gray-400 bg-white/80 px-2 rounded-full shadow-sm border border-gray-100 pb-0.5">Desliza para ver más</span>
                         </div>
                     </div>
                     <style>{`
@@ -651,7 +647,8 @@ export const Navbar = () => {
                         </div>
                     </div>
                 </div>
-            )}
+            )
+            }
         </>
     );
 };

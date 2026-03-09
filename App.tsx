@@ -148,8 +148,8 @@ const MainContent = () => {
           {renderView()}
         </main>
         <Footer />
+        <WhatsAppButton />
       </div>
-      <WhatsAppButton />
     </div>
   );
 };
