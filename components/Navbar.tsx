@@ -504,7 +504,7 @@ export const Navbar = () => {
                         >
                             {selectedDayEvents ? (
                                 <>
-                                    <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
+                                    <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-[20] py-2">
                                         <h4 className="text-xs font-black text-athos-orange uppercase tracking-widest flex items-center gap-1">
                                             Eventos del {new Date(selectedDayEvents[0].date).getDate()}
                                         </h4>
@@ -542,7 +542,7 @@ export const Navbar = () => {
                                 </>
                             ) : (
                                 <>
-                                    <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 sticky top-0 bg-white z-10 py-1">Eventos del Mes</h4>
+                                    <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 sticky top-0 bg-white z-[20] py-2">Eventos del Mes</h4>
                                     {events.filter(e => {
                                         const d = new Date(e.date);
                                         return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
