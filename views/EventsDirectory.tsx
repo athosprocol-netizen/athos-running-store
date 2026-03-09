@@ -84,7 +84,7 @@ export const EventsDirectory = () => {
             </div>
 
             {/* Interactive Calendar Section */}
-            <section className="mb-16 bg-white p-8 md:p-12 rounded-[40px] shadow-[0_20px_40px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-12">
+            <section className="mb-16 bg-white p-4 md:p-12 rounded-[32px] md:rounded-[40px] shadow-[0_20px_40px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-8 md:gap-12">
 
                 {/* Calendar Grid */}
                 <div className="w-full lg:w-1/2">
@@ -174,7 +174,7 @@ export const EventsDirectory = () => {
                 </div>
 
                 {/* Event List aside */}
-                <div className="w-full lg:w-1/2 bg-gray-50 rounded-[24px] md:rounded-[32px] p-5 md:p-8 border border-gray-100 flex-grow">
+                <div className="w-full lg:w-1/2 bg-gray-50 rounded-[24px] md:rounded-[32px] p-3 md:p-8 border border-gray-100 flex-grow">
                     <div className="h-full max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                         {selectedDayEvents ? (
                             <>
@@ -190,7 +190,7 @@ export const EventsDirectory = () => {
                                         <div
                                             key={e.id}
                                             onClick={() => selectEvent(e.id)}
-                                            className="relative flex items-center gap-4 p-4 overflow-hidden rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md hover:-translate-y-1 group bg-white"
+                                            className="relative flex items-center gap-3 md:gap-4 p-3 md:p-4 overflow-hidden rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md hover:-translate-y-1 group bg-white"
                                         >
                                             {/* Background Gradient with Low Opacity */}
                                             <div
@@ -199,18 +199,18 @@ export const EventsDirectory = () => {
                                             />
 
                                             <div
-                                                className={`relative w-16 h-16 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 border z-10 transition-colors ${e.gradientColors ? 'border-transparent shadow-sm' : 'border-gray-100 group-hover:border-athos-orange/30'}`}
+                                                className={`relative w-14 h-14 md:w-16 md:h-16 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 border z-10 transition-colors ${e.gradientColors ? 'border-transparent shadow-sm' : 'border-gray-100 group-hover:border-athos-orange/30'}`}
                                             >
-                                                <span className={`text-xs font-bold uppercase leading-none mb-1 ${e.gradientColors ? 'text-gray-500' : 'text-gray-400'}`}>
+                                                <span className={`text-[10px] md:text-xs font-bold uppercase leading-none mb-0.5 md:mb-1 ${e.gradientColors ? 'text-gray-500' : 'text-gray-400'}`}>
                                                     {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
                                                 </span>
-                                                <span className={`text-2xl font-black leading-none ${e.gradientColors ? 'text-athos-black' : 'text-athos-orange'}`}>{new Date(e.date).getDate()}</span>
+                                                <span className={`text-xl md:text-2xl font-black leading-none ${e.gradientColors ? 'text-athos-black' : 'text-athos-orange'}`}>{new Date(e.date).getDate()}</span>
                                             </div>
                                             <div className="relative flex-grow z-10">
-                                                <h5 className="font-bold text-base text-athos-black line-clamp-1">{e.title}</h5>
-                                                <p className="text-sm text-gray-600 font-medium flex items-center gap-1.5 mt-1"><MapPin size={14} className="text-gray-400 group-hover:text-athos-orange transition-colors" /> {e.city}</p>
+                                                <h5 className="font-bold text-[13px] md:text-base text-athos-black leading-tight">{e.title}</h5>
+                                                <p className="text-xs md:text-sm text-gray-600 font-medium flex items-center gap-1.5 mt-0.5 md:mt-1"><MapPin size={14} className="text-gray-400 group-hover:text-athos-orange transition-colors" /> {e.city}</p>
                                             </div>
-                                            <ChevronRight size={20} className="relative z-10 text-gray-300 group-hover:text-athos-black transition-colors" />
+                                            <ChevronRight size={20} className="relative z-10 text-gray-300 group-hover:text-athos-black transition-colors md:w-5 md:h-5 w-4 h-4" />
                                         </div>
                                     ))}
                                 </div>
@@ -229,7 +229,7 @@ export const EventsDirectory = () => {
                                         <div
                                             key={e.id}
                                             onClick={() => selectEvent(e.id)}
-                                            className="relative flex items-center gap-4 p-4 overflow-hidden rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md hover:-translate-y-1 group bg-white"
+                                            className="relative flex items-center gap-3 md:gap-4 p-3 md:p-4 overflow-hidden rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md hover:-translate-y-1 group bg-white"
                                         >
                                             {/* Background Gradient with Low Opacity */}
                                             <div
@@ -238,18 +238,18 @@ export const EventsDirectory = () => {
                                             />
 
                                             <div
-                                                className={`relative w-16 h-16 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 border z-10 transition-colors ${e.gradientColors ? 'border-transparent shadow-sm' : 'border-gray-100 group-hover:border-athos-orange/30'}`}
+                                                className={`relative w-14 h-14 md:w-16 md:h-16 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 border z-10 transition-colors ${e.gradientColors ? 'border-transparent shadow-sm' : 'border-gray-100 group-hover:border-athos-orange/30'}`}
                                             >
-                                                <span className={`text-xs font-bold uppercase leading-none mb-1 ${e.gradientColors ? 'text-gray-500' : 'text-gray-400'}`}>
+                                                <span className={`text-[10px] md:text-xs font-bold uppercase leading-none mb-0.5 md:mb-1 ${e.gradientColors ? 'text-gray-500' : 'text-gray-400'}`}>
                                                     {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
                                                 </span>
-                                                <span className={`text-2xl font-black leading-none ${e.gradientColors ? 'text-athos-black' : 'text-athos-orange'}`}>{new Date(e.date).getDate()}</span>
+                                                <span className={`text-xl md:text-2xl font-black leading-none ${e.gradientColors ? 'text-athos-black' : 'text-athos-orange'}`}>{new Date(e.date).getDate()}</span>
                                             </div>
                                             <div className="relative flex-grow z-10">
-                                                <h5 className="font-bold text-base text-athos-black line-clamp-1">{e.title}</h5>
-                                                <p className="text-sm text-gray-600 font-medium flex items-center gap-1.5 mt-1"><MapPin size={14} className="text-gray-400 group-hover:text-athos-orange transition-colors" /> {e.city}</p>
+                                                <h5 className="font-bold text-[13px] md:text-base text-athos-black leading-tight">{e.title}</h5>
+                                                <p className="text-xs md:text-sm text-gray-600 font-medium flex items-center gap-1.5 mt-0.5 md:mt-1"><MapPin size={14} className="text-gray-400 group-hover:text-athos-orange transition-colors" /> {e.city}</p>
                                             </div>
-                                            <ChevronRight size={20} className="relative z-10 text-gray-300 group-hover:text-athos-black transition-colors" />
+                                            <ChevronRight size={20} className="relative z-10 text-gray-300 group-hover:text-athos-black transition-colors md:w-5 md:h-5 w-4 h-4" />
                                         </div>
                                     ))}
                                     {events.filter(e => {
