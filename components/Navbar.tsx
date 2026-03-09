@@ -387,11 +387,11 @@ export const Navbar = () => {
                 <>
                     <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setIsCalendarOpen(false)} />
                     <div
-                        className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[300px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-3 md:p-6 pb-3 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top max-h-[90vh] md:max-h-[85vh] overflow-hidden"
+                        className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[290px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-2 md:p-6 pb-2 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top max-h-[90vh] md:max-h-[85vh] overflow-hidden"
                     >
-                        <div className="flex justify-between items-center mb-3 md:mb-6">
-                            <h3 className="text-lg md:text-xl font-black italic uppercase text-athos-black flex items-center gap-2">
-                                <Calendar size={24} className="text-athos-orange" />
+                        <div className="flex justify-between items-center mb-2 md:mb-6 px-1 md:px-0">
+                            <h3 className="text-base md:text-xl font-black italic uppercase text-athos-black flex items-center gap-1 md:gap-2">
+                                <Calendar size={18} className="text-athos-orange md:w-6 md:h-6" />
                                 Mensual
                             </h3>
                             <button onClick={() => setIsCalendarOpen(false)} className="p-2 bg-gray-100 rounded-full text-gray-500 hover:text-athos-black">
@@ -400,20 +400,20 @@ export const Navbar = () => {
                         </div>
 
                         {/* Month Selector */}
-                        <div className="flex justify-between items-center mb-4 px-2">
-                            <button onClick={prevMonth} className="p-1 hover:text-athos-orange"><ChevronRight size={20} className="rotate-180" /></button>
-                            <span className="font-bold text-sm uppercase tracking-widest text-athos-black">
+                        <div className="flex justify-between items-center mb-2 md:mb-4 px-1 md:px-2">
+                            <button onClick={prevMonth} className="p-0.5 md:p-1 hover:text-athos-orange"><ChevronRight size={18} className="rotate-180 md:w-5 md:h-5" /></button>
+                            <span className="font-bold text-xs md:text-sm uppercase tracking-widest text-athos-black">
                                 {currentMonth.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' })}
                             </span>
-                            <button onClick={nextMonth} className="p-1 hover:text-athos-orange"><ChevronRight size={20} /></button>
+                            <button onClick={nextMonth} className="p-0.5 md:p-1 hover:text-athos-orange"><ChevronRight size={18} className="md:w-5 md:h-5" /></button>
                         </div>
 
-                        <div className="grid grid-cols-7 gap-1 md:gap-1 mb-2 text-center border-b border-gray-100 pb-2">
+                        <div className="grid grid-cols-7 gap-0 md:gap-1 mb-1 md:mb-2 text-center border-b border-gray-100 pb-1 md:pb-2">
                             {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, i) => (
-                                <div key={i} className="text-[10px] font-black text-gray-400 uppercase">{d}</div>
+                                <div key={i} className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase">{d}</div>
                             ))}
                         </div>
-                        <div className="grid grid-cols-7 gap-[2px] md:gap-1 mb-4 md:mb-6">
+                        <div className="grid grid-cols-7 gap-0 md:gap-1 mb-2 md:mb-6">
                             {generateCalendarDays().map((day, idx) => {
                                 if (!day) return <div key={idx} className="p-2" />;
                                 const dayEvents = getEventsForDay(day);
@@ -462,12 +462,12 @@ export const Navbar = () => {
                                                 }
                                             }
                                         }}
-                                        className={`p-0.5 md:p-2 w-full aspect-square flex flex-col items-center justify-center rounded-lg md:rounded-xl relative transition-all ${textClass}`}
+                                        className={`p-0 md:p-2 w-7 h-7 md:w-full md:aspect-square mx-auto flex flex-col items-center justify-center rounded-md md:rounded-xl relative transition-all ${textClass}`}
                                         style={backgroundStyle}
                                     >
-                                        <span className={`text-[11px] md:text-sm tracking-tighter leading-none ${!hasEvents && isCurr ? 'font-black' : ''}`}>{day.getDate()}</span>
+                                        <span className={`text-[10px] md:text-sm tracking-tighter leading-none ${!hasEvents && isCurr ? 'font-black' : ''}`}>{day.getDate()}</span>
                                         {hasEvents && (
-                                            <div className={`absolute bottom-0.5 md:bottom-1 w-1 md:w-1.5 h-1 md:h-1.5 rounded-full ${isCurr ? 'bg-athos-orange' : 'bg-white shadow-sm'}`} />
+                                            <div className={`absolute bottom-[2px] md:bottom-1 w-[3px] md:w-1.5 h-[3px] md:h-1.5 rounded-full ${isCurr ? 'bg-athos-orange' : 'bg-white shadow-sm'}`} />
                                         )}
                                     </button>
                                 );
@@ -475,7 +475,7 @@ export const Navbar = () => {
                         </div>
 
                         {/* Selected Month Events List */}
-                        <div className="mt-3 flex-1 overflow-y-auto max-h-[55vh] md:max-h-[350px] overscroll-contain pr-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+                        <div className="mt-2 md:mt-3 flex-1 overflow-y-auto max-h-[50vh] min-h-[30vh] md:max-h-[350px] overscroll-contain pr-1" style={{ WebkitOverflowScrolling: 'touch' }}>
                             {selectedDayEvents ? (
                                 <>
                                     <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
@@ -500,17 +500,17 @@ export const Navbar = () => {
                                                 style={e.gradientColors && e.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : { backgroundColor: '#f9fafb' }}
                                             />
 
-                                            <div className="relative w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
-                                                <span className="text-[10px] font-bold text-gray-500 uppercase leading-none mb-0.5">
+                                            <div className="relative w-10 h-10 md:w-12 md:h-12 bg-white rounded-lg md:rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
+                                                <span className="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase leading-none mb-0.5">
                                                     {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
                                                 </span>
-                                                <span className="text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
+                                                <span className="text-sm md:text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
                                             </div>
                                             <div className="relative flex-grow z-10">
-                                                <h5 className="font-bold text-sm text-athos-black leading-tight">{e.title}</h5>
-                                                <p className="text-xs text-gray-600 font-medium flex items-center gap-1">📍 {e.city}</p>
+                                                <h5 className="font-bold text-xs md:text-sm text-athos-black leading-tight">{e.title}</h5>
+                                                <p className="text-[10px] md:text-xs text-gray-600 font-medium flex items-center gap-1 mt-0.5">📍 {e.city}</p>
                                             </div>
-                                            <ChevronRight size={14} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors" />
+                                            <ChevronRight size={14} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors md:w-4 md:h-4 w-3 h-3" />
                                         </div>
                                     ))}
                                 </>
@@ -536,17 +536,17 @@ export const Navbar = () => {
                                                 style={e.gradientColors && e.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : { backgroundColor: '#f9fafb' }}
                                             />
 
-                                            <div className="relative w-12 h-12 bg-white rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
-                                                <span className="text-[10px] font-bold text-gray-500 uppercase leading-none mb-0.5">
+                                            <div className="relative w-10 h-10 md:w-12 md:h-12 bg-white rounded-lg md:rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
+                                                <span className="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase leading-none mb-0.5">
                                                     {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
                                                 </span>
-                                                <span className="text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
+                                                <span className="text-sm md:text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
                                             </div>
                                             <div className="relative flex-grow z-10">
-                                                <h5 className="font-bold text-sm text-athos-black leading-tight">{e.title}</h5>
-                                                <p className="text-xs text-gray-600 font-medium flex items-center gap-1">📍 {e.city}</p>
+                                                <h5 className="font-bold text-xs md:text-sm text-athos-black leading-tight">{e.title}</h5>
+                                                <p className="text-[10px] md:text-xs text-gray-600 font-medium flex items-center gap-1 mt-0.5">📍 {e.city}</p>
                                             </div>
-                                            <ChevronRight size={14} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors" />
+                                            <ChevronRight size={14} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors md:w-4 md:h-4 w-3 h-3" />
                                         </div>
                                     ))}
                                     {events.filter(e => {
