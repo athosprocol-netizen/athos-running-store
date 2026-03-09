@@ -387,7 +387,7 @@ export const Navbar = () => {
                 <>
                     <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setIsCalendarOpen(false)} />
                     <div
-                        className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[290px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-2 md:p-6 pb-2 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top h-[480px] md:h-auto max-h-[85vh] overflow-hidden"
+                        className="fixed top-16 md:top-[85px] right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 w-[290px] md:w-[450px] z-[70] bg-white rounded-2xl md:rounded-3xl p-2 md:p-6 pb-2 md:pb-6 shadow-2xl animate-fade-in flex flex-col origin-top-right md:origin-top h-[580px] md:h-auto max-h-[92vh] md:max-h-[85vh] overflow-hidden"
                     >
                         <div className="flex justify-between items-center mb-2 md:mb-6 px-1 md:px-0">
                             <h3 className="text-base md:text-xl font-black italic uppercase text-athos-black flex items-center gap-1 md:gap-2">
@@ -475,7 +475,7 @@ export const Navbar = () => {
                         </div>
 
                         {/* Selected Month Events List */}
-                        <div className="mt-2 md:mt-3 h-[200px] md:h-[350px] overflow-y-auto overscroll-contain pr-1 touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
+                        <div className="mt-2 md:mt-3 h-[300px] md:h-[350px] overflow-y-auto overscroll-contain pr-1 touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
                             {selectedDayEvents ? (
                                 <>
                                     <div className="flex justify-between items-center mb-2 sticky top-0 bg-white z-10 py-1">
@@ -492,7 +492,7 @@ export const Navbar = () => {
                                                 setIsCalendarOpen(false);
                                                 setIsMobileMenuOpen(false);
                                             }}
-                                            className="relative flex items-center gap-3 p-3 overflow-hidden rounded-xl md:rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md group mb-2 md:mb-3"
+                                            className="relative flex items-center gap-1.5 py-1.5 px-2 overflow-hidden rounded-lg md:rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md group mb-1 md:mb-2"
                                         >
                                             {/* Background Gradient with Low Opacity */}
                                             <div
@@ -500,17 +500,17 @@ export const Navbar = () => {
                                                 style={e.gradientColors && e.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : { backgroundColor: '#f9fafb' }}
                                             />
 
-                                            <div className="relative w-10 h-10 md:w-12 md:h-12 bg-white rounded-lg md:rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
-                                                <span className="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase leading-none mb-0.5">
+                                            <div className="relative w-8 h-8 md:w-10 md:h-10 bg-white rounded-md md:rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
+                                                <span className="text-[8px] md:text-[9px] font-bold text-gray-500 uppercase leading-none mb-0.5">
                                                     {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
                                                 </span>
-                                                <span className="text-sm md:text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
+                                                <span className="text-xs md:text-sm font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
                                             </div>
                                             <div className="relative flex-grow z-10">
-                                                <h5 className="font-bold text-xs md:text-sm text-athos-black leading-tight">{e.title}</h5>
-                                                <p className="text-[10px] md:text-xs text-gray-600 font-medium flex items-center gap-1 mt-0.5">📍 {e.city}</p>
+                                                <h5 className="font-bold text-[11px] md:text-xs text-athos-black leading-tight">{e.title}</h5>
+                                                <p className="text-[9px] md:text-[10px] text-gray-600 font-medium flex items-center gap-1 mt-0.5">📍 {e.city}</p>
                                             </div>
-                                            <ChevronRight size={14} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors md:w-4 md:h-4 w-3 h-3" />
+                                            <ChevronRight size={12} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors md:w-4 md:h-4" />
                                         </div>
                                     ))}
                                 </>
@@ -528,7 +528,7 @@ export const Navbar = () => {
                                                 setIsCalendarOpen(false);
                                                 setIsMobileMenuOpen(false);
                                             }}
-                                            className="relative flex items-center gap-3 p-3 overflow-hidden rounded-xl md:rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md group mb-2 md:mb-3"
+                                            className="relative flex items-center gap-1.5 py-1.5 px-2 overflow-hidden rounded-lg md:rounded-2xl cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-md group mb-1 md:mb-2"
                                         >
                                             {/* Background Gradient with Low Opacity */}
                                             <div
@@ -536,17 +536,17 @@ export const Navbar = () => {
                                                 style={e.gradientColors && e.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${e.gradientColors.join(', ')})` } : { backgroundColor: '#f9fafb' }}
                                             />
 
-                                            <div className="relative w-10 h-10 md:w-12 md:h-12 bg-white rounded-lg md:rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
-                                                <span className="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase leading-none mb-0.5">
+                                            <div className="relative w-8 h-8 md:w-10 md:h-10 bg-white rounded-md md:rounded-xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm border border-white/50 z-10">
+                                                <span className="text-[8px] md:text-[9px] font-bold text-gray-500 uppercase leading-none mb-0.5">
                                                     {new Date(e.date).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')}
                                                 </span>
-                                                <span className="text-sm md:text-base font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
+                                                <span className="text-xs md:text-sm font-black text-athos-black leading-none">{new Date(e.date).getDate()}</span>
                                             </div>
                                             <div className="relative flex-grow z-10">
-                                                <h5 className="font-bold text-xs md:text-sm text-athos-black leading-tight">{e.title}</h5>
-                                                <p className="text-[10px] md:text-xs text-gray-600 font-medium flex items-center gap-1 mt-0.5">📍 {e.city}</p>
+                                                <h5 className="font-bold text-[11px] md:text-xs text-athos-black leading-tight">{e.title}</h5>
+                                                <p className="text-[9px] md:text-[10px] text-gray-600 font-medium flex items-center gap-1 mt-0.5">📍 {e.city}</p>
                                             </div>
-                                            <ChevronRight size={14} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors md:w-4 md:h-4 w-3 h-3" />
+                                            <ChevronRight size={12} className="relative z-10 text-gray-400 group-hover:text-athos-black transition-colors md:w-4 md:h-4" />
                                         </div>
                                     ))}
                                     {events.filter(e => {
