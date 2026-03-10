@@ -22,6 +22,48 @@ export const EventDetail = () => {
 
     const isPast = event.status === 'past';
 
+    const actionCardContent = (
+        <>
+            <div className="flex flex-col gap-4 mb-6">
+                <button onClick={() => {
+                    const shareUrl = `${window.location.origin}/?event=${event.id}`;
+                    if (navigator.share) {
+                        navigator.share({
+                            title: event.title,
+                            url: shareUrl
+                        }).catch(console.error);
+                    } else {
+                        navigator.clipboard.writeText(shareUrl);
+                        alert('Enlace copiado al portapapeles');
+                    }
+                }} className="w-full bg-athos-orange text-white font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-orange-600 transition-colors flex justify-center items-center gap-2 glow-effect">
+                    <Share2 size={20} /> Compartir Evento
+                </button>
+
+                {event.externalUrl && (
+                    <button onClick={() => window.open(event.externalUrl, '_blank')} className="w-full bg-athos-black text-white font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-gray-800 transition-colors flex justify-center items-center gap-2">
+                        VISITAR SITIO <ArrowRight size={20} />
+                    </button>
+                )}
+            </div>
+            {isPast && <div className="mb-6 border-t border-gray-100 pt-6"></div>}
+
+            {isPast && (
+                <div className="space-y-4">
+                    <div className="w-full bg-gray-100 text-gray-400 font-black uppercase tracking-widest py-5 rounded-2xl text-center cursor-not-allowed">
+                        Evento Finalizado
+                    </div>
+                    <button
+                        onClick={() => setView('event-results')}
+                        className="w-full bg-athos-black text-white font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-gray-800 transition-colors flex justify-center items-center gap-2"
+                    >
+                        Ver Resultados
+                    </button>
+                </div>
+            )}
+        </>
+    );
+
     return (
         <div className="bg-white min-h-screen pb-24 animate-fade-in relative">
             {/* Hero Image */}
@@ -66,9 +108,9 @@ export const EventDetail = () => {
             <div className="max-w-[1400px] mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
 
                 {/* Left Column: Details */}
-                <div className="lg:col-span-2 space-y-12 order-2 lg:order-1">
+                <div className="lg:col-span-2 flex flex-col gap-12 order-2 lg:order-1">
                     {/* About */}
-                    <section>
+                    <section className="order-2 lg:order-1">
                         <h2 className="text-2xl font-black italic text-athos-black uppercase mb-4 flex items-center gap-2">
                             <div className="w-1.5 h-6 bg-athos-orange rounded-full"></div>
                             Acerca de la Carrera
@@ -78,8 +120,13 @@ export const EventDetail = () => {
                         </div>
                     </section>
 
+                    {/* Mobile Action Card */}
+                    <div className="lg:hidden bg-white rounded-[32px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-gray-100 p-6 order-3">
+                        {actionCardContent}
+                    </div>
+
                     {/* Shopping Promo Banner */}
-                    <section className="bg-gradient-to-r from-athos-orange to-red-500 rounded-[32px] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group cursor-pointer" onClick={() => setView('shop')}>
+                    <section className="order-4 lg:order-2 bg-gradient-to-r from-athos-orange to-red-500 rounded-[32px] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group cursor-pointer" onClick={() => setView('shop')}>
                         <div className="absolute -right-20 -bottom-20 opacity-20 pointer-events-none transform group-hover:scale-110 transition-transform duration-700">
                             <svg width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M20.2 7.8l-7.7 7.7-4-4-5.7 5.7" /><path d="M15 7h6v6" /></svg>
                         </div>
@@ -99,7 +146,7 @@ export const EventDetail = () => {
                         </div>
                     </section>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 order-1 lg:order-3">
                         <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
                             <MapPin className="text-athos-orange mb-2" size={28} />
                             <span className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Ciudad</span>
@@ -121,7 +168,7 @@ export const EventDetail = () => {
 
                     {/* Photos Link (if Past) */}
                     {isPast && event.photosLink && (
-                        <section className="bg-athos-black text-white p-8 rounded-[32px] flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                        <section className="order-5 lg:order-4 bg-athos-black text-white p-8 rounded-[32px] flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
                             <div className="absolute -right-10 -bottom-10 opacity-10 blur-sm pointer-events-none">
                                 <ImageIcon size={200} />
                             </div>
@@ -142,45 +189,9 @@ export const EventDetail = () => {
                 </div>
 
                 {/* Right Column: Sticky Action Card */}
-                <div className="lg:col-span-1 order-1 lg:order-2">
+                <div className="hidden lg:block lg:col-span-1 order-1 lg:order-2">
                     <div className="sticky top-[100px] bg-white rounded-[32px] shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-gray-100 p-6">
-                        <div className="flex flex-col gap-4 mb-6">
-                            <button onClick={() => {
-                                const shareUrl = `${window.location.origin}/?event=${event.id}`;
-                                if (navigator.share) {
-                                    navigator.share({
-                                        title: event.title,
-                                        url: shareUrl
-                                    }).catch(console.error);
-                                } else {
-                                    navigator.clipboard.writeText(shareUrl);
-                                    alert('Enlace copiado al portapapeles');
-                                }
-                            }} className="w-full bg-athos-orange text-white font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-orange-600 transition-colors flex justify-center items-center gap-2 glow-effect">
-                                <Share2 size={20} /> Compartir Evento
-                            </button>
-
-                            {event.externalUrl && (
-                                <button onClick={() => window.open(event.externalUrl, '_blank')} className="w-full bg-athos-black text-white font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-gray-800 transition-colors flex justify-center items-center gap-2">
-                                    VISITAR SITIO <ArrowRight size={20} />
-                                </button>
-                            )}
-                        </div>
-                        {isPast && <div className="mb-6 border-t border-gray-100 pt-6"></div>}
-
-                        {isPast && (
-                            <div className="space-y-4">
-                                <div className="w-full bg-gray-100 text-gray-400 font-black uppercase tracking-widest py-5 rounded-2xl text-center cursor-not-allowed">
-                                    Evento Finalizado
-                                </div>
-                                <button
-                                    onClick={() => setView('event-results')}
-                                    className="w-full bg-athos-black text-white font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-gray-800 transition-colors flex justify-center items-center gap-2"
-                                >
-                                    Ver Resultados
-                                </button>
-                            </div>
-                        )}
+                        {actionCardContent}
                     </div>
                 </div>
 
