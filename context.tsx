@@ -19,7 +19,13 @@ const MOCK_EVENTS: Event[] = [
     distances: ['42K', '21K', '10K', '5K'],
     status: 'upcoming',
     maxParticipants: 15000,
-    currentParticipants: 8500
+    currentParticipants: 8500,
+    gallery: [
+      'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1533560904424-a0c61dc306fc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1486218119243-13883505764c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
+    ]
   },
   {
     id: 'e2',
@@ -278,6 +284,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
             price: e.price || 0,
             duration: e.duration,
             gradientColors: e.gradient_colors || [],
+            gallery: e.gallery || [],
             reward: e.reward,
             daysLeft: e.days_left,
             participants: e.participants,
@@ -1053,11 +1060,15 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
   const addEvent = async (event: Event) => {
     try {
+      showNotification("⏳ Subiendo evento... No cierres esta ventana.", true);
       let mainImg = event.image;
       if (mainImg?.startsWith('data:')) {
         mainImg = await uploadProductImage(mainImg, event.id, '-event');
       }
-      const eventToSave = { ...event, image: mainImg };
+
+      let galleryImgs = await uploadImageArray(event.gallery, event.id, '-event-gallery');
+
+      const eventToSave = { ...event, image: mainImg, gallery: galleryImgs };
 
       const cleanPayload = {
         title: eventToSave.title,
@@ -1067,6 +1078,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         description: eventToSave.description,
         distances: eventToSave.distances,
         image: eventToSave.image,
+        gallery: Array.isArray(eventToSave.gallery) ? eventToSave.gallery : [],
         status: eventToSave.status,
         is_featured: eventToSave.isFeatured,
         max_participants: eventToSave.maxParticipants,
@@ -1097,11 +1109,15 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
   const updateEvent = async (updatedEvent: Event) => {
     try {
+      showNotification("⏳ Actualizando evento... No cierres esta ventana.", true);
       let mainImg = updatedEvent.image;
       if (mainImg?.startsWith('data:')) {
         mainImg = await uploadProductImage(mainImg, updatedEvent.id, '-event');
       }
-      const eventToSave = { ...updatedEvent, image: mainImg };
+
+      let galleryImgs = await uploadImageArray(updatedEvent.gallery, updatedEvent.id, '-event-gallery');
+
+      const eventToSave = { ...updatedEvent, image: mainImg, gallery: galleryImgs };
 
       const cleanPayload = {
         title: eventToSave.title,
@@ -1111,6 +1127,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         description: eventToSave.description,
         distances: eventToSave.distances,
         image: eventToSave.image,
+        gallery: Array.isArray(eventToSave.gallery) ? eventToSave.gallery : [],
         status: eventToSave.status,
         is_featured: eventToSave.isFeatured,
         max_participants: eventToSave.maxParticipants,

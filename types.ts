@@ -115,6 +115,7 @@ export interface Event {
   duration?: string;
   gradientColors?: string[]; // Array of colors for UI gradients (up to 3)
   externalUrl?: string; // Link to external registration pages
+  gallery?: string[]; // Array of image URLs for the event gallery
 
   // Custom properties for UI Mock
   reward?: string;

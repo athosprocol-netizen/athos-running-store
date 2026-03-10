@@ -199,6 +199,27 @@ export const Admin = () => {
         }));
     };
 
+    const handleEventGalleryUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []) as File[];
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setTempEvent(prev => ({
+                    ...prev,
+                    gallery: [...(prev.gallery || []), reader.result as string]
+                }));
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
+    const removeEventGalleryImage = (index: number) => {
+        setTempEvent(prev => ({
+            ...prev,
+            gallery: (prev.gallery || []).filter((_, i) => i !== index)
+        }));
+    };
+
     const handleVariantGalleryUpload = (variantId: string, e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []) as File[];
         files.forEach(file => {
@@ -646,6 +667,30 @@ export const Admin = () => {
                                             onChange={handleImageUpload}
                                         />
                                     </div>
+
+                                    {/* Event Gallery */}
+                                    {tempEvent.gallery && tempEvent.gallery.length > 0 && (
+                                        <div className="flex gap-2 mt-4 overflow-x-auto hide-scrollbar pb-2">
+                                            {tempEvent.gallery.map((img, idx) => (
+                                                <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-gray-200 group">
+                                                    <img src={img} className="w-full h-full object-cover" />
+                                                    <button
+                                                        onClick={() => removeEventGalleryImage(idx)}
+                                                        className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    >
+                                                        <X size={10} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    <div className="mt-2 text-right">
+                                        <label className="cursor-pointer text-[10px] font-bold text-athos-orange uppercase flex justify-end items-center gap-1 hover:text-orange-600">
+                                            <Plus size={12} /> Añadir Fotos a la Galería
+                                            <input type="file" multiple accept="image/*" className="hidden" onChange={handleEventGalleryUpload} />
+                                        </label>
+                                    </div>
+
                                     <div className="mt-6 flex items-center gap-3">
                                         <input
                                             type="checkbox"
