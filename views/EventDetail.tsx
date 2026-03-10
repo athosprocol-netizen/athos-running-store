@@ -4,7 +4,7 @@ import { Calendar, MapPin, Clock, Users, ArrowRight, Share2, Map as MapIcon, Ima
 import { Review } from '../types';
 
 export const EventDetail = () => {
-    const { events, selectedEventId, setView, user, addEventReview, showNotification, products, setSelectedProductId, addToCart } = useApp();
+    const { events, selectedEventId, setView, user, addEventReview, showNotification, products, selectProduct, addToCart } = useApp();
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
     const [isFullScreenReviewImage, setIsFullScreenReviewImage] = useState<string | null>(null);
 
@@ -342,7 +342,7 @@ export const EventDetail = () => {
                                     >
                                         <div 
                                             className="bg-gray-50 aspect-[4/3] relative flex items-center justify-center p-6 overflow-hidden cursor-pointer"
-                                            onClick={() => { setSelectedProductId(product.id); setView('product'); }}
+                                            onClick={() => selectProduct(product.id)}
                                         >
                                             <div className="absolute inset-0 bg-gradient-to-t from-gray-100/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                             <img 
@@ -357,7 +357,7 @@ export const EventDetail = () => {
                                         <div className="p-6 flex flex-col flex-grow">
                                             <h4 
                                                 className="font-bold text-lg text-athos-black line-clamp-2 leading-snug mb-3 hover:text-athos-orange cursor-pointer transition-colors"
-                                                onClick={() => { setSelectedProductId(product.id); setView('product'); }}
+                                                onClick={() => selectProduct(product.id)}
                                             >
                                                 {product.name}
                                             </h4>
@@ -365,7 +365,7 @@ export const EventDetail = () => {
                                                 <span className="font-black text-2xl">${product.price.toLocaleString('es-CO')}</span>
                                                 <div className="flex gap-2">
                                                     <button
-                                                        onClick={(e) => { e.stopPropagation(); setSelectedProductId(product.id); setView('product'); }}
+                                                        onClick={(e) => { e.stopPropagation(); selectProduct(product.id); }}
                                                         className="w-12 h-12 rounded-full bg-gray-100 text-athos-black flex items-center justify-center hover:bg-gray-200 transition-colors"
                                                         title="Ver Detalles"
                                                     >
