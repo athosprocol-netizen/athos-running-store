@@ -162,7 +162,7 @@ export const EventDetail = () => {
 
                             {event.externalUrl && (
                                 <button onClick={() => window.open(event.externalUrl, '_blank')} className="w-full bg-athos-black text-white font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-gray-800 transition-colors flex justify-center items-center gap-2">
-                                    INSCRIBIRSE <ArrowRight size={20} />
+                                    VISITAR SITIO <ArrowRight size={20} />
                                 </button>
                             )}
                         </div>
