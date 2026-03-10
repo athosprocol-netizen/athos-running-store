@@ -304,48 +304,52 @@ export const EventDetail = () => {
                         </section>
                     )}
 
-                    {/* Shopping Promo Banner & Products Reel */}
-                    <section className="order-5 lg:order-3">
-                        <div className="bg-gradient-to-r from-athos-orange to-red-500 rounded-[32px] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group mb-8">
-                            <div className="absolute -right-20 -bottom-20 opacity-20 pointer-events-none transform group-hover:scale-110 transition-transform duration-700">
-                                <svg width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M20.2 7.8l-7.7 7.7-4-4-5.7 5.7" /><path d="M15 7h6v6" /></svg>
+                    {/* Shopping Promo / Premium Product Collection */}
+                    <section className="order-5 lg:order-3 pt-6 border-t border-gray-100">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                            <div>
+                                <h2 className="text-3xl font-black italic text-athos-black uppercase mb-2 flex items-center gap-2">
+                                    <div className="w-1.5 h-8 bg-athos-orange rounded-full"></div>
+                                    Prepárate con Athos
+                                </h2>
+                                <p className="text-gray-500 font-medium">Equípate con la mejor tecnología y accesorios para romper tus propios récords.</p>
                             </div>
-                            <div className="relative z-10 md:w-2/3">
-                                <span className="text-white/80 font-black tracking-widest uppercase text-xs mb-2 block">Prepárate con Athos</span>
-                                <h3 className="text-3xl md:text-4xl font-black italic tracking-tighter uppercase mb-3 leading-none">
-                                    Equípate para la Carrera
-                                </h3>
-                                <p className="text-white/90 font-medium text-lg leading-snug max-w-lg">
-                                    Adquiere tus zapatillas para romper tus propios récords y guarda tus logros en nuestros medalleros.
-                                </p>
-                            </div>
-                            <div className="relative z-10 md:w-1/3 flex justify-end w-full">
-                                <button onClick={() => setView('shop')} className="bg-white text-athos-orange font-black uppercase tracking-widest px-8 py-4 rounded-2xl shadow-xl hover:scale-105 transition-transform w-full md:w-auto text-center">
-                                    Ver Todo
-                                </button>
-                            </div>
+                            <button 
+                                onClick={() => setView('shop')}
+                                className="bg-athos-black text-white px-6 py-3 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-athos-orange transition-colors shadow-lg"
+                            >
+                                Ver Tienda
+                            </button>
                         </div>
 
-                        {/* Horizontal Product Reel */}
-                        <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-6 snap-x">
-                            {promoProducts.map((product) => (
+                        {/* Premium Product Grid (Top 3 items) */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {promoProducts.slice(0, 3).map((product) => (
                                 <div 
                                     key={product.id} 
                                     onClick={() => { setSelectedProductId(product.id); setView('product-detail'); }}
-                                    className="min-w-[200px] md:min-w-[240px] bg-white rounded-2xl border border-gray-100 p-4 shrink-0 snap-start cursor-pointer hover:shadow-xl hover:border-athos-orange transition-all group flex flex-col"
+                                    className="bg-white rounded-[24px] overflow-hidden cursor-pointer group flex flex-col border border-gray-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1"
                                 >
-                                    <div className="bg-gray-50 rounded-xl aspect-[4/5] overflow-hidden relative mb-4 flex items-center justify-center p-4">
-                                        <img src={product.image} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500" alt={product.name} />
-                                        <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg">
-                                            <span className="text-[10px] font-black uppercase text-athos-black">{product.category}</span>
+                                    <div className="bg-gray-50 aspect-square relative flex items-center justify-center p-8 overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-t from-gray-100/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                        <img 
+                                            src={product.image} 
+                                            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-700 ease-out" 
+                                            alt={product.name} 
+                                        />
+                                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-athos-black">{product.category}</span>
                                         </div>
                                     </div>
-                                    <div className="flex flex-col flex-grow">
-                                        <h4 className="font-bold text-sm text-athos-black line-clamp-2 leading-snug mb-2 group-hover:text-athos-orange transition-colors">
+                                    <div className="p-6 flex flex-col flex-grow">
+                                        <h4 className="font-bold text-lg text-athos-black line-clamp-2 leading-snug mb-3 group-hover:text-athos-orange transition-colors">
                                             {product.name}
                                         </h4>
-                                        <div className="mt-auto">
-                                            <span className="font-black text-lg">${product.price.toLocaleString('es-CO')}</span>
+                                        <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                                            <span className="font-black text-xl">${product.price.toLocaleString('es-CO')}</span>
+                                            <div className="w-10 h-10 rounded-full bg-athos-black text-white flex items-center justify-center group-hover:bg-athos-orange transition-colors">
+                                                <ArrowRight size={18} />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
