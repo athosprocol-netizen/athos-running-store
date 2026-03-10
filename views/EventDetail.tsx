@@ -4,9 +4,12 @@ import { Calendar, MapPin, Clock, Users, ArrowRight, Share2, Map as MapIcon, Ima
 import { Review } from '../types';
 
 export const EventDetail = () => {
-    const { events, selectedEventId, setView, user, addEventReview, showNotification } = useApp();
+    const { events, selectedEventId, setView, user, addEventReview, showNotification, products, setSelectedProductId } = useApp();
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
     const [isFullScreenReviewImage, setIsFullScreenReviewImage] = useState<string | null>(null);
+
+    // Get a subset of products to display as suggestions
+    const promoProducts = products.filter(p => p.category === 'shoes' || p.category === 'clothing' || p.category === 'medals').slice(0, 6);
 
     // Reviews State
     const [showReviewForm, setShowReviewForm] = useState(false);
@@ -301,24 +304,52 @@ export const EventDetail = () => {
                         </section>
                     )}
 
-                    {/* Shopping Promo Banner */}
-                    <section className="order-5 lg:order-3 bg-gradient-to-r from-athos-orange to-red-500 rounded-[32px] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group cursor-pointer" onClick={() => setView('shop')}>
-                        <div className="absolute -right-20 -bottom-20 opacity-20 pointer-events-none transform group-hover:scale-110 transition-transform duration-700">
-                            <svg width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M20.2 7.8l-7.7 7.7-4-4-5.7 5.7" /><path d="M15 7h6v6" /></svg>
+                    {/* Shopping Promo Banner & Products Reel */}
+                    <section className="order-5 lg:order-3">
+                        <div className="bg-gradient-to-r from-athos-orange to-red-500 rounded-[32px] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group mb-8">
+                            <div className="absolute -right-20 -bottom-20 opacity-20 pointer-events-none transform group-hover:scale-110 transition-transform duration-700">
+                                <svg width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M20.2 7.8l-7.7 7.7-4-4-5.7 5.7" /><path d="M15 7h6v6" /></svg>
+                            </div>
+                            <div className="relative z-10 md:w-2/3">
+                                <span className="text-white/80 font-black tracking-widest uppercase text-xs mb-2 block">Prepárate con Athos</span>
+                                <h3 className="text-3xl md:text-4xl font-black italic tracking-tighter uppercase mb-3 leading-none">
+                                    Equípate para la Carrera
+                                </h3>
+                                <p className="text-white/90 font-medium text-lg leading-snug max-w-lg">
+                                    Adquiere tus zapatillas para romper tus propios récords y guarda tus logros en nuestros medalleros.
+                                </p>
+                            </div>
+                            <div className="relative z-10 md:w-1/3 flex justify-end w-full">
+                                <button onClick={() => setView('shop')} className="bg-white text-athos-orange font-black uppercase tracking-widest px-8 py-4 rounded-2xl shadow-xl hover:scale-105 transition-transform w-full md:w-auto text-center">
+                                    Ver Todo
+                                </button>
+                            </div>
                         </div>
-                        <div className="relative z-10 md:w-2/3">
-                            <span className="text-white/80 font-black tracking-widest uppercase text-xs mb-2 block">Prepárate con Athos</span>
-                            <h3 className="text-3xl md:text-4xl font-black italic tracking-tighter uppercase mb-3 leading-none">
-                                Adquiere tus zapatillas o medallero oficial
-                            </h3>
-                            <p className="text-white/90 font-medium text-lg leading-snug max-w-lg">
-                                Equípate con la mejor tecnología para romper tus propios récords en esta carrera y guarda tus logros en nuestros medalleros.
-                            </p>
-                        </div>
-                        <div className="relative z-10 md:w-1/3 flex justify-end w-full">
-                            <button className="bg-white text-athos-orange font-black uppercase tracking-widest px-8 py-4 rounded-2xl shadow-xl hover:scale-105 transition-transform w-full md:w-auto text-center">
-                                Ir a la tienda
-                            </button>
+
+                        {/* Horizontal Product Reel */}
+                        <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-6 snap-x">
+                            {promoProducts.map((product) => (
+                                <div 
+                                    key={product.id} 
+                                    onClick={() => { setSelectedProductId(product.id); setView('product-detail'); }}
+                                    className="min-w-[200px] md:min-w-[240px] bg-white rounded-2xl border border-gray-100 p-4 shrink-0 snap-start cursor-pointer hover:shadow-xl hover:border-athos-orange transition-all group flex flex-col"
+                                >
+                                    <div className="bg-gray-50 rounded-xl aspect-[4/5] overflow-hidden relative mb-4 flex items-center justify-center p-4">
+                                        <img src={product.image} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500" alt={product.name} />
+                                        <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg">
+                                            <span className="text-[10px] font-black uppercase text-athos-black">{product.category}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col flex-grow">
+                                        <h4 className="font-bold text-sm text-athos-black line-clamp-2 leading-snug mb-2 group-hover:text-athos-orange transition-colors">
+                                            {product.name}
+                                        </h4>
+                                        <div className="mt-auto">
+                                            <span className="font-black text-lg">${product.price.toLocaleString('es-CO')}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </section>
 
