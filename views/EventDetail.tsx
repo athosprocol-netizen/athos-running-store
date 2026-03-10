@@ -6,6 +6,7 @@ import { Review } from '../types';
 export const EventDetail = () => {
     const { events, selectedEventId, setView, user, addEventReview, showNotification } = useApp();
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+    const [isFullScreenReviewImage, setIsFullScreenReviewImage] = useState<string | null>(null);
 
     // Reviews State
     const [showReviewForm, setShowReviewForm] = useState(false);
@@ -505,8 +506,13 @@ export const EventDetail = () => {
                                     </div>
                                 </div>
                                 <p className="text-sm text-gray-600 font-medium leading-relaxed mb-4 flex-grow">"{review.comment}"</p>
+                                {/* Modificado para soportar onClick en la imagen cargada por el usuario */}
                                 {review.image && (
-                                    <div className="mt-2 rounded-xl overflow-hidden h-32 bg-gray-50 border border-gray-100 hover:shadow-md transition-shadow relative group">
+                                    <div 
+                                        className="mt-2 rounded-xl overflow-hidden h-32 bg-gray-50 border border-gray-100 hover:shadow-md transition-shadow relative group cursor-zoom-in"
+                                        onClick={() => setIsFullScreenReviewImage(review.image || null)}
+                                        title="Ver foto cargada"
+                                    >
                                         <img src={review.image} className="w-full h-full object-cover" alt="Foto de la reseña" />
                                         <div className="absolute inset-0 bg-black/5 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                                             <Camera className="text-white opacity-0 group-hover:opacity-100 drop-shadow-md" size={24} />
@@ -525,7 +531,32 @@ export const EventDetail = () => {
                 </div>
             </div>
 
-            {/* Fullscreen Image Modal */}
+            {/* Fullscreen Review Image Modal */}
+            {isFullScreenReviewImage && (
+                <div 
+                    className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 md:p-8 animate-fade-in" 
+                    onClick={() => setIsFullScreenReviewImage(null)}
+                >
+                    <button
+                        className="absolute top-6 right-6 text-white bg-white/10 p-3 rounded-full hover:bg-white/20 transition-colors z-[110]"
+                        onClick={() => setIsFullScreenReviewImage(null)}
+                    >
+                        <X size={24} />
+                    </button>
+                    
+                    <img
+                        src={isFullScreenReviewImage}
+                        className="max-w-full max-h-full object-contain drop-shadow-2xl cursor-zoom-out z-[105] rounded-2xl"
+                        alt="Visor de imagen de reseña"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsFullScreenReviewImage(null);
+                        }}
+                    />
+                </div>
+            )}
+
+            {/* Fullscreen Image Modal (Gallery) */}
             {selectedImageIndex !== null && event.gallery && (
                 <div
                     className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 md:p-8 animate-fade-in"
