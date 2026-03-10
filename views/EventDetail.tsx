@@ -9,7 +9,10 @@ export const EventDetail = () => {
     const [isFullScreenReviewImage, setIsFullScreenReviewImage] = useState<string | null>(null);
 
     // Get a subset of products to display as suggestions
-    const promoProducts = products.filter(p => p.category === 'shoes' || p.category === 'clothing' || p.category === 'medals').slice(0, 6);
+    let promoProducts = products.filter(p => ['shoes', 'apparel', 'medalleros', 'accessories'].includes(p.category)).slice(0, 3);
+    if (promoProducts.length === 0) {
+        promoProducts = products.slice(0, 3); // Fallback to any products
+    }
 
     // Reviews State
     const [showReviewForm, setShowReviewForm] = useState(false);
