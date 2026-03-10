@@ -123,6 +123,11 @@ export interface Event {
   participants?: number;
   difficulty?: string;
   type?: string;
+
+  // Reviews System
+  rating?: number;
+  reviewsCount?: number;
+  reviews?: Review[];
 }
 
 export interface HeroBanner {

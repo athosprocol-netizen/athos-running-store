@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useApp } from '../context';
-import { Calendar, MapPin, Clock, Users, ArrowRight, Share2, Map as MapIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, MapPin, Clock, Users, ArrowRight, Share2, Map as MapIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, Star, Camera, User } from 'lucide-react';
+import { Review } from '../types';
 
 export const EventDetail = () => {
-    const { events, selectedEventId, setView, user } = useApp();
+    const { events, selectedEventId, setView, user, addEventReview, showNotification } = useApp();
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+    // Reviews State
+    const [showReviewForm, setShowReviewForm] = useState(false);
+    const [newReviewRating, setNewReviewRating] = useState(0);
+    const [newReviewComment, setNewReviewComment] = useState('');
+    const [newReviewImage, setNewReviewImage] = useState<string | null>(null);
+    const [hoverRating, setHoverRating] = useState(0);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const event = events.find(e => e.id === selectedEventId);
 
@@ -79,6 +88,108 @@ export const EventDetail = () => {
         }
     };
 
+    // --- REVIEWS LOGIC ---
+    const handleStarClick = (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
+        setNewReviewRating(index + 1);
+    };
+
+    const handleStarHover = (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
+        setHoverRating(index + 1);
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = (event) => {
+                const img = new window.Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1000;
+                    const MAX_HEIGHT = 1000;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx?.drawImage(img, 0, 0, width, height);
+
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    setNewReviewImage(compressedDataUrl);
+                };
+                img.src = event.target?.result as string;
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const submitReview = () => {
+        if (!user) {
+            showNotification('Debes iniciar sesión para comentar.');
+            setView('auth');
+            return;
+        }
+        if (newReviewRating === 0) {
+            showNotification('Por favor califica con estrellas.');
+            return;
+        }
+        if (!newReviewComment.trim()) {
+            showNotification('Por favor escribe un comentario.');
+            return;
+        }
+
+        const review: Review = {
+            id: Math.random().toString(36).substr(2, 9),
+            userId: user.id,
+            userName: user.name,
+            userAvatar: user.avatar,
+            rating: newReviewRating,
+            comment: newReviewComment,
+            date: new Date().toLocaleDateString(),
+            image: newReviewImage || undefined
+        };
+
+        addEventReview(event.id, review);
+        setShowReviewForm(false);
+        setNewReviewRating(0);
+        setNewReviewComment('');
+        setNewReviewImage(null);
+    };
+
+    const renderStars = (rating: number, size = 16) => {
+        return (
+            <div className="flex gap-0.5">
+                {[0, 1, 2, 3, 4].map((i) => {
+                    const full = rating >= i + 1;
+                    const half = rating >= i + 0.5 && rating < i + 1;
+                    return (
+                        <div key={i} className="relative">
+                            <Star size={size} className={full ? "fill-athos-orange text-athos-orange" : "text-gray-300"} />
+                            {half && (
+                                <div className="absolute top-0 left-0 overflow-hidden w-[50%]">
+                                    <Star size={size} className="fill-athos-orange text-athos-orange" />
+                                </div>
+                            )}
+                        </div>
+                    )
+                })}
+            </div>
+        );
+    };
+
     return (
         <div className="bg-white min-h-screen pb-24 animate-fade-in relative">
             {/* Hero Image */}
@@ -124,8 +235,29 @@ export const EventDetail = () => {
 
                 {/* Left Column: Details */}
                 <div className="lg:col-span-2 flex flex-col gap-12 order-2 lg:order-1">
+                    {/* Event Grid Details (City, Time, Distance) */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 order-2 lg:order-1">
+                        <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
+                            <MapPin className="text-athos-orange mb-2" size={28} />
+                            <span className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Ciudad</span>
+                            <span className="text-athos-black font-black text-lg">{event.city}</span>
+                        </div>
+                        <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
+                            <Clock className="text-athos-orange mb-2" size={28} />
+                            <span className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Hora</span>
+                            <span className="text-athos-black font-black text-lg">
+                                {new Date(event.date).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                        </div>
+                        <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex flex-col items-center text-center max-md:col-span-2">
+                            <MapIcon className="text-athos-orange mb-2" size={28} />
+                            <span className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Distancias</span>
+                            <span className="text-athos-black font-black text-lg">{event.distances.join(' • ')}</span>
+                        </div>
+                    </div>
+
                     {/* About */}
-                    <section className="order-2 lg:order-1">
+                    <section className="order-3 lg:order-2">
                         <h2 className="text-2xl font-black italic text-athos-black uppercase mb-4 flex items-center gap-2">
                             <div className="w-1.5 h-6 bg-athos-orange rounded-full"></div>
                             Acerca de la Carrera
@@ -189,25 +321,7 @@ export const EventDetail = () => {
                         </div>
                     </section>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 order-6 lg:order-4">
-                        <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
-                            <MapPin className="text-athos-orange mb-2" size={28} />
-                            <span className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Ciudad</span>
-                            <span className="text-athos-black font-black text-lg">{event.city}</span>
-                        </div>
-                        <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
-                            <Clock className="text-athos-orange mb-2" size={28} />
-                            <span className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Hora</span>
-                            <span className="text-athos-black font-black text-lg">
-                                {new Date(event.date).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })}
-                            </span>
-                        </div>
-                        <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex flex-col items-center text-center max-md:col-span-2">
-                            <MapIcon className="text-athos-orange mb-2" size={28} />
-                            <span className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Distancias</span>
-                            <span className="text-athos-black font-black text-lg">{event.distances.join(' • ')}</span>
-                        </div>
-                    </div>
+
 
                     {/* Photos Link (if Past) */}
                     {isPast && event.photosLink && (
@@ -238,6 +352,177 @@ export const EventDetail = () => {
                     </div>
                 </div>
 
+            </div>
+
+            {/* EVENT REVIEWS SECTION */}
+            <div className="max-w-[1400px] mx-auto px-6 py-12 border-t border-gray-100 mt-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+                    <div>
+                        <h2 className="text-3xl font-black italic text-athos-black uppercase mb-2 flex items-center gap-2">
+                            <div className="w-1.5 h-8 bg-athos-orange rounded-full"></div>
+                            Experiencia de Corredores
+                        </h2>
+                        <div className="flex items-center gap-3">
+                            <span className="text-4xl font-black text-athos-orange">{event.rating || 0}</span>
+                            <div className="flex flex-col">
+                                {renderStars(event.rating || 0, 14)}
+                                <span className="text-xs text-gray-400 font-bold mt-1">Basado en {event.reviewsCount || 0} opiniones</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {!showReviewForm && (
+                        <button
+                            onClick={() => setShowReviewForm(true)}
+                            className="bg-athos-black text-white px-6 py-3 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-athos-orange transition-colors shadow-lg"
+                        >
+                            Calificar Evento
+                        </button>
+                    )}
+                </div>
+
+                {showReviewForm && (
+                    <div className="bg-gray-50 p-6 md:p-8 rounded-[30px] mb-12 animate-fade-in border border-gray-100 relative overflow-hidden">
+                        <div className="relative z-10 w-full lg:w-2/3">
+                            <h3 className="text-xl font-black italic text-athos-black uppercase mb-6">Comparte tu Experiencia</h3>
+
+                            {/* Rating */}
+                            <div className="mb-6">
+                                <label className="block text-xs font-bold uppercase text-gray-400 mb-3">Tu Calificación</label>
+                                <div className="flex gap-2" onMouseLeave={() => setHoverRating(0)}>
+                                    {[0, 1, 2, 3, 4].map((index) => {
+                                        const rating = hoverRating || newReviewRating;
+                                        const full = rating >= index + 1;
+                                        const half = rating >= index + 0.5 && rating < index + 1;
+
+                                        return (
+                                            <button
+                                                key={index}
+                                                className="relative w-10 h-10 focus:outline-none transition-transform hover:scale-110"
+                                                onClick={(e) => handleStarClick(e, index)}
+                                                onMouseMove={(e) => handleStarHover(e, index)}
+                                            >
+                                                <Star
+                                                    size={40}
+                                                    className={`${full ? "fill-athos-orange text-athos-orange" : "text-gray-300"} transition-colors`}
+                                                />
+                                                {half && (
+                                                    <div className="absolute top-0 left-0 overflow-hidden w-[50%] pointer-events-none">
+                                                        <Star size={40} className="fill-athos-orange text-athos-orange" />
+                                                    </div>
+                                                )}
+                                            </button>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Comment */}
+                            <div className="mb-6">
+                                <label className="block text-xs font-bold uppercase text-gray-400 mb-3">Tu Comentario</label>
+                                <textarea
+                                    value={newReviewComment}
+                                    onChange={(e) => setNewReviewComment(e.target.value)}
+                                    placeholder="¿Cómo te pareció la organización, la ruta y la hidratación?"
+                                    className="w-full p-4 rounded-2xl border border-gray-200 bg-white focus:ring-2 focus:ring-athos-orange/20 outline-none font-medium h-32 resize-none placeholder:text-gray-300 text-athos-black transition-all"
+                                ></textarea>
+                            </div>
+
+                            {/* Image Upload */}
+                            <div className="mb-8">
+                                <label className="block text-xs font-bold uppercase text-gray-400 mb-3">Sube tu Medalla o Foto (Opcional)</label>
+                                <div className="flex items-center gap-4">
+                                    <button
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="flex items-center gap-2 px-5 py-3 bg-white border border-gray-200 rounded-xl font-bold text-gray-600 hover:border-athos-orange hover:text-athos-orange transition-colors shadow-sm"
+                                    >
+                                        <Camera size={20} />
+                                        <span>Buscar Foto</span>
+                                    </button>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                    />
+                                    {newReviewImage && (
+                                        <div className="relative w-20 h-20 rounded-xl overflow-hidden shadow-md group border cursor-pointer">
+                                            <img src={newReviewImage} className="w-full h-full object-cover" />
+                                            <button
+                                                onClick={() => setNewReviewImage(null)}
+                                                className="absolute top-1 right-1 bg-black/60 hover:bg-red-500 text-white p-1 rounded-full backdrop-blur transition-colors"
+                                            >
+                                                <X size={12} />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-4">
+                                <button
+                                    onClick={() => setShowReviewForm(false)}
+                                    className="px-6 py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-200 transition-colors"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={submitReview}
+                                    className="px-8 py-3 bg-athos-black text-white rounded-xl font-black uppercase tracking-widest hover:bg-athos-orange transition-colors shadow-lg shadow-athos-orange/20"
+                                >
+                                    Publicar Reseña
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* REVIEWS LIST */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {event.reviews && event.reviews.length > 0 ? (
+                        event.reviews.map((review) => (
+                            <div key={review.id} className="bg-white border border-gray-100 p-6 rounded-[24px] hover:shadow-lg transition-shadow flex flex-col">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
+                                            {review.userAvatar ? (
+                                                <img src={review.userAvatar} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                                    <User size={20} />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-sm text-athos-black line-clamp-1">{review.userName}</h4>
+                                            <p className="text-[10px] font-bold text-gray-400">{review.date}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex-shrink-0">
+                                        {renderStars(review.rating, 14)}
+                                    </div>
+                                </div>
+                                <p className="text-sm text-gray-600 font-medium leading-relaxed mb-4 flex-grow">"{review.comment}"</p>
+                                {review.image && (
+                                    <div className="mt-2 rounded-xl overflow-hidden h-32 bg-gray-50 border border-gray-100 hover:shadow-md transition-shadow relative group">
+                                        <img src={review.image} className="w-full h-full object-cover" alt="Foto de la reseña" />
+                                        <div className="absolute inset-0 bg-black/5 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                            <Camera className="text-white opacity-0 group-hover:opacity-100 drop-shadow-md" size={24} />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))
+                    ) : (
+                        <div className="col-span-full py-16 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                            <Star className="text-gray-300 mx-auto mb-4" size={48} />
+                            <p className="text-gray-500 font-bold mb-2 text-lg">Aún no hay calificaciones para este evento.</p>
+                            <p className="text-sm text-gray-400">Si participaste, ¡sé el primero en compartir tu experiencia!</p>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Fullscreen Image Modal */}

@@ -142,6 +142,7 @@ interface AppContextType {
   addProduct: (product: Product) => void;
   deleteProduct: (id: string) => void;
   addReview: (productId: string, review: Review) => void;
+  addEventReview: (eventId: string, review: Review) => void;
   toggleWishlist: (productId: string) => void;
   shareWishlist: () => void;
 }
@@ -217,6 +218,28 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
             rating: productReviews.length > 0
               ? Number((productReviews.reduce((sum, r) => sum + r.rating, 0) / productReviews.length).toFixed(1))
               : p.rating
+          };
+        }));
+
+        setEvents(prevEvents => prevEvents.map(e => {
+          const eventReviews = dbReviews.filter(r => r.event_id === e.id).map(r => ({
+            id: r.id,
+            userId: r.user_id,
+            userName: r.user_name,
+            userAvatar: r.user_avatar,
+            rating: r.rating,
+            comment: r.comment,
+            date: new Date(r.created_at).toLocaleDateString(),
+            image: r.image_url
+          }));
+
+          return {
+            ...e,
+            reviews: eventReviews,
+            reviewsCount: eventReviews.length,
+            rating: eventReviews.length > 0
+              ? Number((eventReviews.reduce((sum, r) => sum + r.rating, 0) / eventReviews.length).toFixed(1))
+              : e.rating
           };
         }));
       }
@@ -1005,6 +1028,58 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     await fetchReviews(); // Refresh
   };
 
+  const addEventReview = async (eventId: string, review: Review) => {
+    if (!user) return;
+
+    // 1. Upload Image if present (Base64 -> Blob -> Storage)
+    let imageUrl = null;
+    if (review.image && review.image.startsWith('data:')) {
+      try {
+        const blob = dataURItoBlob(review.image);
+        const fileName = `${Date.now()}-${eventId}.jpg`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('review-images')
+          .upload(fileName, blob);
+
+        if (!uploadError && uploadData) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('review-images')
+            .getPublicUrl(fileName);
+          imageUrl = publicUrl;
+        } else {
+          console.error("Supabase Storage Error:", uploadError);
+          throw uploadError;
+        }
+      } catch (e) {
+        console.error("Error uploading event review image", e);
+        showNotification("Hubo un problema subiendo tu foto, intenta sin ella o con una más ligera.");
+        return; // Stop review submission if photo upload explicitly failed
+      }
+    }
+
+    // 2. Insert Review to DB
+    const { error } = await supabase.from('reviews').insert({
+      event_id: eventId,
+      product_id: null, // Ensure product_id is null for event reviews
+      user_id: user.id,
+      user_name: user.name,
+      user_avatar: user.avatar,
+      rating: review.rating,
+      comment: review.comment,
+      image_url: imageUrl || review.image
+    });
+
+    if (error) {
+      showNotification("Error al guardar reseña del evento");
+      console.error(error);
+      return;
+    }
+
+    showNotification("¡Reseña del evento publicada!");
+    await fetchReviews(); // Refresh
+  };
+
   const addToCart = (product: Product, size?: string, customization?: CustomizationOptions) => {
     const newItem: CartItem = {
       cartId: Math.random().toString(36).substr(2, 9),
@@ -1313,6 +1388,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       addProduct,
       deleteProduct,
       addReview,
+      addEventReview,
       toggleWishlist,
       shareWishlist
     }}>
