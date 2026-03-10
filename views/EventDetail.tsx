@@ -1,18 +1,20 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useApp } from '../context';
 import { Calendar, MapPin, Clock, Users, ArrowRight, Share2, Map as MapIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, Star, Camera, User } from 'lucide-react';
 import { Review } from '../types';
 
 export const EventDetail = () => {
-    const { events, selectedEventId, setView, user, addEventReview, showNotification, products, setSelectedProductId } = useApp();
+    const { events, selectedEventId, setView, user, addEventReview, showNotification, products, setSelectedProductId, addToCart } = useApp();
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
     const [isFullScreenReviewImage, setIsFullScreenReviewImage] = useState<string | null>(null);
 
-    // Get a subset of products to display as suggestions
-    let promoProducts = products.filter(p => ['shoes', 'apparel', 'medalleros', 'accessories'].includes(p.category)).slice(0, 3);
-    if (promoProducts.length === 0) {
-        promoProducts = products.slice(0, 3); // Fallback to any products
-    }
+    // Get a subset of random products to display as suggestions
+    const promoProducts = useMemo(() => {
+        let filtered = products.filter(p => ['shoes', 'apparel', 'medalleros', 'accessories'].includes(p.category));
+        if (filtered.length === 0) filtered = [...products];
+        // Shuffle and take 3
+        return filtered.sort(() => 0.5 - Math.random()).slice(0, 3);
+    }, [products]);
 
     // Reviews State
     const [showReviewForm, setShowReviewForm] = useState(false);
@@ -325,19 +327,21 @@ export const EventDetail = () => {
                             </button>
                         </div>
 
-                        {/* Premium Product Grid (Top 3 items) */}
+                        {/* Premium Product Grid (Top 3 random items) */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {promoProducts.slice(0, 3).map((product) => (
+                            {promoProducts.map((product) => (
                                 <div 
                                     key={product.id} 
-                                    onClick={() => { setSelectedProductId(product.id); setView('product-detail'); }}
-                                    className="bg-white rounded-[24px] overflow-hidden cursor-pointer group flex flex-col border border-gray-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1"
+                                    className="bg-white rounded-[24px] overflow-hidden group flex flex-col border border-gray-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 transform hover:-translate-y-1"
                                 >
-                                    <div className="bg-gray-50 aspect-square relative flex items-center justify-center p-8 overflow-hidden">
+                                    <div 
+                                        className="bg-gray-50 aspect-[4/3] relative flex items-center justify-center p-6 overflow-hidden cursor-pointer"
+                                        onClick={() => { setSelectedProductId(product.id); setView('product-detail'); }}
+                                    >
                                         <div className="absolute inset-0 bg-gradient-to-t from-gray-100/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                         <img 
                                             src={product.image} 
-                                            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-700 ease-out" 
+                                            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-700 ease-out" 
                                             alt={product.name} 
                                         />
                                         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow-sm">
@@ -345,13 +349,33 @@ export const EventDetail = () => {
                                         </div>
                                     </div>
                                     <div className="p-6 flex flex-col flex-grow">
-                                        <h4 className="font-bold text-lg text-athos-black line-clamp-2 leading-snug mb-3 group-hover:text-athos-orange transition-colors">
+                                        <h4 
+                                            className="font-bold text-lg text-athos-black line-clamp-2 leading-snug mb-3 hover:text-athos-orange cursor-pointer transition-colors"
+                                            onClick={() => { setSelectedProductId(product.id); setView('product-detail'); }}
+                                        >
                                             {product.name}
                                         </h4>
                                         <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
                                             <span className="font-black text-xl">${product.price.toLocaleString('es-CO')}</span>
-                                            <div className="w-10 h-10 rounded-full bg-athos-black text-white flex items-center justify-center group-hover:bg-athos-orange transition-colors">
-                                                <ArrowRight size={18} />
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => { setSelectedProductId(product.id); setView('product-detail'); }}
+                                                    className="w-10 h-10 rounded-full bg-gray-100 text-athos-black flex items-center justify-center hover:bg-gray-200 transition-colors"
+                                                    title="Ver Detalles"
+                                                >
+                                                    <ArrowRight size={18} />
+                                                </button>
+                                                <button
+                                                    onClick={(e) => { 
+                                                        e.stopPropagation();
+                                                        addToCart(product, 1);
+                                                        showNotification(`${product.name} agregado al carrito`);
+                                                    }}
+                                                    className="w-10 h-10 rounded-full bg-athos-black text-white flex items-center justify-center hover:bg-athos-orange transition-colors"
+                                                    title="Añadir al Carrito"
+                                                >
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
