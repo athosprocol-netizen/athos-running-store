@@ -88,6 +88,7 @@ export interface UserProfile {
   // Shop Data
   coupons: Coupon[];
   wishlist: string[];
+  favoriteEvents?: string[];
   activeChallengeId?: string;
   createdAt?: string;
   // Events Data

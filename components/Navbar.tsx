@@ -511,7 +511,7 @@ export const Navbar = () => {
                                     >
                                         <span className={`text-[10px] md:text-sm tracking-tighter leading-none ${!hasEvents && isCurr ? 'font-black' : ''}`}>{day.getDate()}</span>
                                         {hasEvents && (
-                                            <div className={`absolute bottom-[2px] md:bottom-1 w-[3px] md:w-1.5 h-[3px] md:h-1.5 rounded-full ${isCurr ? 'bg-athos-orange' : 'bg-white shadow-sm'}`} />
+                                            <div className={`absolute bottom-[2px] md:bottom-[2px] w-[3px] md:w-1.5 h-[3px] md:h-1.5 rounded-full ${isCurr ? 'bg-athos-orange' : 'bg-white shadow-sm'}`} />
                                         )}
                                     </button>
                                 );

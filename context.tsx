@@ -145,6 +145,7 @@ interface AppContextType {
   addEventReview: (eventId: string, review: Review) => void;
   toggleWishlist: (productId: string) => void;
   shareWishlist: () => void;
+  toggleEventFavorite: (eventId: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -485,7 +486,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           role: 'user',
           avatar: sessionUser.user_metadata?.avatar_url,
           wishlist: [],
-          coupons: []
+          coupons: [],
+          favoriteEvents: []
         });
 
         // 2. NAVIGATE IMMEDIATELY
@@ -541,7 +543,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           address: profile.address,
           phone: profile.phone,
           wishlist: [],
-          coupons: []
+          coupons: [],
+          favoriteEvents: []
         });
       } else {
         console.warn("Perfil no encontrado en DB, usando metadatos. Error:", error?.message);
@@ -554,7 +557,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           role: ['kaieke37@gmail.com', 'eyder.ar@gmail.com'].includes(authEmail.toLowerCase()) ? 'admin' : 'user',
           avatar: authUser.user_metadata?.avatar_url,
           wishlist: [],
-          coupons: []
+          coupons: [],
+          favoriteEvents: []
         });
       }
     } catch (e) {
@@ -568,7 +572,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         role: ['kaieke37@gmail.com', 'eyder.ar@gmail.com'].includes(fallbackEmail.toLowerCase()) ? 'admin' : 'user',
         avatar: authUser.user_metadata?.avatar_url,
         wishlist: [],
-        coupons: []
+        coupons: [],
+        favoriteEvents: []
       });
     }
   };
@@ -1122,6 +1127,21 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     showNotification(exists ? "Eliminado de Deseos" : "Agregado a Deseos");
   };
 
+  const toggleEventFavorite = (eventId: string) => {
+    if (!user) {
+      setViewWithHistory('auth');
+      return;
+    }
+    const currentFavorites = user.favoriteEvents || [];
+    const exists = currentFavorites.includes(eventId);
+    const newFavorites = exists
+      ? currentFavorites.filter(id => id !== eventId)
+      : [...currentFavorites, eventId];
+
+    setUser({ ...user, favoriteEvents: newFavorites });
+    showNotification(exists ? "Evento eliminado de Favoritos" : "Evento guardado en Favoritos");
+  };
+
   const shareWishlist = () => {
     const dummyLink = `https://athos.co/wishlist/${user?.id || 'guest'}`;
     navigator.clipboard.writeText(dummyLink);
@@ -1390,7 +1410,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       addReview,
       addEventReview,
       toggleWishlist,
-      shareWishlist
+      shareWishlist,
+      toggleEventFavorite
     }}>
       {children}
     </AppContext.Provider>

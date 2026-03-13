@@ -192,7 +192,7 @@ export const EventsDirectory = () => {
                                 >
                                     <span className={`text-xs md:text-base tracking-tighter ${isCurr || hasEvents ? 'font-black' : 'font-medium'}`}>{day.getDate()}</span>
                                     {showDot && (
-                                        <div className="absolute bottom-1 md:bottom-2 w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-athos-orange animate-pulse" />
+                                        <div className="absolute bottom-1 md:bottom-1 w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-athos-orange animate-pulse" />
                                     )}
                                 </button>
                             );

@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { useApp } from '../context';
-import { Settings, Heart, Activity, MapPin, Camera, Save, X, User, Printer, Shirt, Share2, Ticket, Smartphone, ShoppingBag } from 'lucide-react';
+import { Settings, Heart, Activity, MapPin, Camera, Save, X, User, Printer, Shirt, Share2, Ticket, Smartphone, ShoppingBag, Calendar } from 'lucide-react';
 
 export const Profile = () => {
-    const { user, updateUserProfile, logout, products, toggleWishlist, shareWishlist, selectProduct, addToCart, orders, events, registrations, setView } = useApp();
+    const { user, updateUserProfile, logout, products, toggleWishlist, shareWishlist, selectProduct, addToCart, orders, events, registrations, setView, toggleEventFavorite, selectEvent } = useApp();
     const [isEditing, setIsEditing] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [activeTab, setActiveTab] = useState<'perfil' | 'pedidos' | 'eventos'>('perfil');
@@ -159,7 +159,7 @@ export const Profile = () => {
                                     {user.phone && <span className="bg-white px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1"><Smartphone size={12} className="text-athos-orange" /> {user.phone}</span>}
                                 </div>
 
-                                <div className="flex gap-3 justify-center md:justify-start">
+                                <div className="flex flex-wrap gap-3 justify-center md:justify-start">
                                     <button onClick={() => { setIsEditing(true); setFormData({ name: user.name, age: user.age || '', location: user.location || '', address: user.address || '', phone: user.phone || '' }); }} className="px-5 py-2.5 bg-white border border-gray-200 hover:border-athos-black rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-sm">
                                         Editar
                                     </button>
@@ -168,10 +168,10 @@ export const Profile = () => {
                                     </button>
                                     <button
                                         onClick={() => setActiveTab('eventos')}
-                                        className={`w - full text - left px - 6 py - 4 rounded - xl font - bold uppercase tracking - wide transition - all ${activeTab === 'eventos'
-                                            ? 'bg-athos-black text-white'
-                                            : 'text-gray-600 hover:bg-gray-100 hover:text-athos-black'
-                                            } `}
+                                        className={`px-5 py-2.5 border rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-sm ${activeTab === 'eventos'
+                                            ? 'bg-athos-black text-white border-athos-black'
+                                            : 'bg-white text-gray-700 border-gray-200 hover:border-athos-black'
+                                            }`}
                                     >
                                         Mis Eventos
                                     </button>
@@ -183,8 +183,8 @@ export const Profile = () => {
 
 
 
-                {/* Wishlist Section */}
-                <div className="mb-12">
+                {activeTab === 'perfil' && (
+                <div className="mb-12 animate-fade-in w-full">
                     <div className="flex justify-between items-center mb-6 px-2">
                         <h2 className="text-xl font-black italic flex items-center gap-2 uppercase">
                             <Heart size={20} className="text-athos-orange" /> Lista de Deseados
@@ -232,6 +232,71 @@ export const Profile = () => {
                         </div>
                     )}
                 </div>
+                )}
+
+                {activeTab === 'eventos' && (
+                    <div className="mb-12 animate-fade-in w-full">
+                        <div className="flex justify-between items-center mb-6 px-2">
+                            <h2 className="text-xl font-black italic flex items-center gap-2 uppercase">
+                                <Heart size={20} className="text-athos-orange" /> Mis Eventos Favoritos
+                            </h2>
+                        </div>
+                        
+                        {(user.favoriteEvents && user.favoriteEvents.length > 0) ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                                {events.filter(e => user.favoriteEvents?.includes(e.id)).map(event => (
+                                    <div
+                                        key={event.id}
+                                        className="group bg-white rounded-[24px] overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all cursor-pointer flex flex-col relative"
+                                        onClick={() => selectEvent(event.id)}
+                                    >
+                                        {/* Background Gradient */}
+                                        <div
+                                            className="h-32 overflow-hidden relative bg-gray-100"
+                                            style={event.gradientColors ? { background: `linear-gradient(135deg, ${event.gradientColors.join(', ')})` } : {}}
+                                        >
+                                            <div className="absolute inset-0 bg-black/40 z-10" />
+                                            <img src={event.image} alt={event.title} className="w-full h-full object-cover mix-blend-overlay group-hover:scale-110 transition-transform duration-700" />
+                                            
+                                            {/* Remove Button */}
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); toggleEventFavorite(event.id); }}
+                                                className="absolute top-3 right-3 z-30 w-8 h-8 bg-white/20 hover:bg-red-500 backdrop-blur-md rounded-full flex items-center justify-center text-white shadow-sm transition-colors"
+                                            >
+                                                <X size={16} />
+                                            </button>
+
+                                            <div className="absolute bottom-3 left-4 z-20">
+                                                <h3 className="text-white text-xl font-black italic tracking-tight drop-shadow-md">{event.title}</h3>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-4 flex-grow flex flex-col justify-between">
+                                            <div className="mb-4 space-y-2">
+                                                <div className="flex items-center gap-2 text-gray-600 text-xs font-bold">
+                                                    <Calendar size={14} className="text-athos-orange" />
+                                                    <span>{new Date(event.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-gray-600 text-xs font-bold">
+                                                    <MapPin size={14} className="text-athos-orange" />
+                                                    <span>{event.location}, {event.city}</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <button className="w-full bg-gray-100 text-athos-black text-[10px] font-black uppercase py-2.5 rounded-xl group-hover:bg-athos-black group-hover:text-white transition-colors">
+                                                Ver Evento
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="bg-gray-50 border-2 border-dashed border-gray-200 p-8 text-center rounded-3xl">
+                                <p className="text-gray-400 font-bold text-sm">Aún no tienes eventos favoritos.</p>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

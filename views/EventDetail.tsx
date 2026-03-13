@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useApp } from '../context';
-import { Calendar, MapPin, Clock, Users, ArrowRight, Share2, Map as MapIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, Star, Camera, User } from 'lucide-react';
+import { Calendar, MapPin, Clock, Users, ArrowRight, Share2, Map as MapIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, Star, Camera, User, Heart } from 'lucide-react';
 import { Review } from '../types';
 
 export const EventDetail = () => {
-    const { events, selectedEventId, setView, user, addEventReview, showNotification, products, selectProduct, addToCart } = useApp();
+    const { events, selectedEventId, setView, user, addEventReview, showNotification, products, selectProduct, addToCart, toggleEventFavorite } = useApp();
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
     const [isFullScreenReviewImage, setIsFullScreenReviewImage] = useState<string | null>(null);
+    const isFavorite = user?.favoriteEvents?.includes(selectedEventId || '') || false;
 
     // Get a subset of random products to display as suggestions
     const promoProducts = useMemo(() => {
@@ -223,6 +224,16 @@ export const EventDetail = () => {
                     </button>
                 </div>
 
+                <div className="absolute top-4 right-4 z-20 md:top-8 md:right-8">
+                    <button
+                        onClick={() => toggleEventFavorite(event.id)}
+                        className="bg-white/20 hover:bg-white/40 backdrop-blur-md text-white p-3 rounded-full transition-all flex items-center justify-center shadow-lg"
+                        title={isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"}
+                    >
+                        <Heart size={22} className={isFavorite ? "fill-white" : ""} />
+                    </button>
+                </div>
+
                 <div className="absolute bottom-0 left-0 w-full z-20 p-6 md:p-12 max-w-[1400px] mx-auto">
                     {event.isFeatured && (
                         <span className="inline-block bg-athos-orange text-white text-[10px] md:text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-lg mb-4 glow-effect">
@@ -311,7 +322,7 @@ export const EventDetail = () => {
 
                     {/* Shopping Promo / Premium Product Collection */}
                     <section className="order-5 lg:order-3">
-                        <div className="bg-gradient-to-br from-athos-orange to-red-600 rounded-[32px] p-8 md:p-10 relative overflow-hidden shadow-2xl">
+                        <div className="bg-athos-orange rounded-[32px] p-8 md:p-10 relative overflow-hidden glow-effect">
                             {/* Decorative background element */}
                             <div className="absolute -right-20 -bottom-20 opacity-10 pointer-events-none">
                                 <svg width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M20.2 7.8l-7.7 7.7-4-4-5.7 5.7" /><path d="M15 7h6v6" /></svg>
@@ -323,7 +334,7 @@ export const EventDetail = () => {
                                         <div className="w-2 h-10 bg-white rounded-full"></div>
                                         Prepárate con Athos
                                     </h2>
-                                    <p className="text-white/90 font-medium text-lg max-w-xl">Equípate con la mejor tecnología y accesorios para romper tus propios récords.</p>
+                                    <p className="text-white/90 font-medium text-lg max-w-xl">Te recomendamos productos para que mejores tus tiempos y compitas al más alto nivel.</p>
                                 </div>
                                 <button 
                                     onClick={() => setView('shop')}
