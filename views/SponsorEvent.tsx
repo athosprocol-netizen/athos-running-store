@@ -48,7 +48,7 @@ export const SponsorEvent = () => {
         <div className="pt-24 pb-20 px-6 max-w-[800px] mx-auto min-h-[80vh] animate-fade-in relative z-10">
             {/* Header */}
             <div className="mb-12 text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-athos-orange/10 mb-6">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-athos-orange/10 mb-2">
                     <HeartHandshake className="text-athos-orange w-8 h-8" />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-black italic text-athos-black mb-4 uppercase">
