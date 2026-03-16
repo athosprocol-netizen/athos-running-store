@@ -10,7 +10,7 @@ export const SponsorEvent = () => {
         email: '',
         phone: '',
         eventId: '',
-        sponsorshipType: 'Bronce',
+        newEventName: '',
         message: ''
     });
 
@@ -20,10 +20,17 @@ export const SponsorEvent = () => {
         e.preventDefault();
         
         const selectedEvent = events.find(ev => ev.id === formData.eventId);
-        const eventName = selectedEvent ? selectedEvent.title : 'un evento';
+        let eventName = 'un evento';
+        if (formData.eventId === 'new') {
+            eventName = formData.newEventName;
+        } else if (selectedEvent) {
+            eventName = selectedEvent.title;
+        } else if (formData.eventId === 'any') {
+            eventName = 'cualquier evento futuro';
+        }
         
         const whatsappNumber = "573242674234";
-        const messageText = `Hola, me gustaría patrocinar el evento ${eventName}. Soy o somos ${formData.organization}. Mi nombre es ${formData.contactName}. Tipo de patrocinio que me interesa: ${formData.sponsorshipType}. Mensaje adicional: ${formData.message}`;
+        const messageText = `Hola, me gustaría patrocinar el evento ${eventName}. Soy o somos ${formData.organization}. Mi nombre es ${formData.contactName}. Mensaje adicional: ${formData.message}`;
         
         const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageText)}`;
         window.open(whatsappUrl, '_blank');
@@ -142,6 +149,7 @@ export const SponsorEvent = () => {
                                         </option>
                                     ))}
                                     <option value="any">Cualquier evento futuro</option>
+                                    <option value="new">Evento Nuevo</option>
                                 </select>
                                 <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-400">
                                     <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
@@ -149,29 +157,22 @@ export const SponsorEvent = () => {
                             </div>
                         </div>
 
-                        {/* Sponsorship Type */}
-                        <div className="space-y-2 col-span-1 md:col-span-2">
-                            <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                Nivel de Patrocinio
-                            </label>
-                            <div className="grid grid-cols-3 gap-2 md:gap-4">
-                                {['Bronce', 'Plata', 'Oro'].map(level => (
-                                    <label key={level} className={`cursor-pointer rounded-xl border-2 p-3 md:p-4 text-center transition-all ${formData.sponsorshipType === level ? 'border-athos-orange bg-athos-orange/5' : 'border-gray-100 bg-gray-50 hover:border-gray-300'}`}>
-                                        <input
-                                            type="radio"
-                                            name="sponsorshipType"
-                                            value={level}
-                                            checked={formData.sponsorshipType === level}
-                                            onChange={handleChange}
-                                            className="hidden"
-                                        />
-                                        <span className={`block font-black uppercase tracking-widest text-xs md:text-sm ${formData.sponsorshipType === level ? 'text-athos-orange' : 'text-gray-500'}`}>
-                                            {level}
-                                        </span>
-                                    </label>
-                                ))}
+                        {formData.eventId === 'new' && (
+                            <div className="space-y-2 col-span-1 md:col-span-2 animate-fade-in">
+                                <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                    <Calendar size={14} /> Nombre de tu Evento Nuevo
+                                </label>
+                                <input
+                                    type="text"
+                                    name="newEventName"
+                                    required={formData.eventId === 'new'}
+                                    value={formData.newEventName}
+                                    onChange={handleChange}
+                                    placeholder="Ej. Carrera Nocturna 5K"
+                                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-100 bg-gray-50 focus:bg-white focus:border-athos-orange focus:ring-0 transition-colors font-bold text-athos-black"
+                                />
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     {/* Message */}
