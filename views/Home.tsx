@@ -169,18 +169,31 @@ export const Home = () => {
                                                     </p>
                                                 ) : null}
 
-                                                {(item.type === 'event' || item.link) && (
-                                                    <span
-                                                        className={`inline-block ${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-3 py-1.5 md:px-10 md:py-4 rounded-lg md:rounded-2xl text-[8px] sm:text-[9px] md:text-sm font-black uppercase tracking-widest transition-all shadow-md w-fit mt-auto cursor-pointer pointer-events-auto`}
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            if (item.type === 'event') selectEvent(item.id);
-                                                            else if (item.link) setView(item.link as any);
-                                                        }}
-                                                    >
-                                                        {item.type === 'event' ? 'Ver Evento' : (item.buttonText || 'Ver Más')}
-                                                    </span>
-                                                )}
+                                                <div className="flex flex-col sm:flex-row gap-2 mt-auto">
+                                                    {(item.type === 'event' || item.link) && (
+                                                        <span
+                                                            className={`inline-block ${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-3 py-1.5 md:px-10 md:py-4 rounded-lg md:rounded-2xl text-[8px] sm:text-[9px] md:text-sm font-black uppercase tracking-widest transition-all shadow-md w-fit cursor-pointer pointer-events-auto flex-1 text-center`}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (item.type === 'event') selectEvent(item.id);
+                                                                else if (item.link) setView(item.link as any);
+                                                            }}
+                                                        >
+                                                            {item.type === 'event' ? 'Ver Evento' : (item.buttonText || 'Ver Más')}
+                                                        </span>
+                                                    )}
+                                                    {item.type === 'event' && (
+                                                        <span
+                                                            className={`inline-block ${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'bg-white/20 text-white backdrop-blur-md hover:bg-white hover:text-athos-orange border border-white/30' : 'bg-athos-orange/10 text-athos-orange hover:bg-athos-orange hover:text-white border border-athos-orange/30'} px-3 py-1.5 md:px-10 md:py-4 rounded-lg md:rounded-2xl text-[8px] sm:text-[9px] md:text-sm font-black uppercase tracking-widest transition-all shadow-md w-fit cursor-pointer pointer-events-auto flex-1 text-center`}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setView('sponsor-event');
+                                                            }}
+                                                        >
+                                                            Patrocina tu evento
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                             <img
                                                 src={item.image || "/imagen_bordes_difuminados.png"}

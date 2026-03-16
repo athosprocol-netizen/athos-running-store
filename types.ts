@@ -1,4 +1,4 @@
-export type ViewState = 'home' | 'shop' | 'product' | 'academy' | 'challenges' | 'profile' | 'cart' | 'auth' | 'size-guide' | 'admin' | 'checkout' | 'support' | 'forgot-password' | 'update-password' | 'events' | 'event-detail' | 'event-registration' | 'event-results' | 'organizer';
+export type ViewState = 'home' | 'shop' | 'product' | 'academy' | 'challenges' | 'profile' | 'cart' | 'auth' | 'size-guide' | 'admin' | 'checkout' | 'support' | 'forgot-password' | 'update-password' | 'events' | 'event-detail' | 'event-registration' | 'event-results' | 'organizer' | 'sponsor-event';
 
 export interface TechSpecs {
   weight?: string;
