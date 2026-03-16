@@ -117,7 +117,7 @@ export const Home = () => {
                         id: e.id,
                         type: 'event' as const,
                         title: e.title,
-                        subtitle: `${new Date(e.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}\n${e.city}`,
+                        subtitle: `${new Date(e.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}\n${e.city}, ${e.location}`,
                         description: undefined,
                         buttonText: undefined,
                         image: e.image,
