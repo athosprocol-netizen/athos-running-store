@@ -11,6 +11,7 @@ export const SponsorEvent = () => {
         phone: '',
         eventId: '',
         newEventName: '',
+        newEventDate: '',
         message: ''
     });
 
@@ -23,6 +24,9 @@ export const SponsorEvent = () => {
         let eventName = 'un evento';
         if (formData.eventId === 'new') {
             eventName = formData.newEventName;
+            if (formData.newEventDate) {
+                eventName += ` (Fecha: ${formData.newEventDate})`;
+            }
         } else if (selectedEvent) {
             eventName = selectedEvent.title;
         } else if (formData.eventId === 'any') {
@@ -30,7 +34,7 @@ export const SponsorEvent = () => {
         }
         
         const whatsappNumber = "573242674234";
-        const messageText = `Hola, me gustaría patrocinar el evento ${eventName}. Soy o somos ${formData.organization}. Mi nombre es ${formData.contactName}. Mensaje adicional: ${formData.message}`;
+        const messageText = `Hola, me gustaría patrocinar el evento ${eventName}. Soy ${formData.organization}. Mi nombre es ${formData.contactName}. Mensaje adicional: ${formData.message}`;
         
         const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageText)}`;
         window.open(whatsappUrl, '_blank');
@@ -186,14 +190,22 @@ export const SponsorEvent = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="animate-fade-in mt-2">
+                                <div className="animate-fade-in mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <input
                                         type="text"
                                         name="newEventName"
                                         required
                                         value={formData.newEventName}
                                         onChange={handleChange}
-                                        placeholder="Nombre de tu Evento Nuevo (Ej. Carrera Nocturna 5K)"
+                                        placeholder="Nombre del Evento (Ej. Nocturna 5K)"
+                                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-100 bg-gray-50 focus:bg-white focus:border-athos-orange focus:ring-0 transition-colors font-bold text-athos-black"
+                                    />
+                                    <input
+                                        type="date"
+                                        name="newEventDate"
+                                        required
+                                        value={formData.newEventDate}
+                                        onChange={handleChange}
                                         className="w-full px-4 py-4 rounded-xl border-2 border-gray-100 bg-gray-50 focus:bg-white focus:border-athos-orange focus:ring-0 transition-colors font-bold text-athos-black"
                                     />
                                 </div>
