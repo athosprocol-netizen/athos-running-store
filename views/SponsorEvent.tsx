@@ -130,49 +130,75 @@ export const SponsorEvent = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                         {/* Event Interest */}
-                        <div className="space-y-2 col-span-1 md:col-span-2">
+                        <div className="space-y-4 col-span-1 md:col-span-2">
                             <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                <Calendar size={14} /> Selecciona el Evento a Patrocinar
+                                <Calendar size={14} /> Evento a Patrocinar
                             </label>
-                            <div className="relative">
-                                <select
-                                    name="eventId"
-                                    required
-                                    value={formData.eventId}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-4 pr-12 rounded-xl border-2 border-gray-100 bg-gray-50 focus:bg-white focus:border-athos-orange focus:ring-0 transition-colors font-bold text-athos-black appearance-none"
-                                >
-                                    <option value="" disabled>Selecciona un evento...</option>
-                                    {upcomingEvents.map(event => (
-                                        <option key={event.id} value={event.id}>
-                                            {event.title} - {event.city} ({new Date(event.date).toLocaleDateString('es-CO')})
-                                        </option>
-                                    ))}
-                                    <option value="any">Cualquier evento futuro</option>
-                                    <option value="new">Evento Nuevo</option>
-                                </select>
-                                <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-400">
-                                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
-                                </div>
-                            </div>
-                        </div>
 
-                        {formData.eventId === 'new' && (
-                            <div className="space-y-2 col-span-1 md:col-span-2 animate-fade-in">
-                                <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                    <Calendar size={14} /> Nombre de tu Evento Nuevo
+                            <div className="grid grid-cols-2 gap-4">
+                                <label className={`cursor-pointer rounded-xl border-2 p-3 md:p-4 text-center transition-all ${formData.eventId !== 'new' ? 'border-athos-orange bg-athos-orange/5' : 'border-gray-100 bg-gray-50 hover:border-gray-300'}`}>
+                                    <input
+                                        type="radio"
+                                        name="eventType"
+                                        value="existing"
+                                        checked={formData.eventId !== 'new'}
+                                        onChange={() => setFormData({ ...formData, eventId: '' })}
+                                        className="hidden"
+                                    />
+                                    <span className={`block font-black uppercase tracking-widest text-xs md:text-sm ${formData.eventId !== 'new' ? 'text-athos-orange' : 'text-gray-500'}`}>
+                                        Evento de Calendario
+                                    </span>
                                 </label>
-                                <input
-                                    type="text"
-                                    name="newEventName"
-                                    required={formData.eventId === 'new'}
-                                    value={formData.newEventName}
-                                    onChange={handleChange}
-                                    placeholder="Ej. Carrera Nocturna 5K"
-                                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-100 bg-gray-50 focus:bg-white focus:border-athos-orange focus:ring-0 transition-colors font-bold text-athos-black"
-                                />
+                                <label className={`cursor-pointer rounded-xl border-2 p-3 md:p-4 text-center transition-all ${formData.eventId === 'new' ? 'border-athos-orange bg-athos-orange/5' : 'border-gray-100 bg-gray-50 hover:border-gray-300'}`}>
+                                    <input
+                                        type="radio"
+                                        name="eventType"
+                                        value="new"
+                                        checked={formData.eventId === 'new'}
+                                        onChange={() => setFormData({ ...formData, eventId: 'new' })}
+                                        className="hidden"
+                                    />
+                                    <span className={`block font-black uppercase tracking-widest text-xs md:text-sm ${formData.eventId === 'new' ? 'text-athos-orange' : 'text-gray-500'}`}>
+                                        Evento Nuevo
+                                    </span>
+                                </label>
                             </div>
-                        )}
+
+                            {formData.eventId !== 'new' ? (
+                                <div className="relative animate-fade-in mt-2">
+                                    <select
+                                        name="eventId"
+                                        required
+                                        value={formData.eventId}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-4 pr-12 rounded-xl border-2 border-gray-100 bg-gray-50 focus:bg-white focus:border-athos-orange focus:ring-0 transition-colors font-bold text-athos-black appearance-none"
+                                    >
+                                        <option value="" disabled>Selecciona un evento...</option>
+                                        {upcomingEvents.map(event => (
+                                            <option key={event.id} value={event.id}>
+                                                {event.title} - {event.city} ({new Date(event.date).toLocaleDateString('es-CO')})
+                                            </option>
+                                        ))}
+                                        <option value="any">Cualquier evento futuro</option>
+                                    </select>
+                                    <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-400">
+                                        <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="animate-fade-in mt-2">
+                                    <input
+                                        type="text"
+                                        name="newEventName"
+                                        required
+                                        value={formData.newEventName}
+                                        onChange={handleChange}
+                                        placeholder="Nombre de tu Evento Nuevo (Ej. Carrera Nocturna 5K)"
+                                        className="w-full px-4 py-4 rounded-xl border-2 border-gray-100 bg-gray-50 focus:bg-white focus:border-athos-orange focus:ring-0 transition-colors font-bold text-athos-black"
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Message */}
