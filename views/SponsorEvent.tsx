@@ -45,16 +45,16 @@ export const SponsorEvent = () => {
     };
 
     return (
-        <div className="pt-24 pb-20 px-6 max-w-[800px] mx-auto min-h-[80vh] animate-fade-in relative z-10">
+        <div className="pt-12 md:pt-24 pb-20 px-6 max-w-[800px] mx-auto min-h-[80vh] animate-fade-in relative z-10">
             {/* Header */}
-            <div className="mb-12 text-center">
+            <div className="mb-6 md:mb-12 text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-athos-orange/10 mb-2">
                     <HeartHandshake className="text-athos-orange w-8 h-8" />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-black italic text-athos-black mb-4 uppercase">
                     PATROCINA TU <span className="text-athos-orange">EVENTO</span>
                 </h1>
-                <p className="text-gray-500 font-bold max-w-lg mx-auto text-lg">
+                <p className="text-gray-500 font-bold max-w-lg mx-auto text-sm md:text-lg">
                     Conecta tu marca con miles de corredores apasionados. Sé parte de la experiencia ATHOS.
                 </p>
             </div>

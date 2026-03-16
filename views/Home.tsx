@@ -169,10 +169,10 @@ export const Home = () => {
                                                     </p>
                                                 ) : null}
 
-                                                <div className="flex flex-col sm:flex-row gap-2 md:gap-4 mt-auto">
+                                                <div className="flex flex-row flex-wrap gap-1.5 sm:gap-2 md:gap-4 mt-auto items-center">
                                                     {(item.type === 'event' || item.link) && (
                                                         <span
-                                                            className={`flex items-center justify-center ${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-3 py-2.5 md:px-6 md:py-4 rounded-lg md:rounded-2xl text-[8px] sm:text-[9px] md:text-sm font-black uppercase tracking-widest transition-all shadow-md cursor-pointer pointer-events-auto flex-1 text-center h-full`}
+                                                            className={`flex items-center justify-center ${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-6 md:py-4 rounded-md md:rounded-2xl text-[7px] sm:text-[8px] md:text-sm font-black uppercase tracking-tight md:tracking-widest transition-all shadow-md cursor-pointer pointer-events-auto w-max text-center`}
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 if (item.type === 'event') selectEvent(item.id);
@@ -183,7 +183,7 @@ export const Home = () => {
                                                         </span>
                                                     )}
                                                     <span
-                                                        className={`flex items-center justify-center ${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'bg-white/20 text-white backdrop-blur-md hover:bg-white hover:text-athos-orange border border-white/30' : 'bg-athos-orange/10 text-athos-orange hover:bg-athos-orange hover:text-white border border-athos-orange/30'} px-3 py-2.5 md:px-6 md:py-4 rounded-lg md:rounded-2xl text-[8px] sm:text-[9px] md:text-sm font-black uppercase tracking-widest transition-all shadow-md cursor-pointer pointer-events-auto flex-1 text-center h-full`}
+                                                        className={`flex items-center justify-center ${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'bg-white/20 text-white backdrop-blur-md hover:bg-white hover:text-athos-orange border border-white/30' : 'bg-athos-orange/10 text-athos-orange hover:bg-athos-orange hover:text-white border border-athos-orange/30'} px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-6 md:py-4 rounded-md md:rounded-2xl text-[7px] sm:text-[8px] md:text-sm font-black uppercase tracking-tight md:tracking-widest transition-all shadow-md cursor-pointer pointer-events-auto w-max text-center`}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             setView('sponsor-event');
