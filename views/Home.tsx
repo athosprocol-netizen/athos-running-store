@@ -50,12 +50,9 @@ export const Home = () => {
 
     const dragHandlers = {
         onMouseDown: handleDragStart,
-        onTouchStart: handleDragStart,
         onMouseLeave: handleDragEnd,
         onMouseUp: handleDragEnd,
-        onTouchEnd: handleDragEnd,
-        onMouseMove: handleDragMove,
-        onTouchMove: handleDragMove
+        onMouseMove: handleDragMove
     };
 
     // Wrapper for click events that checks if we were dragging
