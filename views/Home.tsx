@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useApp } from '../context';
-import { Search, Filter, Star, Heart, ArrowRight, Flame, Shirt, Footprints, Trophy, Zap } from 'lucide-react';
+import { Search, Filter, Star, Heart, ArrowRight, Flame, Shirt, Footprints, Trophy, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const Home = () => {
     const { setView, selectProduct, products, events, selectEvent, toggleWishlist, user, setSearchQuery, setActiveCategory, banners } = useApp();
@@ -131,7 +131,19 @@ export const Home = () => {
                     if (heroItems.length === 0) return null;
 
                     return (
-                        <div className="mt-2 md:px-0">
+                        <div className="mt-2 relative group w-full">
+                            <button
+                                onClick={() => sliderRef.current?.scrollBy({ left: -400, behavior: 'smooth' })}
+                                className="absolute left-2 md:-left-5 top-1/2 -translate-y-1/2 z-30 bg-white/40 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.1)] text-athos-black p-2 md:p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hidden md:flex hover:scale-110 hover:bg-white/60 border border-white/20"
+                            >
+                                <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.5} />
+                            </button>
+                            <button
+                                onClick={() => sliderRef.current?.scrollBy({ left: 400, behavior: 'smooth' })}
+                                className="absolute right-2 md:-right-5 top-1/2 -translate-y-1/2 z-30 bg-white/40 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.1)] text-athos-black p-2 md:p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hidden md:flex hover:scale-110 hover:bg-white/60 border border-white/20"
+                            >
+                                <ChevronRight className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.5} />
+                            </button>
                             <div
                                 ref={sliderRef}
                                 {...dragHandlers}
@@ -141,38 +153,38 @@ export const Home = () => {
                                 {heroItems.map((item, index) => (
                                     <div
                                         key={item.id}
-                                        className="shrink-0 w-[88vw] md:w-[850px] relative select-none snap-center md:snap-align-none"
+                                        className="shrink-0 w-[82vw] md:w-[750px] lg:w-[800px] relative select-none snap-center md:snap-align-none"
                                         onClick={() => handleItemClick(() => {
                                             if (item.type === 'event') selectEvent(item.id);
                                             else if (item.link) setView(item.link as any);
                                         })}
                                     >
                                         <div
-                                            className={`rounded-[20px] md:rounded-[40px] p-5 md:p-14 h-[160px] sm:h-[180px] md:h-[450px] relative overflow-hidden flex items-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] group border hover:shadow-xl transition-all ${index % 2 !== 0 && (!item.gradientColors || item.gradientColors.length === 0) ? 'border-gray-200 bg-gray-100' : 'border-transparent'}`}
+                                            className={`rounded-[20px] md:rounded-[40px] p-5 md:p-10 lg:p-12 h-[150px] sm:h-[170px] md:h-[380px] lg:h-[400px] relative overflow-hidden flex items-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] group border hover:shadow-xl transition-all ${index % 2 !== 0 && (!item.gradientColors || item.gradientColors.length === 0) ? 'border-gray-200 bg-gray-100' : 'border-transparent'}`}
                                             style={item.gradientColors && item.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${item.gradientColors.join(', ')})` } : (index % 2 === 0 ? { backgroundColor: '#111' } : {})}
                                         >
                                             <div className="relative z-10 w-[68%] md:w-[60%] pointer-events-none flex flex-col justify-center h-full">
                                                 <span className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/80' : 'text-gray-500'} font-bold uppercase tracking-widest text-[8px] md:text-sm mb-1.5 md:mb-3 block`}>
                                                     {item.type === 'event' ? 'Evento Destacado' : (item.subtitle || '')}
                                                 </span>
-                                                <h2 className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white' : 'text-athos-black'} text-xl sm:text-2xl md:text-4xl lg:text-4xl xl:text-5xl font-black italic tracking-tighter leading-[0.9] mb-1.5 md:mb-6 uppercase`}>
+                                                <h2 className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white' : 'text-athos-black'} text-xl sm:text-2xl md:text-4xl lg:text-4xl xl:text-5xl font-black italic tracking-tighter leading-[0.9] mb-1.5 md:mb-5 lg:mb-6 uppercase`}>
                                                     {item.title}
                                                 </h2>
 
                                                 {item.type === 'event' ? (
-                                                    <p className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[180px] sm:max-w-[220px] md:max-w-[350px] leading-snug line-clamp-3 md:line-clamp-4 mt-0.5`}>
+                                                    <p className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-6 lg:mb-8 max-w-[180px] sm:max-w-[220px] md:max-w-[350px] leading-snug line-clamp-3 md:line-clamp-4 mt-0.5`}>
                                                         {item.subtitle.split('\n').map((line, i) => <React.Fragment key={i}>{line}{i === 0 && <br />}</React.Fragment>)}
                                                     </p>
                                                 ) : item.description ? (
-                                                    <p className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-8 max-w-[180px] sm:max-w-[220px] md:max-w-[350px] leading-snug line-clamp-3 md:line-clamp-4 mt-0.5`}>
+                                                    <p className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/70' : 'text-gray-500'} text-[9px] sm:text-[10px] md:text-lg font-bold mb-2.5 md:mb-6 lg:mb-8 max-w-[180px] sm:max-w-[220px] md:max-w-[350px] leading-snug line-clamp-3 md:line-clamp-4 mt-0.5`}>
                                                         {item.description}
                                                     </p>
                                                 ) : null}
 
-                                                <div className="flex flex-row flex-wrap gap-1.5 sm:gap-2 md:gap-4 mt-auto items-center">
+                                                <div className="flex flex-row flex-nowrap gap-1.5 sm:gap-2 md:gap-3 lg:gap-4 mt-auto items-center overflow-visible">
                                                     {(item.type === 'event' || item.link) && (
                                                         <span
-                                                            className={`flex items-center justify-center ${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-6 md:py-4 rounded-md md:rounded-2xl text-[7px] sm:text-[8px] md:text-sm font-black uppercase tracking-tight md:tracking-widest transition-all shadow-md cursor-pointer pointer-events-auto w-max text-center`}
+                                                            className={`flex items-center justify-center ${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'bg-white text-athos-black hover:bg-athos-orange hover:text-white glow-effect' : 'bg-athos-black text-white hover:scale-105 shadow-athos-orange/20 glow-effect'} px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-5 md:py-3 rounded-md md:rounded-xl text-[7px] sm:text-[8px] md:text-[10px] lg:text-xs font-black uppercase tracking-tight md:tracking-widest transition-all shadow-md cursor-pointer pointer-events-auto w-max text-center whitespace-nowrap`}
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 if (item.type === 'event') selectEvent(item.id);
@@ -183,7 +195,7 @@ export const Home = () => {
                                                         </span>
                                                     )}
                                                     <span
-                                                        className={`flex items-center justify-center ${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'bg-white/20 text-white backdrop-blur-md hover:bg-white hover:text-athos-orange border border-white/30' : 'bg-athos-orange/10 text-athos-orange hover:bg-athos-orange hover:text-white border border-athos-orange/30'} px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-6 md:py-4 rounded-md md:rounded-2xl text-[7px] sm:text-[8px] md:text-sm font-black uppercase tracking-tight md:tracking-widest transition-all shadow-md cursor-pointer pointer-events-auto w-max text-center`}
+                                                        className={`flex items-center justify-center ${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'bg-white/20 text-white backdrop-blur-md hover:bg-white hover:text-athos-orange border border-white/30' : 'bg-athos-orange/10 text-athos-orange hover:bg-athos-orange hover:text-white border border-athos-orange/30'} px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-5 md:py-3 rounded-md md:rounded-xl text-[7px] sm:text-[8px] md:text-[10px] lg:text-xs font-black uppercase tracking-tight md:tracking-widest transition-all shadow-md cursor-pointer pointer-events-auto w-max text-center whitespace-nowrap`}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             setView('sponsor-event');
