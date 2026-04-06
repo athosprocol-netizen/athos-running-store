@@ -123,7 +123,15 @@ export const ZonaRunning = () => {
 
       </div>
 
-      <div className="pb-16 flex w-full"></div>
+      {/* SVG Wave Bottom Divider */}
+      <div className="absolute bottom-[-1px] left-0 w-full z-20">
+        <svg viewBox="0 0 1440 320" className="w-full block" preserveAspectRatio="none">
+          <path fill="#ffffff" fillOpacity="1" d="M0,224L60,202.7C120,181,240,139,360,138.7C480,139,600,181,720,186.7C840,192,960,160,1080,138.7C1200,117,1320,107,1380,101.3L1440,96L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+        </svg>
+      </div>
+      
+      {/* Required white floor below wave to ensure it looks cutoff without scrolling past it */}
+      <div className="relative bg-white h-6 w-full z-10"></div>
       
       </div>
 
