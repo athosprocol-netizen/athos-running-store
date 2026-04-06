@@ -84,7 +84,16 @@ export const Footer = () => {
                             </div>
                             <div className="space-y-2 text-base font-bold text-gray-500">
                                 <p className="flex items-center gap-2"><MapPin size={16} className="text-athos-orange" /> Cartago, Valle del Cauca</p>
-                                <p className="flex items-center gap-2"><Mail size={16} className="text-athos-orange" /> athospro.col@gmail.com</p>
+                                <p className="flex items-center gap-2 mb-6"><Mail size={16} className="text-athos-orange" /> athospro.col@gmail.com</p>
+                                <div className="pt-4 border-t border-gray-800">
+                                    <p className="text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">Descarga Nuestra App</p>
+                                    <img 
+                                        src="/Zonarunning logo.png" 
+                                        alt="Zona Running" 
+                                        className="h-10 w-auto object-contain brightness-0 invert opacity-50 hover:opacity-100 cursor-pointer transition-opacity" 
+                                        onClick={() => setView('zona-running')} 
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -132,9 +141,18 @@ export const Footer = () => {
                         <p className="text-xs font-bold text-gray-600 uppercase tracking-widest">
                             © 2026 ATHOS Running.
                         </p>
-                        <p className="text-xs font-bold text-gray-700 uppercase tracking-widest mt-1">
+                        <p className="text-xs font-bold text-gray-700 uppercase tracking-widest mt-1 mb-6">
                             Cartago, Valle del Cauca
                         </p>
+                        <div className="pt-6 border-t border-gray-800 w-full flex flex-col items-center">
+                            <p className="text-[10px] font-bold text-gray-600 mb-3 uppercase tracking-wide">Descarga Nuestra App</p>
+                            <img 
+                                src="/Zonarunning logo.png" 
+                                alt="Zona Running" 
+                                className="h-8 w-auto object-contain brightness-0 invert opacity-50 cursor-pointer" 
+                                onClick={() => setView('zona-running')} 
+                            />
+                        </div>
                     </div>
                 </div>
             </footer>

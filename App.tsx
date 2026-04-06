@@ -19,6 +19,7 @@ import { EventRegistration } from './views/EventRegistration';
 import { EventResults } from './views/EventResults';
 import { OrganizerDashboard } from './views/OrganizerDashboard';
 import { SponsorEvent } from './views/SponsorEvent';
+import { ZonaRunning } from './views/ZonaRunning';
 import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { Marquee } from './components/Marquee';
@@ -112,9 +113,38 @@ const MainContent = () => {
       case 'event-results': return <EventResults />;
       case 'organizer': return <OrganizerDashboard />;
       case 'sponsor-event': return <SponsorEvent />;
+      case 'zona-running': return <ZonaRunning />;
       default: return <Home />;
     }
   };
+
+  // If we are in the standalone landing page, render it bare without store integration
+  if (displayView === 'zona-running') {
+    return (
+      <div className="min-h-[100dvh] font-sans selection:bg-black selection:text-white flex flex-col relative overflow-x-hidden">
+        {/* We keep the transition overlay to allow smooth entry to the store if they navigate away */}
+        <div
+          className={`fixed inset-0 z-[500] flex items-center justify-center overflow-hidden transition-opacity duration-300 ${isTransitioning ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+        >
+          <div className="absolute inset-0 bg-black/90"></div>
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+            webkit-playsinline="true"
+            disablePictureInPicture
+            className="absolute min-w-full min-h-full object-cover object-center pointer-events-none brightness-110 contrast-125 saturate-200 -hue-rotate-30 drop-shadow-[0_0_50px_rgba(255,100,0,0.5)]"
+            src="/llamas.webm"
+          />
+        </div>
+        <main className="w-full flex-grow">
+          <ZonaRunning />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[100dvh] bg-athos-bg text-athos-black font-sans selection:bg-athos-orange selection:text-white flex flex-col relative overflow-x-hidden">
