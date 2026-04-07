@@ -120,7 +120,7 @@ export const Support = () => {
                                 </div>
                                 <div>
                                     <p className="text-xs text-gray-400 uppercase font-bold tracking-widest">Email</p>
-                                    <p className="text-lg font-bold">athospro.col@gmail.com</p>
+                                    <p className="text-lg font-bold">athosrun.co@gmail.com</p>
                                 </div>
                             </div>
 

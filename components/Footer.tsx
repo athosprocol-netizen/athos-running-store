@@ -6,11 +6,11 @@ export const Footer = () => {
     const { setView } = useApp();
 
     const socialLinks = [
-        { icon: Music2, label: 'TikTok', url: 'https://www.tiktok.com/@athos.co' },
-        { icon: Facebook, label: 'Facebook', url: 'https://www.facebook.com/athos.col' },
-        { icon: Youtube, label: 'YouTube', url: 'https://www.youtube.com/@athos_pro' },
-        { icon: Twitter, label: 'X', url: 'https://x.com/athos_pro' },
-        { icon: Instagram, label: 'Instagram', url: 'https://www.instagram.com/athos.col' },
+        { icon: Music2, label: 'TikTok', url: 'https://www.tiktok.com/@athosrun.co' },
+        { icon: Facebook, label: 'Facebook', url: 'https://www.facebook.com/athosrun.co' },
+        { icon: Youtube, label: 'YouTube', url: 'https://www.youtube.com/@athosrun_co' },
+        { icon: Twitter, label: 'X', url: 'https://x.com/athosrun_co' },
+        { icon: Instagram, label: 'Instagram', url: 'https://www.instagram.com/athosrun.co' },
     ];
 
     return (
@@ -84,7 +84,7 @@ export const Footer = () => {
                             </div>
                             <div className="space-y-2 text-base font-bold text-gray-500">
                                 <p className="flex items-center gap-2"><MapPin size={16} className="text-athos-orange" /> Cartago, Valle del Cauca</p>
-                                <p className="flex items-center gap-2 mb-6"><Mail size={16} className="text-athos-orange" /> athospro.col@gmail.com</p>
+                                <p className="flex items-center gap-2 mb-6"><Mail size={16} className="text-athos-orange" /> athosrun.co@gmail.com</p>
                                 <div className="pt-4 border-t border-gray-800">
                                     <p className="text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">Descarga Nuestra App</p>
                                     <img 
