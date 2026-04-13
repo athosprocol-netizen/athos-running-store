@@ -71,118 +71,119 @@ export const Profile = () => {
 
     return (
         <div className="pt-6 md:pt-10 min-h-screen bg-athos-bg pb-32 animate-fade-in px-4 md:px-8 max-w-[1400px] mx-auto">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-12">
 
-            <div className="flex flex-col md:flex-row gap-8">
+                {/* Header & Personal Info SIDEBAR */}
+                <div className="w-full md:w-[320px] lg:w-[380px] flex-shrink-0">
+                    <div className="bg-[#F4F4F4] p-8 rounded-[40px] relative overflow-hidden flex flex-col items-center text-center gap-6 shadow-sm">
 
-                {/* Header & Personal Info CARD */}
-                <div className="bg-[#F4F4F4] p-8 rounded-[40px] mb-12 relative overflow-hidden flex flex-col lg:flex-row items-center md:items-start gap-8 shadow-sm">
+                        {/* Avatar Section */}
+                        <div className="relative group flex-shrink-0">
+                            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white bg-white flex items-center justify-center shadow-lg">
+                                {user.avatar ? (
+                                    <img src={user.avatar} className="w-full h-full object-cover" alt={user.name} />
+                                ) : (
+                                    <span className="text-4xl font-black italic text-athos-black">{user.name.charAt(0)}</span>
+                                )}
+                            </div>
+                            <button
+                                onClick={() => fileInputRef.current?.click()}
+                                className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex items-center justify-center text-white"
+                            >
+                                <Camera size={24} />
+                            </button>
+                            <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
+                        </div>
 
-                    {/* Avatar Section */}
-                    <div className="relative group flex-shrink-0">
-                        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white bg-white flex items-center justify-center shadow-lg">
-                            {user.avatar ? (
-                                <img src={user.avatar} className="w-full h-full object-cover" alt={user.name} />
+                        <div className="w-full z-10 flex flex-col items-center">
+                            {isEditing ? (
+                                <div className="grid grid-cols-1 gap-4 w-full bg-white p-6 rounded-3xl text-left">
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2">Nombre Completo</label>
+                                        <input
+                                            type="text"
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            className="w-full bg-gray-50 border-none rounded-xl p-3 font-bold text-sm focus:ring-2 focus:ring-athos-orange/20"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2">Edad</label>
+                                        <input
+                                            type="number"
+                                            value={formData.age}
+                                            onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                                            className="w-full bg-gray-50 border-none rounded-xl p-3 font-bold text-sm"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2">Ciudad</label>
+                                        <input
+                                            type="text"
+                                            value={formData.location}
+                                            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                            className="w-full bg-gray-50 border-none rounded-xl p-3 font-bold text-sm"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2">Dirección</label>
+                                        <input
+                                            type="text"
+                                            value={formData.address}
+                                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                            className="w-full bg-gray-50 border-none rounded-xl p-3 font-bold text-sm"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase ml-2">Teléfono</label>
+                                        <input
+                                            type="text"
+                                            value={formData.phone}
+                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                            className="w-full bg-gray-50 border-none rounded-xl p-3 font-bold text-sm"
+                                        />
+                                    </div>
+                                    <div className="flex gap-2 mt-2">
+                                        <button onClick={handleSave} className="flex-1 bg-athos-black text-white py-3 rounded-xl font-bold uppercase text-xs">Guardar</button>
+                                        <button onClick={() => setIsEditing(false)} className="flex-1 bg-gray-100 text-gray-500 py-3 rounded-xl font-bold uppercase text-xs">Cancelar</button>
+                                    </div>
+                                </div>
                             ) : (
-                                <span className="text-4xl font-black italic text-athos-black">{user.name.charAt(0)}</span>
+                                <>
+                                    <h1 className="text-3xl lg:text-4xl font-black text-athos-black uppercase italic mb-1 truncate w-full" title={user.name}>{user.name}</h1>
+                                    <p className="text-gray-500 font-bold text-sm mb-6 truncate w-full" title={user.email}>{user.email}</p>
+
+                                    <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-bold text-gray-600 mb-8">
+                                        {user.age && <span className="bg-white px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1 min-w-fit"><User size={12} className="text-athos-orange" /> {user.age} Años</span>}
+                                        <span className="bg-white px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1 min-w-fit"><MapPin size={12} className="text-athos-orange" /> {user.location || 'Cali, CO'}</span>
+                                        {user.phone && <span className="bg-white px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1 min-w-fit"><Smartphone size={12} className="text-athos-orange" /> {user.phone}</span>}
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-3 justify-center w-full">
+                                        <button onClick={() => { setIsEditing(true); setFormData({ name: user.name, age: user.age || '', location: user.location || '', address: user.address || '', phone: user.phone || '' }); }} className="flex-1 min-w-[120px] px-5 py-3 bg-white border border-gray-200 hover:border-athos-black rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-sm">
+                                            Editar
+                                        </button>
+                                        <button onClick={() => setActiveTab('pedidos')} className={`flex-1 min-w-[120px] px-5 py-3 border rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-sm ${activeTab === 'pedidos' ? 'bg-athos-black text-white border-athos-black' : 'bg-white text-gray-700 hover:border-athos-black border-gray-200'}`}>
+                                            Pedidos
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab('eventos')}
+                                            className={`w-full px-5 py-3 border rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-sm ${activeTab === 'eventos'
+                                                ? 'bg-athos-black text-white border-athos-black'
+                                                : 'bg-white text-gray-700 border-gray-200 hover:border-athos-black'
+                                                }`}
+                                        >
+                                            Mis Eventos
+                                        </button>
+                                    </div>
+                                </>
                             )}
                         </div>
-                        <button
-                            onClick={() => fileInputRef.current?.click()}
-                            className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex items-center justify-center text-white"
-                        >
-                            <Camera size={24} />
-                        </button>
-                        <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
-                    </div>
-
-                    <div className="text-center md:text-left flex-grow w-full z-10">
-                        {isEditing ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl bg-white p-6 rounded-3xl">
-                                <div className="md:col-span-2">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-2">Nombre Completo</label>
-                                    <input
-                                        type="text"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full bg-gray-50 border-none rounded-xl p-3 font-bold text-sm focus:ring-2 focus:ring-athos-orange/20"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-2">Edad</label>
-                                    <input
-                                        type="number"
-                                        value={formData.age}
-                                        onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                                        className="w-full bg-gray-50 border-none rounded-xl p-3 font-bold text-sm"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-2">Ciudad</label>
-                                    <input
-                                        type="text"
-                                        value={formData.location}
-                                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                                        className="w-full bg-gray-50 border-none rounded-xl p-3 font-bold text-sm"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-2">Dirección</label>
-                                    <input
-                                        type="text"
-                                        value={formData.address}
-                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                        className="w-full bg-gray-50 border-none rounded-xl p-3 font-bold text-sm"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-2">Teléfono</label>
-                                    <input
-                                        type="text"
-                                        value={formData.phone}
-                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                        className="w-full bg-gray-50 border-none rounded-xl p-3 font-bold text-sm"
-                                    />
-                                </div>
-                                <div className="md:col-span-2 flex gap-2 mt-2">
-                                    <button onClick={handleSave} className="flex-1 bg-athos-black text-white py-3 rounded-xl font-bold uppercase text-xs">Guardar</button>
-                                    <button onClick={() => setIsEditing(false)} className="flex-1 bg-gray-100 text-gray-500 py-3 rounded-xl font-bold uppercase text-xs">Cancelar</button>
-                                </div>
-                            </div>
-                        ) : (
-                            <>
-                                <h1 className="text-4xl font-black text-athos-black uppercase italic mb-1">{user.name}</h1>
-                                <p className="text-gray-500 font-bold text-sm mb-4">{user.email}</p>
-
-                                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs font-bold text-gray-600 mb-6">
-                                    {user.age && <span className="bg-white px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1"><User size={12} className="text-athos-orange" /> {user.age} Años</span>}
-                                    <span className="bg-white px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1"><MapPin size={12} className="text-athos-orange" /> {user.location || 'Ciudad no def.'}</span>
-                                    {user.phone && <span className="bg-white px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1"><Smartphone size={12} className="text-athos-orange" /> {user.phone}</span>}
-                                </div>
-
-                                <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                                    <button onClick={() => { setIsEditing(true); setFormData({ name: user.name, age: user.age || '', location: user.location || '', address: user.address || '', phone: user.phone || '' }); }} className="px-5 py-2.5 bg-white border border-gray-200 hover:border-athos-black rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-sm">
-                                        Editar
-                                    </button>
-                                    <button onClick={() => setActiveTab('pedidos')} className="px-5 py-2.5 bg-white text-red-500 border border-gray-200 hover:bg-red-50 rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-sm">
-                                        Pedidos
-                                    </button>
-                                    <button
-                                        onClick={() => setActiveTab('eventos')}
-                                        className={`px-5 py-2.5 border rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-sm ${activeTab === 'eventos'
-                                            ? 'bg-athos-black text-white border-athos-black'
-                                            : 'bg-white text-gray-700 border-gray-200 hover:border-athos-black'
-                                            }`}
-                                    >
-                                        Mis Eventos
-                                    </button>
-                                </div>
-                            </>
-                        )}
                     </div>
                 </div>
 
-
-
+                {/* Contenido Principal (Tabs) */}
+                <div className="flex-grow w-full min-w-0">
                 {activeTab === 'perfil' && (
                 <div className="mb-12 animate-fade-in w-full">
                     <div className="flex justify-between items-center mb-6 px-2">
@@ -297,6 +298,7 @@ export const Profile = () => {
                         )}
                     </div>
                 )}
+                </div>
             </div>
         </div>
     );
