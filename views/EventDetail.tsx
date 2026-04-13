@@ -25,7 +25,7 @@ export const EventDetail = () => {
     const [hoverRating, setHoverRating] = useState(0);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const event = events.find(e => e.id === selectedEventId);
+    const event = events.find(e => e.id === selectedEventId || e.slug === selectedEventId);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -46,7 +46,7 @@ export const EventDetail = () => {
         <>
             <div className="flex flex-col gap-4 mb-6">
                 <button onClick={() => {
-                    const shareUrl = `${window.location.origin}/?event=${event.id}`;
+                    const shareUrl = window.location.href;
                     if (navigator.share) {
                         navigator.share({
                             title: event.title,

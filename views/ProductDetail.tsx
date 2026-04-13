@@ -8,7 +8,7 @@ import { Breadcrumbs, StockIndicator } from '../components/Shared';
 export const ProductDetail = () => {
     const { selectedProductId, setView, addToCart, products, user, toggleWishlist, showNotification, addReview } = useApp();
 
-    const product = products.find(p => p.id === selectedProductId);
+    const product = products.find(p => p.id === selectedProductId || p.slug === selectedProductId);
 
     const [quantity, setQuantity] = useState(1);
     const [activeSize, setActiveSize] = useState<string | null>(null);

@@ -148,6 +148,16 @@ interface AppContextType {
   toggleEventFavorite: (eventId: string) => void;
 }
 
+export const slugify = (text: string) => {
+  if (!text) return '';
+  return text.toString().toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
+};
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: PropsWithChildren) => {
@@ -172,6 +182,21 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   });
 
   const [view, _setView] = useState<ViewState>(() => {
+    const path = window.location.pathname;
+    
+    // Path-based routing in English
+    if (path.startsWith('/product/')) return 'product';
+    if (path.startsWith('/event/')) return 'event-detail';
+    if (path === '/shop') return 'shop';
+    if (path === '/cart') return 'cart';
+    if (path === '/auth') return 'auth';
+    if (path === '/profile') return 'profile';
+    if (path === '/events') return 'events';
+    if (path === '/zona-running') return 'zona-running';
+    if (path === '/admin') return 'admin';
+    if (path === '/checkout') return 'checkout';
+
+    // Fallback for old query links
     const params = new URLSearchParams(window.location.search);
     const viewParam = params.get('view') as ViewState;
     if (viewParam) return viewParam;
@@ -181,11 +206,19 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   });
 
   const [selectedProductId, setSelectedProductId] = useState<string | null>(() => {
+    const path = window.location.pathname;
+    if (path.startsWith('/product/')) {
+        return path.split('/')[2] || null;
+    }
     const params = new URLSearchParams(window.location.search);
     return params.get('id') || params.get('product') || null;
   });
 
   const [selectedEventId, setSelectedEventId] = useState<string | null>(() => {
+    const path = window.location.pathname;
+    if (path.startsWith('/event/')) {
+        return path.split('/')[2] || null;
+    }
     const params = new URLSearchParams(window.location.search);
     return params.get('id') || params.get('event') || null;
   });
@@ -267,6 +300,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         if (dbProducts && dbProducts.length > 0) {
           const mappedCustomProducts = dbProducts.map(p => ({
             id: p.id,
+            slug: p.slug,
             name: p.name,
             subtitle: p.subtitle || '',
             category: p.category as Product['category'],
@@ -294,6 +328,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         if (dbEvents && dbEvents.length > 0) {
           const mappedEvents = dbEvents.map(e => ({
             id: e.id,
+            slug: e.slug,
             title: e.title,
             date: e.date,
             location: e.location,
@@ -413,10 +448,17 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   }, [recentlyViewed]);
 
 
-  const setViewWithHistory = (newView: ViewState, id?: string) => {
-    const url = id ? `?view=${newView}&id=${id}` : `?view=${newView}`;
-    if (view !== newView || id) {
-      window.history.pushState({ view: newView, id }, '', url);
+  const setViewWithHistory = (newView: ViewState, idOrSlug?: string) => {
+    let url = '/';
+    if (newView === 'home') url = '/';
+    else if (newView === 'product' && idOrSlug) url = `/product/${idOrSlug}`;
+    else if (newView === 'event-detail' && idOrSlug) url = `/event/${idOrSlug}`;
+    else if (newView === 'event-registration' && idOrSlug) url = `/event/${idOrSlug}?action=register`;
+    else if (newView === 'event-results' && idOrSlug) url = `/event/${idOrSlug}?action=results`;
+    else url = `/${newView}`;
+
+    if (view !== newView || idOrSlug) {
+      window.history.pushState({ view: newView, id: idOrSlug }, '', url);
       _setView(newView);
       window.scrollTo(0, 0);
     }
@@ -426,14 +468,16 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     setViewWithHistory(newView);
   };
 
-  const selectProduct = (id: string) => {
-    setSelectedProductId(id);
-    setViewWithHistory('product', id);
+  const selectProduct = (idOrSlug: string) => {
+    const product = products.find(p => p.id === idOrSlug || p.slug === idOrSlug);
+    const routeId = product?.slug || product?.id || idOrSlug;
 
-    const product = products.find(p => p.id === id);
+    setSelectedProductId(routeId);
+    setViewWithHistory('product', routeId);
+
     if (product) {
       setRecentlyViewed(prev => {
-        const filtered = prev.filter(p => p.id !== id);
+        const filtered = prev.filter(p => p.id !== product.id);
         return [product, ...filtered].slice(0, 4); // Keep only the first 4
       });
     }
@@ -877,6 +921,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
       const cleanPayload = {
         id: productToSave.id,
+        slug: productToSave.slug || slugify(productToSave.name),
         name: productToSave.name || 'Sin Título',
         subtitle: productToSave.subtitle || '',
         price: productToSave.price || 0,
@@ -949,6 +994,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
       const cleanPayload = {
         id: productToSave.id,
+        slug: productToSave.slug || slugify(productToSave.name),
         name: productToSave.name || 'Sin Título',
         subtitle: productToSave.subtitle || '',
         price: productToSave.price || 0,
@@ -1155,9 +1201,12 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     showNotification("Enlace copiado al portapapeles");
   };
 
-  const selectEvent = (id: string) => {
-    setSelectedEventId(id);
-    setViewWithHistory('event-detail', id);
+  const selectEvent = (idOrSlug: string) => {
+    const ev = events.find(e => e.id === idOrSlug || e.slug === idOrSlug);
+    const routeId = ev?.slug || ev?.id || idOrSlug;
+
+    setSelectedEventId(routeId);
+    setViewWithHistory('event-detail', routeId);
   };
 
   const addEvent = async (event: Event) => {
@@ -1174,6 +1223,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
       const cleanPayload = {
         title: eventToSave.title,
+        slug: eventToSave.slug || slugify(eventToSave.title),
         date: eventToSave.date,
         location: eventToSave.location,
         city: eventToSave.city,
@@ -1223,6 +1273,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
       const cleanPayload = {
         title: eventToSave.title,
+        slug: eventToSave.slug || slugify(eventToSave.title),
         date: eventToSave.date,
         location: eventToSave.location,
         city: eventToSave.city,

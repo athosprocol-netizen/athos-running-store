@@ -21,6 +21,7 @@ export interface Review {
 
 export interface Product {
   id: string;
+  slug?: string;
   name: string;
   subtitle: string;
   category: 'shoes' | 'apparel' | 'accessories' | 'achievements' | 'relojes' | 'cinturones' | 'gafas' | 'gorras' | 'medalleros';
@@ -99,6 +100,7 @@ export interface UserProfile {
 
 export interface Event {
   id: string;
+  slug?: string;
   title: string;
   date: string;
   location: string;

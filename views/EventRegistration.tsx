@@ -8,7 +8,7 @@ export const EventRegistration = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
-    const event = events.find(e => e.id === selectedEventId);
+    const event = events.find(e => e.id === selectedEventId || e.slug === selectedEventId);
 
     const [formData, setFormData] = useState({
         distance: event?.distances[0] || '',
