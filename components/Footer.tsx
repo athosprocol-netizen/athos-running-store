@@ -1,18 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { Flame, Instagram, Twitter, Facebook, Youtube, MapPin, Mail, Phone, ArrowRight, Music2, Users } from 'lucide-react';
+import { Flame, Instagram, Twitter, Facebook, Youtube, MapPin, Mail, Phone, ArrowRight, Music2, Users, Eye } from 'lucide-react';
 import { useApp } from '../context';
 import { registerVisit, getUniqueVisitorCount } from '../lib/analytics';
 
 export const Footer = () => {
     const { setView } = useApp();
     const [visitorCount, setVisitorCount] = useState<number | null>(null);
+    const [activeUsers, setActiveUsers] = useState(24);
 
     useEffect(() => {
         registerVisit().then(() => {
             getUniqueVisitorCount().then(count => {
-                setVisitorCount(count > 0 ? count : 12450); // Fallback until setup in DB
+                setVisitorCount(count > 0 ? (12450 + count) : 12450); // Sumamos count real al fallback initial
             });
         });
+
+        // Simulate active users for the "real-time" indicator
+        setActiveUsers(Math.floor(Math.random() * 15) + 18);
+        const interval = setInterval(() => {
+            setActiveUsers(prev => {
+                const change = Math.random() > 0.5 ? 1 : -1;
+                const next = prev + change;
+                return next < 12 ? 12 : (next > 50 ? 50 : next);
+            });
+        }, 6500);
+        
+        return () => clearInterval(interval);
     }, []);
 
     const socialLinks = [
@@ -56,17 +69,27 @@ export const Footer = () => {
                                 ))}
                             </div>
 
-                            {/* Visitor Counter */}
+                            {/* Visitor Counters */}
                             {visitorCount !== null && (
-                                <div className="bg-gray-900/50 border border-gray-800 rounded-full px-4 py-2 flex items-center gap-2 shadow-lg group hover:border-athos-orange/50 transition-colors">
-                                    <div className="relative flex h-3 w-3">
-                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-athos-orange opacity-75"></span>
-                                      <span className="relative inline-flex rounded-full h-3 w-3 bg-athos-orange"></span>
+                                <div className="flex flex-col gap-2 mt-2">
+                                    {/* Real-time Indicator */}
+                                    <div className="bg-gray-900/80 border border-gray-800 rounded-full px-4 py-2 flex items-center justify-center gap-2 shadow-lg group hover:border-athos-orange/50 transition-colors self-center min-w-[180px]">
+                                        <div className="relative flex h-2 w-2">
+                                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-athos-orange opacity-75"></span>
+                                          <span className="relative inline-flex rounded-full h-2 w-2 bg-athos-orange"></span>
+                                        </div>
+                                        <span className="text-sm font-black text-white tracking-wider flex items-center gap-1">
+                                            {activeUsers} <span className="text-gray-400 font-bold text-xs">EN LÍNEA</span>
+                                        </span>
                                     </div>
-                                    <Users size={14} className="text-gray-400 group-hover:text-athos-orange transition-colors" />
-                                    <span className="text-sm font-bold text-gray-300 tracking-wider">
-                                        {visitorCount.toLocaleString()} <span className="text-gray-500 font-medium">VISITANTES</span>
-                                    </span>
+                                    
+                                    {/* Total Visits Indicator */}
+                                    <div className="flex items-center justify-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity self-center">
+                                        <Eye size={12} className="text-gray-500" />
+                                        <span className="text-[10px] font-bold text-gray-500 tracking-widest uppercase">
+                                            {visitorCount.toLocaleString()} Histórico
+                                        </span>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -159,21 +182,32 @@ export const Footer = () => {
                             ))}
                         </div>
 
-                        {/* Visitor Counter Mobile */}
+                        {/* Visitor Counters Mobile */}
                         {visitorCount !== null && (
-                            <div className="bg-gray-900 border border-gray-800 rounded-full px-5 py-2 flex items-center gap-2 shadow-inner">
-                                <div className="relative flex h-2.5 w-2.5">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-athos-orange opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-athos-orange"></span>
+                            <div className="flex flex-col gap-2 items-center mt-2">
+                                {/* Real-time Indicator Mobile */}
+                                <div className="bg-gray-900/80 border border-gray-800 rounded-full px-5 py-2.5 flex items-center gap-2 shadow-inner">
+                                    <div className="relative flex h-2 w-2">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-athos-orange opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-athos-orange"></span>
+                                    </div>
+                                    <span className="text-sm font-black text-white tracking-widest flex items-center gap-1.5">
+                                        {activeUsers} <span className="text-gray-400 font-bold text-[10px]">EN LÍNEA</span>
+                                    </span>
                                 </div>
-                                <span className="text-sm font-black text-white tracking-widest">
-                                    {visitorCount.toLocaleString()} <span className="text-gray-500 font-bold">VISITANTES</span>
-                                </span>
+                                
+                                {/* Total Visits Indicator */}
+                                <div className="flex items-center justify-center gap-1.5 mt-1 opacity-70">
+                                    <Eye size={12} className="text-gray-500" />
+                                    <span className="text-[10px] font-bold text-gray-500 tracking-widest uppercase">
+                                        {visitorCount.toLocaleString()} Histórico
+                                    </span>
+                                </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="w-16 h-1 bg-gray-800 rounded-full"></div>
+                    <div className="w-16 h-1 bg-gray-800 rounded-full mt-2"></div>
 
                     {/* Copyright */}
                     <div className="text-center">
