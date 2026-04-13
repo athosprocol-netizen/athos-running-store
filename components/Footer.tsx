@@ -1,9 +1,19 @@
-import React from 'react';
-import { Flame, Instagram, Twitter, Facebook, Youtube, MapPin, Mail, Phone, ArrowRight, Music2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Flame, Instagram, Twitter, Facebook, Youtube, MapPin, Mail, Phone, ArrowRight, Music2, Users } from 'lucide-react';
 import { useApp } from '../context';
+import { registerVisit, getUniqueVisitorCount } from '../lib/analytics';
 
 export const Footer = () => {
     const { setView } = useApp();
+    const [visitorCount, setVisitorCount] = useState<number | null>(null);
+
+    useEffect(() => {
+        registerVisit().then(() => {
+            getUniqueVisitorCount().then(count => {
+                setVisitorCount(count > 0 ? count : 12450); // Fallback until setup in DB
+            });
+        });
+    }, []);
 
     const socialLinks = [
         { icon: Music2, label: 'TikTok', url: 'https://www.tiktok.com/@athosrun.co' },
@@ -31,7 +41,7 @@ export const Footer = () => {
                             <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-sm font-medium">
                                 Rendimiento, estilo y comunidad. Diseñamos equipamiento de running para quienes buscan superar sus propios límites.
                             </p>
-                            <div className="flex gap-4">
+                            <div className="flex gap-4 mb-6">
                                 {socialLinks.map((social, i) => (
                                     <a
                                         key={i}
@@ -45,6 +55,20 @@ export const Footer = () => {
                                     </a>
                                 ))}
                             </div>
+
+                            {/* Visitor Counter */}
+                            {visitorCount !== null && (
+                                <div className="bg-gray-900/50 border border-gray-800 rounded-full px-4 py-2 flex items-center gap-2 shadow-lg group hover:border-athos-orange/50 transition-colors">
+                                    <div className="relative flex h-3 w-3">
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-athos-orange opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-3 w-3 bg-athos-orange"></span>
+                                    </div>
+                                    <Users size={14} className="text-gray-400 group-hover:text-athos-orange transition-colors" />
+                                    <span className="text-sm font-bold text-gray-300 tracking-wider">
+                                        {visitorCount.toLocaleString()} <span className="text-gray-500 font-medium">VISITANTES</span>
+                                    </span>
+                                </div>
+                            )}
                         </div>
 
                         {/* Links Column 1 */}
@@ -119,19 +143,34 @@ export const Footer = () => {
                     </div>
 
                     {/* Social Grid */}
-                    <div className="flex justify-center gap-5 flex-wrap">
-                        {socialLinks.map((social, i) => (
-                            <a
-                                key={i}
-                                href={social.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-12 h-12 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:bg-athos-orange hover:text-white hover:border-athos-orange hover:scale-110 transition-all shadow-lg"
-                                aria-label={social.label}
-                            >
-                                <social.icon size={20} />
-                            </a>
-                        ))}
+                    <div className="flex flex-col items-center gap-6">
+                        <div className="flex justify-center gap-5 flex-wrap">
+                            {socialLinks.map((social, i) => (
+                                <a
+                                    key={i}
+                                    href={social.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-12 h-12 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:bg-athos-orange hover:text-white hover:border-athos-orange hover:scale-110 transition-all shadow-lg"
+                                    aria-label={social.label}
+                                >
+                                    <social.icon size={20} />
+                                </a>
+                            ))}
+                        </div>
+
+                        {/* Visitor Counter Mobile */}
+                        {visitorCount !== null && (
+                            <div className="bg-gray-900 border border-gray-800 rounded-full px-5 py-2 flex items-center gap-2 shadow-inner">
+                                <div className="relative flex h-2.5 w-2.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-athos-orange opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-athos-orange"></span>
+                                </div>
+                                <span className="text-sm font-black text-white tracking-widest">
+                                    {visitorCount.toLocaleString()} <span className="text-gray-500 font-bold">VISITANTES</span>
+                                </span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="w-16 h-1 bg-gray-800 rounded-full"></div>

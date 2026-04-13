@@ -181,11 +181,13 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   });
 
   const [selectedProductId, setSelectedProductId] = useState<string | null>(() => {
-    return new URLSearchParams(window.location.search).get('product') || null;
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id') || params.get('product') || null;
   });
 
   const [selectedEventId, setSelectedEventId] = useState<string | null>(() => {
-    return new URLSearchParams(window.location.search).get('event') || null;
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id') || params.get('event') || null;
   });
   const [events, setEvents] = useState<Event[]>([]);
   const [banners, setBanners] = useState<HeroBanner[]>([]);
@@ -411,9 +413,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   }, [recentlyViewed]);
 
 
-  const setViewWithHistory = (newView: ViewState) => {
-    if (view !== newView) {
-      window.history.pushState({ view: newView }, '', `?view=${newView}`);
+  const setViewWithHistory = (newView: ViewState, id?: string) => {
+    const url = id ? `?view=${newView}&id=${id}` : `?view=${newView}`;
+    if (view !== newView || id) {
+      window.history.pushState({ view: newView, id }, '', url);
       _setView(newView);
       window.scrollTo(0, 0);
     }
@@ -425,7 +428,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
   const selectProduct = (id: string) => {
     setSelectedProductId(id);
-    setViewWithHistory('product');
+    setViewWithHistory('product', id);
 
     const product = products.find(p => p.id === id);
     if (product) {
@@ -583,6 +586,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     const handlePopState = (event: PopStateEvent) => {
       if (event.state && event.state.view) {
         _setView(event.state.view);
+        if (event.state.id) {
+          if (event.state.view === 'product') setSelectedProductId(event.state.id);
+          if (event.state.view === 'event-detail') setSelectedEventId(event.state.id);
+        }
       } else {
         _setView('home');
       }
@@ -1150,7 +1157,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
   const selectEvent = (id: string) => {
     setSelectedEventId(id);
-    setViewWithHistory('event-detail');
+    setViewWithHistory('event-detail', id);
   };
 
   const addEvent = async (event: Event) => {
