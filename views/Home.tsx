@@ -158,7 +158,7 @@ export const Home = () => {
                                     >
                                         <div
                                             className={`rounded-[20px] md:rounded-[40px] p-5 md:p-10 lg:p-12 h-[150px] sm:h-[170px] md:h-[380px] lg:h-[400px] relative overflow-hidden flex items-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] group border hover:shadow-xl transition-all ${index % 2 !== 0 && (!item.gradientColors || item.gradientColors.length === 0) ? 'border-gray-200 bg-gray-100' : 'border-transparent'}`}
-                                            style={item.gradientColors && item.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${item.gradientColors.join(', ')})` } : (index % 2 === 0 ? { backgroundColor: '#111' } : {})}
+                                            style={item.gradientColors && item.gradientColors.length > 0 ? { background: `linear-gradient(135deg, ${item.gradientColors.join(', ')})` } : { background: 'linear-gradient(135deg, #c13500 0%, #ff6a1a 60%, #ff9a50 100%)' }}
                                         >
                                             <div className="relative z-10 w-[68%] md:w-[60%] pointer-events-none flex flex-col justify-center h-full">
                                                 <span className={`${index % 2 === 0 || (item.gradientColors && item.gradientColors.length > 0) ? 'text-white/80' : 'text-gray-500'} font-bold uppercase tracking-widest text-[8px] md:text-sm mb-1.5 md:mb-3 block`}>
@@ -208,9 +208,7 @@ export const Home = () => {
                                                 style={{ clipPath: 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%)', borderRadius: '40px', maskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)' }}
                                                 alt={item.title || ''}
                                             />
-                                            {index % 2 === 0 && (
-                                                <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-32 h-32 md:w-96 md:h-96 bg-gray-800 rounded-full blur-[60px] md:blur-[100px] opacity-40 pointer-events-none"></div>
-                                            )}
+                                            <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-32 h-32 md:w-96 md:h-96 bg-white/10 rounded-full blur-[60px] md:blur-[100px] opacity-30 pointer-events-none"></div>
                                         </div>
                                     </div>
                                 ))}
