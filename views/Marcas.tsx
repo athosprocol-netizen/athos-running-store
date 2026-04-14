@@ -7,35 +7,35 @@ const BRANDS = [
     id: 'tanuki-den',
     name: 'Tanuki Den',
     logo: '/Tanuki Den LOGO.png',
-    url: 'https://tanukiden.com',
+    url: 'https://www.tanukiden.co/',
     color: 'from-amber-100 to-orange-50'
   },
   {
     id: 'kimezu',
     name: 'Kimezu',
     logo: '/KIMEZU LOGO.png',
-    url: 'https://kimezu.com',
+    url: 'https://kimezu.co/',
     color: 'from-blue-50 to-indigo-50'
   },
   {
     id: 'emedical',
     name: 'E-Medical',
     logo: '/EMEDICAL LOGO.png',
-    url: 'https://emedical.com.co',
+    url: 'https://emedical.me/',
     color: 'from-emerald-50 to-teal-50'
   },
   {
     id: 'zonarunning',
     name: 'Zona Running',
     logo: '/Zonarunning logo.png',
-    url: 'https://zonarunning.com',
+    url: 'https://www.athosrun.co/zona-running',
     color: 'from-gray-100 to-gray-50'
   },
   {
     id: 'athosrun',
     name: 'Athos Run',
     logo: '/ATHOSLOGO1.png',
-    url: 'https://athosrun.co',
+    url: 'https://www.athosrun.co/',
     color: 'from-orange-100 to-red-50'
   }
 ];
