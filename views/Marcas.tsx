@@ -7,40 +7,35 @@ const BRANDS = [
     id: 'tanuki-den',
     name: 'Tanuki Den',
     logo: '/Tanuki Den LOGO.png',
-    description: 'La comunidad exclusiva donde la gamificación y el espíritu de equipo llevan tu carrera al siguiente nivel.',
-    tag: 'Social & Clanes',
+    url: 'https://tanukiden.com',
     color: 'from-amber-100 to-orange-50'
   },
   {
     id: 'kimezu',
     name: 'Kimezu',
     logo: '/KIMEZU LOGO.png',
-    description: 'Innovación en recuperación y bienestar para mantenerte siempre en movimiento con la mejor tecnología.',
-    tag: 'Salud & Bienestar',
+    url: 'https://kimezu.com',
     color: 'from-blue-50 to-indigo-50'
   },
   {
     id: 'emedical',
     name: 'E-Medical',
     logo: '/EMEDICAL LOGO.png',
-    description: 'Expertos en equipamiento médico deportivo, garantizando que cada paso que des sea seguro.',
-    tag: 'Equipamiento Médico',
+    url: 'https://emedical.com.co',
     color: 'from-emerald-50 to-teal-50'
   },
   {
     id: 'zonarunning',
     name: 'Zona Running',
     logo: '/Zonarunning logo.png',
-    description: 'Conquista tu ciudad barrio a barrio. La plataforma líder en desafíos territoriales y estrategia.',
-    tag: 'Estrategia & Mapas',
+    url: 'https://zonarunning.com',
     color: 'from-gray-100 to-gray-50'
   },
   {
     id: 'athosrun',
     name: 'Athos Run',
     logo: '/ATHOSLOGO1.png',
-    description: 'Personalización 3D y productos de élite diseñados por y para corredores apasionados.',
-    tag: 'Tienda Oficial',
+    url: 'https://athosrun.co',
     color: 'from-orange-100 to-red-50'
   }
 ];
@@ -96,57 +91,44 @@ export const Marcas = () => {
       <section className="w-full max-w-[1400px] px-6 pb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {BRANDS.map((brand) => (
-            <div 
+            <a 
               key={brand.id}
-              className="group relative bg-white border border-athos-border rounded-[32px] p-8 flex flex-col items-center justify-between transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] overflow-hidden"
+              href={brand.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative bg-white border border-athos-border rounded-[32px] p-8 aspect-square flex flex-col items-center justify-center transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] overflow-hidden"
             >
               {/* Background Glow */}
               <div className={`absolute inset-0 bg-gradient-to-br ${brand.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
               
               <div className="relative z-10 w-full flex flex-col items-center">
                 {/* Brand Logo Container */}
-                <div className="w-full aspect-[16/9] flex items-center justify-center mb-8 p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-white transition-all group-hover:scale-105">
+                <div className="w-full flex items-center justify-center transition-all group-hover:scale-110">
                   <img 
                     src={brand.logo} 
                     alt={`${brand.name} Logo - Aliado de ATHOS`} 
-                    className="max-w-[80%] max-h-[80%] object-contain grayscale group-hover:grayscale-0 transition-all duration-500"
+                    className="max-w-full max-h-[120px] object-contain grayscale group-hover:grayscale-0 transition-all duration-500"
                   />
                 </div>
-
-                {/* Info */}
-                <span className="text-[10px] font-black uppercase tracking-widest text-athos-orange mb-2 block">
-                  {brand.tag}
-                </span>
-                <h3 className="text-xl font-black italic uppercase text-athos-black mb-3">
-                  {brand.name}
-                </h3>
-                <p className="text-xs text-athos-muted font-medium text-center leading-relaxed">
-                  {brand.description}
-                </p>
               </div>
-
-              {/* Action */}
-              <button className="relative z-10 mt-8 w-12 h-12 bg-athos-black rounded-full flex items-center justify-center text-white transition-all duration-300 group-hover:bg-athos-orange group-hover:scale-110 shadow-lg">
-                <ArrowRight size={20} />
-              </button>
               
               {/* Border Glow Effect */}
               <div className="absolute inset-0 rounded-[32px] border-2 border-transparent group-hover:border-athos-orange/20 transition-all duration-500"></div>
-            </div>
+            </a>
           ))}
         </div>
       </section>
 
       {/* CTA Footer Section */}
-      <section className="w-full bg-athos-black py-20 px-6 mt-auto overflow-hidden relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-athos-orange/10 blur-[120px] rounded-full"></div>
+      <section className="w-full py-20 px-6 mt-auto overflow-hidden relative bg-white">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-athos-orange/5 blur-[120px] rounded-full"></div>
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-3xl md:text-5xl font-black italic text-white uppercase mb-6 leading-none">
-            ¿Quieres ser parte de nuestra <span className="text-athos-orange">red?</span>
+          <h2 className="text-3xl md:text-5xl font-black italic text-athos-black uppercase mb-6 leading-none">
+            ¿quieres ser parte de <span className="text-athos-orange">nosotros?</span>
           </h2>
-          <p className="text-gray-400 font-bold mb-10 max-w-2xl mx-auto text-sm md:text-base">
-            Buscamos proyectos apasionados por el running que quieran crecer junto al ecosistema más completo de Colombia.
+          <p className="text-athos-muted font-bold mb-10 max-w-2xl mx-auto text-sm md:text-base">
+            Ayúdanos a crecer y haz parte de nuestro grupo de proyectos en Colombia.
           </p>
           <button 
             onClick={() => setView('support')}

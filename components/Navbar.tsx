@@ -61,6 +61,7 @@ export const Navbar = () => {
         { id: 'events', icon: Calendar, label: 'Eventos' },
         { id: 'shop', icon: ShoppingBag, label: 'Tienda' },
         { id: 'size-guide', icon: Ruler, label: 'Guía de Tallas' },
+        { id: 'marcas', icon: Flame, label: 'Marcas' },
         { id: 'support', icon: HelpCircle, label: 'FAQ' },
     ];
 
