@@ -146,17 +146,24 @@ interface AppContextType {
   toggleWishlist: (productId: string) => void;
   shareWishlist: () => void;
   toggleEventFavorite: (eventId: string) => void;
+  repairBrokenSlugs: () => Promise<void>;
 }
 
 export const slugify = (text: string) => {
   if (!text) return '';
-  return text.toString().toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-')
-    .replace(/^-+/, '')
-    .replace(/-+$/, '');
+  return text
+    .toString()
+    .normalize("NFD")                   // Divide caracteres con tildes (ej: 'ó' -> 'o' + '´')
+    .replace(/[\u0300-\u036f]/g, "")   // Elimina los acentos
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')              // Espacios a guiones
+    .replace(/[^\w\-]+/g, '')          // Elimina caracteres no alfanuméricos excepto guiones
+    .replace(/\-\-+/g, '-')            // Colapsa múltiples guiones
+    .replace(/^-+/, '')                // Limpia guiones al inicio
+    .replace(/-+$/, '');               // Limpia guiones al final
 };
+
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -397,6 +404,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       } finally {
         clearTimeout(safetyTimeout);
         if (mounted) setIsLoading(false);
+        // Reparación de slugs dañados (se ejecuta una vez al iniciar)
+        repairBrokenSlugs();
       }
     };
 
@@ -1421,6 +1430,40 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     showNotification("Orden recibida. Te contactaremos pronto.");
   };
 
+  const repairBrokenSlugs = async () => {
+    try {
+      console.log("Iniciando reparación de slugs...");
+      
+      // Repair Events
+      const { data: dbEvents } = await supabase.from('events').select('id, title, slug');
+      if (dbEvents) {
+        for (const event of dbEvents) {
+          const expectedSlug = slugify(event.title);
+          if (event.slug !== expectedSlug) {
+            console.log(`Reparando slug de evento: "${event.title}" -> ${expectedSlug}`);
+            await supabase.from('events').update({ slug: expectedSlug }).eq('id', event.id);
+          }
+        }
+      }
+
+      // Repair Products
+      const { data: dbProducts } = await supabase.from('products').select('id, name, slug');
+      if (dbProducts) {
+        for (const product of dbProducts) {
+          const expectedSlug = slugify(product.name);
+          if (product.slug !== expectedSlug) {
+            console.log(`Reparando slug de producto: "${product.name}" -> ${expectedSlug}`);
+            await supabase.from('products').update({ slug: expectedSlug }).eq('id', product.id);
+          }
+        }
+      }
+      
+      console.log("Reparación de slugs completada.");
+    } catch (e) {
+      console.error("Error en reparación de slugs:", e);
+    }
+  };
+
   return (
     <AppContext.Provider value={{
       user,
@@ -1471,7 +1514,8 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       addEventReview,
       toggleWishlist,
       shareWishlist,
-      toggleEventFavorite
+      toggleEventFavorite,
+      repairBrokenSlugs
     }}>
       {children}
     </AppContext.Provider>
