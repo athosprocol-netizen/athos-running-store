@@ -68,11 +68,6 @@ export const Marcas = () => {
     <article className="min-h-screen bg-athos-bg animate-fade-in flex flex-col items-center">
       {/* Hero Section / Header */}
       <section className="w-full max-w-[1400px] px-6 py-12 md:py-24 text-center">
-        <div className="mb-6 flex justify-center">
-          <span className="bg-[#FAF7F2] text-athos-black font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs px-6 py-2 rounded-full border border-[#EDE8E0] shadow-sm">
-            Aliados Tanuki Den
-          </span>
-        </div>
         
         <h1 className="text-4xl md:text-7xl font-black italic tracking-tighter mb-4 uppercase text-athos-black">
           Nuestras <span className="text-athos-orange">Marcas</span>
