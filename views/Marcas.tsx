@@ -91,7 +91,7 @@ export const Marcas = () => {
               href={brand.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative bg-white border border-athos-border rounded-[32px] p-8 aspect-square flex flex-col items-center justify-center transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] overflow-hidden"
+              className="group relative bg-white border border-athos-border rounded-[24px] p-8 aspect-[16/10] flex flex-col items-center justify-center transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] overflow-hidden"
             >
               {/* Background Glow */}
               <div className={`absolute inset-0 bg-gradient-to-br ${brand.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
@@ -108,7 +108,7 @@ export const Marcas = () => {
               </div>
               
               {/* Border Glow Effect */}
-              <div className="absolute inset-0 rounded-[32px] border-2 border-transparent group-hover:border-athos-orange/20 transition-all duration-500"></div>
+              <div className="absolute inset-0 rounded-[24px] border-2 border-transparent group-hover:border-athos-orange/20 transition-all duration-500"></div>
             </a>
           ))}
         </div>
