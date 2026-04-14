@@ -101,6 +101,7 @@ export const Footer = () => {
                                 <li><button onClick={() => setView('shop')} className="hover:text-athos-orange transition-colors">Calzado</button></li>
                                 <li><button onClick={() => setView('shop')} className="hover:text-athos-orange transition-colors">Ropa Técnica</button></li>
                                 <li><button onClick={() => setView('shop')} className="hover:text-athos-orange transition-colors">Accesorios</button></li>
+                                <li><button onClick={() => setView('marcas')} className="hover:text-athos-orange transition-colors">Nuestras Marcas</button></li>
                             </ul>
                         </div>
 

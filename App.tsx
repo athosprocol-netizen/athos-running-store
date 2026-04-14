@@ -20,6 +20,7 @@ import { EventResults } from './views/EventResults';
 import { OrganizerDashboard } from './views/OrganizerDashboard';
 import { SponsorEvent } from './views/SponsorEvent';
 import { ZonaRunning } from './views/ZonaRunning';
+import { Marcas } from './views/Marcas';
 import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { Marquee } from './components/Marquee';
@@ -114,6 +115,7 @@ const MainContent = () => {
       case 'organizer': return <OrganizerDashboard />;
       case 'sponsor-event': return <SponsorEvent />;
       case 'zona-running': return <ZonaRunning />;
+      case 'marcas': return <Marcas />;
       default: return <Home />;
     }
   };

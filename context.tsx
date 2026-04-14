@@ -195,6 +195,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     if (path === '/zona-running') return 'zona-running';
     if (path === '/admin') return 'admin';
     if (path === '/checkout') return 'checkout';
+    if (path === '/marcas') return 'marcas';
 
     // Fallback for old query links
     const params = new URLSearchParams(window.location.search);
@@ -455,6 +456,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     else if (newView === 'event-detail' && idOrSlug) url = `/event/${idOrSlug}`;
     else if (newView === 'event-registration' && idOrSlug) url = `/event/${idOrSlug}?action=register`;
     else if (newView === 'event-results' && idOrSlug) url = `/event/${idOrSlug}?action=results`;
+    else if (newView === 'marcas') url = '/marcas';
     else url = `/${newView}`;
 
     if (view !== newView || idOrSlug) {
