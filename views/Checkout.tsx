@@ -39,14 +39,14 @@ export const Checkout = () => {
         if (!shipping.address.trim()) newErrors.address = true;
         if (!shipping.province) newErrors.province = true;
         if (!shipping.city) newErrors.city = true;
-        if (!user && !shipping.email.trim()) newErrors.email = true;
+        if (!shipping.email.trim()) newErrors.email = true;
 
         const phoneDigits = shipping.phone.replace(/\D/g, '');
         if (phoneDigits.length !== 10) {
             newErrors.phone = true;
         }
 
-        if (!user && shipping.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shipping.email)) {
+        if (shipping.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shipping.email)) {
             newErrors.email = true;
             showNotification("Por favor ingresa un correo electrónico válido");
             return false;
@@ -66,17 +66,21 @@ export const Checkout = () => {
         return true;
     };
 
-    // Auto-fill from localStorage on mount
+    // Auto-fill from localStorage or user context on mount
     useEffect(() => {
         const savedShipping = localStorage.getItem('athos_saved_shipping');
         if (savedShipping) {
             try {
-                setShipping(JSON.parse(savedShipping));
+                const parsed = JSON.parse(savedShipping);
+                if (user?.email && !parsed.email) parsed.email = user.email;
+                setShipping(parsed);
             } catch (e) {
                 console.error("Failed to parse saved shipping info");
             }
+        } else if (user?.email) {
+            setShipping(prev => ({ ...prev, email: user.email }));
         }
-    }, []);
+    }, [user]);
 
     const validateStep2 = () => {
         if (!proofFile) {
@@ -314,18 +318,16 @@ export const Checkout = () => {
                                 />
                             </div>
 
-                            {!user && (
-                                <div>
-                                    <label className="text-xs font-bold text-athos-black uppercase mb-1 block">Correo Electrónico <span className="text-red-500">*</span></label>
-                                    <input
-                                        type="email"
-                                        value={shipping.email}
-                                        onChange={e => setShipping({ ...shipping, email: e.target.value })}
-                                        className={`w-full bg-gray-50 border-2 rounded-lg p-4 font-bold text-sm focus:bg-white ${errors.email ? 'border-red-500' : 'border-gray-200'}`}
-                                        placeholder="Para enviarte el recibo"
-                                    />
-                                </div>
-                            )}
+                            <div>
+                                <label className="text-xs font-bold text-athos-black uppercase mb-1 block">Correo Electrónico <span className="text-red-500">*</span></label>
+                                <input
+                                    type="email"
+                                    value={shipping.email}
+                                    onChange={e => setShipping({ ...shipping, email: e.target.value })}
+                                    className={`w-full bg-gray-50 border-2 rounded-lg p-4 font-bold text-sm focus:bg-white ${errors.email ? 'border-red-500' : 'border-gray-200'}`}
+                                    placeholder="Para enviarte el recibo"
+                                />
+                            </div>
 
                             <div>
                                 <label className="text-xs font-bold text-athos-black uppercase mb-1 block">Teléfono <span className="text-red-500">*</span></label>
