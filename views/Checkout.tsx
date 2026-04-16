@@ -15,6 +15,7 @@ export const Checkout = () => {
     const [shipping, setShipping] = useState({
         fullName: '',
         phone: '',
+        email: '',
         province: '',
         city: '',
         address: ''
@@ -38,10 +39,17 @@ export const Checkout = () => {
         if (!shipping.address.trim()) newErrors.address = true;
         if (!shipping.province) newErrors.province = true;
         if (!shipping.city) newErrors.city = true;
+        if (!user && !shipping.email.trim()) newErrors.email = true;
 
         const phoneDigits = shipping.phone.replace(/\D/g, '');
         if (phoneDigits.length !== 10) {
             newErrors.phone = true;
+        }
+
+        if (!user && shipping.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shipping.email)) {
+            newErrors.email = true;
+            showNotification("Por favor ingresa un correo electrónico válido");
+            return false;
         }
 
         setErrors(newErrors);
@@ -144,7 +152,7 @@ export const Checkout = () => {
                 const emailParams = {
                     customer_name: shipping.fullName,
                     customer_phone: shipping.phone,
-                    customer_email: user?.email || 'Invitado',
+                    customer_email: user?.email || shipping.email || 'Invitado',
                     shipping_address: `${shipping.address}, ${shipping.city}, ${shipping.province}`,
                     order_items_html: `<table style="width: 100%; border-collapse: collapse;">${orderItemsHtml}</table>`,
                     subtotal: `$${subtotal.toLocaleString('es-CO')}`,
@@ -305,6 +313,19 @@ export const Checkout = () => {
                                     placeholder="Ej: Alejandro Corredor"
                                 />
                             </div>
+
+                            {!user && (
+                                <div>
+                                    <label className="text-xs font-bold text-athos-black uppercase mb-1 block">Correo Electrónico <span className="text-red-500">*</span></label>
+                                    <input
+                                        type="email"
+                                        value={shipping.email}
+                                        onChange={e => setShipping({ ...shipping, email: e.target.value })}
+                                        className={`w-full bg-gray-50 border-2 rounded-lg p-4 font-bold text-sm focus:bg-white ${errors.email ? 'border-red-500' : 'border-gray-200'}`}
+                                        placeholder="Para enviarte el recibo"
+                                    />
+                                </div>
+                            )}
 
                             <div>
                                 <label className="text-xs font-bold text-athos-black uppercase mb-1 block">Teléfono <span className="text-red-500">*</span></label>
