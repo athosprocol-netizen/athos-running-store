@@ -158,30 +158,36 @@ export const Checkout = () => {
 
                 const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Ze2no8CSyEuXkoj2H';
 
-                const adminEmailPromise = emailjs.send(
-                    'service_w0gw0zj', // Updated Service ID
-                    import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_uo3yssb',
-                    emailParams,
-                    publicKey
-                );
+                // 1. Enviar notificación al Admin
+                try {
+                    await emailjs.send(
+                        'service_w0gw0zj',
+                        import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_uo3yssb',
+                        emailParams,
+                        publicKey
+                    );
+                    console.log("Correo de administrador enviado.");
+                } catch (adminErr) {
+                    console.error("Error enviando correo al admin:", adminErr);
+                }
 
-                const receiptEmailPromise = emailjs.send(
-                    'service_w0gw0zj',
-                    'template_ty33v7t', // Receipt Template ID
-                    emailParams,
-                    publicKey
-                );
+                // 2. Enviar recibo al Cliente (Solo si hay email válido)
+                if (emailParams.customer_email && emailParams.customer_email !== 'Invitado') {
+                    try {
+                        await emailjs.send(
+                            'service_w0gw0zj',
+                            'template_ty33v7t', // Receipt Template ID
+                            emailParams,
+                            publicKey
+                        );
+                        console.log("Recibo enviado al cliente.");
+                    } catch (clientErr: any) {
+                        console.error("Error enviando recibo al cliente:", clientErr?.text || clientErr);
+                    }
+                } else {
+                    console.log("No se envió recibo porque el cliente es un invitado sin correo.");
+                }
 
-                const allEmailsPromise = Promise.all([adminEmailPromise, receiptEmailPromise]);
-
-                // 8-second timeout for EmailJS
-                let timeoutId: NodeJS.Timeout;
-                const timeoutPromise = new Promise((_, reject) => {
-                    timeoutId = setTimeout(() => reject(new Error("Timeout: EmailJS no respondió a tiempo.")), 8000);
-                });
-
-                await Promise.race([allEmailsPromise, timeoutPromise]);
-                clearTimeout(timeoutId!); // Clear timeout if email resolves
                 console.log("Email request successfully handled via EmailJS.");
             } catch (emailError: any) {
                 console.error("Warning: Error sending email", emailError);
