@@ -141,23 +141,38 @@ export const Checkout = () => {
 
             // 3. Send Email Via EmailJS
             try {
-                const emailPromise = emailjs.send(
+                const emailParams = {
+                    customer_name: shipping.fullName,
+                    customer_phone: shipping.phone,
+                    customer_email: user?.email || 'Invitado',
+                    shipping_address: `${shipping.address}, ${shipping.city}, ${shipping.province}`,
+                    order_items_html: `<table style="width: 100%; border-collapse: collapse;">${orderItemsHtml}</table>`,
+                    subtotal: `$${subtotal.toLocaleString('es-CO')}`,
+                    shipping_cost: `$${shippingFee.toLocaleString('es-CO')}`,
+                    total: `$${total.toLocaleString('es-CO')}`,
+                    payment_method: paymentMethod.toUpperCase(),
+                    proof_url: proofUrl || '#',
+                    order_date: new Date().toLocaleDateString('es-CO'),
+                    order_time: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
+                };
+
+                const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Ze2no8CSyEuXkoj2H';
+
+                const adminEmailPromise = emailjs.send(
                     'service_w0gw0zj', // Updated Service ID
                     import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_uo3yssb',
-                    {
-                        customer_name: shipping.fullName,
-                        customer_phone: shipping.phone,
-                        customer_email: user?.email || 'Invitado',
-                        shipping_address: `${shipping.address}, ${shipping.city}, ${shipping.province}`,
-                        order_items_html: `<table style="width: 100%; border-collapse: collapse;">${orderItemsHtml}</table>`,
-                        subtotal: `$${subtotal.toLocaleString('es-CO')}`,
-                        shipping_cost: `$${shippingFee.toLocaleString('es-CO')}`,
-                        total: `$${total.toLocaleString('es-CO')}`,
-                        payment_method: paymentMethod.toUpperCase(),
-                        proof_url: proofUrl || '#'
-                    },
-                    import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Ze2no8CSyEuXkoj2H' // Fallback to avoid empty env bugs
+                    emailParams,
+                    publicKey
                 );
+
+                const receiptEmailPromise = emailjs.send(
+                    'service_w0gw0zj',
+                    'template_ty33v7t', // Receipt Template ID
+                    emailParams,
+                    publicKey
+                );
+
+                const allEmailsPromise = Promise.all([adminEmailPromise, receiptEmailPromise]);
 
                 // 8-second timeout for EmailJS
                 let timeoutId: NodeJS.Timeout;
@@ -165,7 +180,7 @@ export const Checkout = () => {
                     timeoutId = setTimeout(() => reject(new Error("Timeout: EmailJS no respondió a tiempo.")), 8000);
                 });
 
-                await Promise.race([emailPromise, timeoutPromise]);
+                await Promise.race([allEmailsPromise, timeoutPromise]);
                 clearTimeout(timeoutId!); // Clear timeout if email resolves
                 console.log("Email request successfully handled via EmailJS.");
             } catch (emailError: any) {
