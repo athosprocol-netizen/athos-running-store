@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useApp } from '../context';
-import { Settings, Heart, Activity, MapPin, Camera, Save, X, User, Printer, Shirt, Share2, Ticket, Smartphone, ShoppingBag, Calendar } from 'lucide-react';
+import { Settings, Heart, Activity, MapPin, Camera, Save, X, User, Printer, Shirt, Share2, Ticket, Smartphone, ShoppingBag, Calendar, LogOut } from 'lucide-react';
 
 export const Profile = () => {
     const { user, updateUserProfile, logout, products, toggleWishlist, shareWishlist, selectProduct, addToCart, orders, events, registrations, setView, toggleEventFavorite, selectEvent } = useApp();
@@ -174,6 +174,15 @@ export const Profile = () => {
                                                 }`}
                                         >
                                             Mis Eventos
+                                        </button>
+
+                                        {/* Logout Button */}
+                                        <button
+                                            onClick={logout}
+                                            className="w-full flex items-center justify-center gap-2 px-5 py-3 bg-red-50 border border-red-200 text-red-600 hover:bg-red-600 hover:text-white hover:border-red-600 rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-sm mt-1"
+                                        >
+                                            <LogOut size={14} />
+                                            Cerrar Sesión
                                         </button>
                                     </div>
                                 </>
