@@ -43,7 +43,7 @@ export const ProductDetail = () => {
 
     // Helper functions to support both English (from mocks) and Spanish (from Admin/DB)
     const isShoeCategory = (cat: string) =>
-        ['shoes', 'calzado', 'zapatos', 'footwear'].includes((cat || '').toLowerCase());
+        ['shoes', 'calzado', 'zapatos', 'footwear', 'zapatillas', 'tenis'].includes((cat || '').toLowerCase());
 
     const isApparelCategory = (cat: string) =>
         ['apparel', 'ropa', 'clothing', 'camisetas', 'pantalones', 'chaquetas', 'shorts'].includes((cat || '').toLowerCase());
@@ -328,7 +328,6 @@ export const ProductDetail = () => {
                             <h1 className="text-3xl md:text-5xl font-black italic text-athos-black uppercase leading-none mb-2">{product.name}</h1>
                             <p className="text-sm font-bold text-gray-400 uppercase tracking-wide">
                                 {product.category}
-                                <span className="ml-2 text-[10px] text-orange-500 font-mono bg-orange-50 px-1.5 py-0.5 rounded">categoría real: "{product.category}"</span>
                             </p>
                         </div>
 
