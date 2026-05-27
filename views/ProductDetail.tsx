@@ -46,7 +46,7 @@ export const ProductDetail = () => {
         ['shoes', 'calzado', 'zapatos', 'footwear', 'zapatillas', 'tenis'].includes((cat || '').toLowerCase());
 
     const isApparelCategory = (cat: string) =>
-        ['apparel', 'ropa', 'clothing', 'camisetas', 'pantalones', 'chaquetas', 'shorts'].includes((cat || '').toLowerCase());
+        ['apparel', 'ropa', 'clothing', 'camisetas', 'pantalones', 'chaquetas', 'shorts', 'conjuntos'].includes((cat || '').toLowerCase());
 
     if (!product) return <div>Producto no encontrado</div>;
 
