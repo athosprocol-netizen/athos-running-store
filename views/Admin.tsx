@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useApp } from '../context';
-import { Plus, Trash2, Edit2, Upload, X, Check, Package, DollarSign, Image } from 'lucide-react';
+import { Plus, Trash2, Edit2, Upload, X, Check, Package, DollarSign, Image, Search } from 'lucide-react';
 import { Product, Event as AthosEvent, HeroBanner } from '../types';
 
 export const Admin = () => {
@@ -23,6 +23,13 @@ export const Admin = () => {
     const { banners, addBanner, updateBanner, deleteBanner } = useApp();
     const [editingBannerId, setEditingBannerId] = useState<string | null>(null);
     const [tempBanner, setTempBanner] = useState<Partial<HeroBanner>>({});
+
+    // Search & filter state
+    const [productSearch, setProductSearch] = useState('');
+    const [productCategoryFilter, setProductCategoryFilter] = useState('');
+    const [eventSearch, setEventSearch] = useState('');
+    const [eventStatusFilter, setEventStatusFilter] = useState('');
+    const [eventMonthFilter, setEventMonthFilter] = useState('');
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -272,6 +279,22 @@ export const Admin = () => {
             variants: variants.map(v => v.id === variantId ? { ...v, [field]: value } : v)
         });
     };
+
+    // Filtered lists (computed before render)
+    const filteredProducts = products.filter(p =>
+        (!productSearch ||
+            p.name.toLowerCase().includes(productSearch.toLowerCase()) ||
+            p.category.toLowerCase().includes(productSearch.toLowerCase())) &&
+        (!productCategoryFilter || p.category.toLowerCase() === productCategoryFilter.toLowerCase())
+    );
+
+    const filteredEvents = events.filter(e =>
+        (!eventSearch ||
+            e.title.toLowerCase().includes(eventSearch.toLowerCase()) ||
+            (e.city || '').toLowerCase().includes(eventSearch.toLowerCase())) &&
+        (!eventStatusFilter || e.status === eventStatusFilter) &&
+        (!eventMonthFilter || new Date(e.date).toISOString().slice(0, 7) === eventMonthFilter)
+    );
 
     return (
         <div className="pt-6 md:pt-10 pb-24 px-4 md:px-8 max-w-7xl mx-auto min-h-screen bg-transparent animate-fade-in">
@@ -775,6 +798,98 @@ export const Admin = () => {
                 </div>
             )}
 
+            {/* ── FILTER BAR ── */}
+            {!isAdding && !editingId && !editingEventId && !editingBannerId && (activeTab === 'products' || activeTab === 'events') && (
+                <div className="mb-4 flex flex-wrap gap-3 items-center">
+                    {activeTab === 'products' && (
+                        <>
+                            {/* Product search */}
+                            <div className="relative flex-1 min-w-[220px]">
+                                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                <input
+                                    type="text"
+                                    placeholder="Buscar producto o categoría..."
+                                    className="w-full pl-9 pr-4 py-2.5 bg-white rounded-xl border border-gray-100 text-sm font-bold placeholder:font-normal placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-athos-orange/20"
+                                    value={productSearch}
+                                    onChange={e => setProductSearch(e.target.value)}
+                                />
+                            </div>
+                            {/* Category filter */}
+                            <select
+                                className="px-4 py-2.5 bg-white rounded-xl border border-gray-100 text-sm font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-athos-orange/20 cursor-pointer"
+                                value={productCategoryFilter}
+                                onChange={e => setProductCategoryFilter(e.target.value)}
+                            >
+                                <option value="">Todas las categorías</option>
+                                {[...new Set(products.map(p => p.category))].sort().map(cat => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                ))}
+                            </select>
+                            {/* Count */}
+                            <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">
+                                {filteredProducts.length} / {products.length} productos
+                            </span>
+                            {/* Clear */}
+                            {(productSearch || productCategoryFilter) && (
+                                <button
+                                    onClick={() => { setProductSearch(''); setProductCategoryFilter(''); }}
+                                    className="text-xs font-bold text-athos-orange uppercase hover:text-orange-600 flex items-center gap-1"
+                                >
+                                    <X size={12} /> Limpiar
+                                </button>
+                            )}
+                        </>
+                    )}
+                    {activeTab === 'events' && (
+                        <>
+                            {/* Event search */}
+                            <div className="relative flex-1 min-w-[220px]">
+                                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                <input
+                                    type="text"
+                                    placeholder="Buscar evento o ciudad..."
+                                    className="w-full pl-9 pr-4 py-2.5 bg-white rounded-xl border border-gray-100 text-sm font-bold placeholder:font-normal placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-athos-orange/20"
+                                    value={eventSearch}
+                                    onChange={e => setEventSearch(e.target.value)}
+                                />
+                            </div>
+                            {/* Month filter */}
+                            <input
+                                type="month"
+                                className="px-4 py-2.5 bg-white rounded-xl border border-gray-100 text-sm font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-athos-orange/20 cursor-pointer"
+                                value={eventMonthFilter}
+                                onChange={e => setEventMonthFilter(e.target.value)}
+                                title="Filtrar por mes"
+                            />
+                            {/* Status filter */}
+                            <select
+                                className="px-4 py-2.5 bg-white rounded-xl border border-gray-100 text-sm font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-athos-orange/20 cursor-pointer"
+                                value={eventStatusFilter}
+                                onChange={e => setEventStatusFilter(e.target.value)}
+                            >
+                                <option value="">Todos los estados</option>
+                                <option value="upcoming">Próximos</option>
+                                <option value="active">Activos</option>
+                                <option value="past">Pasados</option>
+                            </select>
+                            {/* Count */}
+                            <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">
+                                {filteredEvents.length} / {events.length} eventos
+                            </span>
+                            {/* Clear */}
+                            {(eventSearch || eventStatusFilter || eventMonthFilter) && (
+                                <button
+                                    onClick={() => { setEventSearch(''); setEventStatusFilter(''); setEventMonthFilter(''); }}
+                                    className="text-xs font-bold text-athos-orange uppercase hover:text-orange-600 flex items-center gap-1"
+                                >
+                                    <X size={12} /> Limpiar
+                                </button>
+                            )}
+                        </>
+                    )}
+                </div>
+            )}
+
             {/* Table Area */}
             {activeTab === 'products' ? (
                 <div className="bg-white rounded-[30px] p-2 overflow-hidden border border-gray-100">
@@ -789,7 +904,10 @@ export const Admin = () => {
                             </tr>
                         </thead>
                         <tbody className="text-sm">
-                            {products.map(product => (
+                            {filteredProducts.length === 0 && (
+                                <tr><td colSpan={5} className="p-8 text-center text-gray-400 font-bold uppercase text-xs">Sin resultados para tu búsqueda</td></tr>
+                            )}
+                            {filteredProducts.map(product => (
                                 <tr key={product.id} className="group">
                                     <td className="p-2">
                                         <div className="bg-white rounded-2xl p-2 flex items-center gap-4 group-hover:shadow-sm transition-shadow">
@@ -829,7 +947,10 @@ export const Admin = () => {
                             </tr>
                         </thead>
                         <tbody className="text-sm">
-                            {events.map(event => (
+                            {filteredEvents.length === 0 && (
+                                <tr><td colSpan={4} className="p-8 text-center text-gray-400 font-bold uppercase text-xs">Sin resultados para tu búsqueda</td></tr>
+                            )}
+                            {filteredEvents.map(event => (
                                 <tr key={event.id} className="group">
                                     <td className="p-2">
                                         <div className="bg-white rounded-2xl p-2 flex items-center gap-4 group-hover:shadow-sm transition-shadow">
