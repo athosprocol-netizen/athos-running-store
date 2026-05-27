@@ -26,25 +26,52 @@ export const ProductDetail = () => {
     const [isFullScreenImage, setIsFullScreenImage] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const SIZES_CO = {
-        'Hombre': ['37', '38', '39', '40', '41', '42'],
-        'Mujer': ['35', '36', '37', '38', '39', '40'],
-        'Niños': ['28', '29', '30', '31', '32', '33', '34']
+    // Reset size selection when changing products
+    React.useEffect(() => {
+        setActiveSize(null);
+        setSelectedGender('Hombre');
+    }, [selectedProductId]);
+
+    // Colombian running store standard sizes
+    const SHOE_SIZES = {
+        'Hombre': ['38', '39', '40', '41', '42', '43', '44', '45'],
+        'Mujer': ['35', '36', '37', '38', '39', '40', '41'],
+        'Niños': ['28', '29', '30', '31', '32', '33', '34', '35']
     };
+
+    const APPAREL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+    // Helper functions to support both English (from mocks) and Spanish (from Admin/DB)
+    const isShoeCategory = (cat: string) =>
+        ['shoes', 'calzado', 'zapatos', 'footwear'].includes((cat || '').toLowerCase());
+
+    const isApparelCategory = (cat: string) =>
+        ['apparel', 'ropa', 'clothing', 'camisetas', 'pantalones', 'chaquetas', 'shorts'].includes((cat || '').toLowerCase());
 
     if (!product) return <div>Producto no encontrado</div>;
 
     const isWishlisted = user?.wishlist.includes(product.id);
 
     const handleAddToCart = () => {
-        if (!activeSize && (product.category === 'shoes' || product.category === 'apparel')) {
+        const needsSize = isShoeCategory(product.category) || isApparelCategory(product.category);
+
+        if (!activeSize && needsSize) {
             alert('¡Espera! Por favor selecciona una talla antes de agregar el producto al carrito.');
             showNotification('Por favor selecciona una talla');
             return;
         }
 
-        // Ensure size text is passed cleanly
-        const finalSize = activeSize ? `${activeSize} (${selectedGender})` : 'Única';
+        // Format size nicely for Colombian customers
+        let finalSize = 'Única';
+        if (activeSize) {
+            if (isShoeCategory(product.category)) {
+                finalSize = `EU ${activeSize} (${selectedGender})`;
+            } else if (isApparelCategory(product.category)) {
+                finalSize = activeSize; // Clean: XS, S, M, L, XL, XXL
+            } else {
+                finalSize = activeSize;
+            }
+        }
 
         const productToCart = activeVariant
             ? { ...product, price: activeVariant.price, image: activeVariant.image }
@@ -299,7 +326,10 @@ export const ProductDetail = () => {
                     <div className="mb-6 flex justify-between items-start">
                         <div>
                             <h1 className="text-3xl md:text-5xl font-black italic text-athos-black uppercase leading-none mb-2">{product.name}</h1>
-                            <p className="text-sm font-bold text-gray-400 uppercase tracking-wide">{product.category}</p>
+                            <p className="text-sm font-bold text-gray-400 uppercase tracking-wide">
+                                {product.category}
+                                <span className="ml-2 text-[10px] text-orange-500 font-mono bg-orange-50 px-1.5 py-0.5 rounded">categoría real: "{product.category}"</span>
+                            </p>
                         </div>
 
                         <div className="flex gap-2">
@@ -380,27 +410,58 @@ export const ProductDetail = () => {
                             </div>
                         )}
 
-                        {(product.category === 'shoes' || product.category === 'apparel') && (
+                        {/* SIZE SELECTOR - Category aware for Colombian market */}
+                        {(isShoeCategory(product.category) || isApparelCategory(product.category)) && (
                             <div className="flex flex-col gap-3">
-                                <div className="flex gap-4 border-b border-gray-100 pb-2">
-                                    <button onClick={() => setSelectedGender('Hombre')} className={`text-xs font-bold uppercase ${selectedGender === 'Hombre' ? 'text-athos-black' : 'text-gray-400 hover:text-gray-600'}`}>Hombre</button>
-                                    <button onClick={() => setSelectedGender('Mujer')} className={`text-xs font-bold uppercase ${selectedGender === 'Mujer' ? 'text-athos-black' : 'text-gray-400 hover:text-gray-600'}`}>Mujer</button>
-                                    <button onClick={() => setSelectedGender('Niños')} className={`text-xs font-bold uppercase ${selectedGender === 'Niños' ? 'text-athos-black' : 'text-gray-400 hover:text-gray-600'}`}>Niños</button>
+                                {/* Header with link to size guide */}
+                                <div className="flex items-center justify-between">
+                                    <span className="font-bold text-athos-black text-sm uppercase">
+                                        Talla {isShoeCategory(product.category) ? '(EU - Estándar Colombia)' : ''}
+                                    </span>
+                                    <button
+                                        onClick={() => setView('size-guide')}
+                                        className="text-xs font-bold text-athos-orange hover:underline"
+                                    >
+                                        Guía de tallas →
+                                    </button>
                                 </div>
-                                <div className="flex gap-2 overflow-x-auto hide-scrollbar py-2">
-                                    {SIZES_CO[selectedGender].map(size => (
-                                        <button
-                                            key={size}
-                                            onClick={() => setActiveSize(size)}
-                                            className={`min-w-[45px] h-[45px] rounded-xl text-sm font-bold transition-all border ${activeSize === size
-                                                ? 'bg-athos-black text-white border-athos-black'
-                                                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
-                                                }`}
-                                        >
-                                            {size}
-                                        </button>
-                                    ))}
-                                </div>
+
+                                {/* SHOES: Gender + EU numeric sizes (standard in Colombia) */}
+                                {isShoeCategory(product.category) && (
+                                    <>
+                                        <div className="flex gap-4 border-b border-gray-100 pb-2">
+                                            <button onClick={() => { setSelectedGender('Hombre'); setActiveSize(null); }} className={`text-xs font-bold uppercase ${selectedGender === 'Hombre' ? 'text-athos-black' : 'text-gray-400 hover:text-gray-600'}`}>Hombre</button>
+                                            <button onClick={() => { setSelectedGender('Mujer'); setActiveSize(null); }} className={`text-xs font-bold uppercase ${selectedGender === 'Mujer' ? 'text-athos-black' : 'text-gray-400 hover:text-gray-600'}`}>Mujer</button>
+                                            <button onClick={() => { setSelectedGender('Niños'); setActiveSize(null); }} className={`text-xs font-bold uppercase ${selectedGender === 'Niños' ? 'text-athos-black' : 'text-gray-400 hover:text-gray-600'}`}>Niños</button>
+                                        </div>
+                                        <div className="flex gap-2 overflow-x-auto hide-scrollbar py-2">
+                                            {SHOE_SIZES[selectedGender].map((size) => (
+                                                <button
+                                                    key={size}
+                                                    onClick={() => setActiveSize(size)}
+                                                    className={`min-w-[48px] h-[48px] rounded-xl text-sm font-bold border ${activeSize === size ? 'bg-black text-white border-black' : 'bg-white text-gray-500 border-gray-200'}`}
+                                                >
+                                                    {size}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* APPAREL: Letter sizes (XS, S, M, L, XL, XXL) */}
+                                {isApparelCategory(product.category) && (
+                                    <div className="flex flex-wrap gap-2 py-1">
+                                        {APPAREL_SIZES.map((size) => (
+                                            <button
+                                                key={size}
+                                                onClick={() => setActiveSize(size)}
+                                                className={`min-w-[52px] h-[48px] rounded-xl text-sm font-bold border ${activeSize === size ? 'bg-black text-white border-black' : 'bg-white text-gray-500 border-gray-200'}`}
+                                            >
+                                                {size}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
