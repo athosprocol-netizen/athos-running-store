@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useApp } from '../context';
-import { Plus, Trash2, Edit2, Upload, X, Check, Package, DollarSign, Image, Search } from 'lucide-react';
+import { Plus, Trash2, Edit2, Upload, X, Check, Package, DollarSign, Image, Search, ArrowUp, ArrowDown } from 'lucide-react';
 import { Product, Event as AthosEvent, HeroBanner } from '../types';
 
 export const Admin = () => {
@@ -30,6 +30,7 @@ export const Admin = () => {
     const [eventSearch, setEventSearch] = useState('');
     const [eventStatusFilter, setEventStatusFilter] = useState('');
     const [eventMonthFilter, setEventMonthFilter] = useState('');
+    const [eventSortOrder, setEventSortOrder] = useState<'asc' | 'desc'>('asc');
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -294,7 +295,11 @@ export const Admin = () => {
             (e.city || '').toLowerCase().includes(eventSearch.toLowerCase())) &&
         (!eventStatusFilter || e.status === eventStatusFilter) &&
         (!eventMonthFilter || new Date(e.date).toISOString().slice(0, 7) === eventMonthFilter)
-    );
+    ).sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return eventSortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
 
     return (
         <div className="pt-6 md:pt-10 pb-24 px-4 md:px-8 max-w-7xl mx-auto min-h-screen bg-transparent animate-fade-in">
@@ -941,7 +946,16 @@ export const Admin = () => {
                         <thead className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">
                             <tr>
                                 <th className="p-4 pl-6">Evento</th>
-                                <th className="p-4">Fecha</th>
+                                <th className="p-4">
+                                    <div 
+                                        className="flex items-center gap-1 cursor-pointer hover:text-athos-orange select-none transition-colors" 
+                                        onClick={() => setEventSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
+                                        title="Ordenar por fecha"
+                                    >
+                                        Fecha
+                                        {eventSortOrder === 'asc' ? <ArrowUp size={12} /> : <ArrowDown size={12} />}
+                                    </div>
+                                </th>
                                 <th className="p-4">Ubicación</th>
                                 <th className="p-4 text-right pr-6">Acciones</th>
                             </tr>
