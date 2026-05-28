@@ -1,12 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import { Flame, Instagram, Twitter, Facebook, Youtube, MapPin, Mail, Phone, ArrowRight, Music2, Users, Eye } from 'lucide-react';
+import { Flame, Instagram, Twitter, Facebook, Youtube, MapPin, Mail, Phone, ArrowRight, Music2, Users, Eye, Check, Loader2 } from 'lucide-react';
 import { useApp } from '../context';
 import { registerVisit, getUniqueVisitorCount } from '../lib/analytics';
+import emailjs from '@emailjs/browser';
 
 export const Footer = () => {
     const { setView } = useApp();
     const [visitorCount, setVisitorCount] = useState<number | null>(null);
     const [activeUsers, setActiveUsers] = useState(24);
+    const [newsletterEmail, setNewsletterEmail] = useState('');
+    const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+    const handleNewsletterSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newsletterEmail.trim() || !newsletterEmail.includes('@')) return;
+        setNewsletterStatus('loading');
+        try {
+            await emailjs.send(
+                'service_athos',
+                'template_uo3yssb',
+                {
+                    to_name: 'ATHOS',
+                    from_name: newsletterEmail,
+                    customer_name: 'Nueva suscripción al newsletter',
+                    customer_email: newsletterEmail,
+                    subject: 'Nueva suscripción al newsletter',
+                    message: `El correo ${newsletterEmail} se suscribió al newsletter de ATHOS.`,
+                    order_items: `Suscriptor: ${newsletterEmail}`,
+                    total: '-',
+                    shipping_address: '-',
+                    delivery_notes: '-',
+                },
+                import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Ze2no8CSyEuXkoj2H'
+            );
+            setNewsletterStatus('success');
+            setNewsletterEmail('');
+            setTimeout(() => setNewsletterStatus('idle'), 4000);
+        } catch {
+            setNewsletterStatus('error');
+            setTimeout(() => setNewsletterStatus('idle'), 3000);
+        }
+    };
 
     useEffect(() => {
         registerVisit().then(() => {
@@ -120,16 +154,29 @@ export const Footer = () => {
                         <div className="col-span-4">
                             <h4 className="font-black italic text-xl uppercase mb-6 tracking-wide">Únete al Club</h4>
                             <p className="text-gray-400 text-base mb-4">Recibe acceso anticipado a lanzamientos y eventos exclusivos.</p>
-                            <div className="flex bg-gray-900 p-2 rounded-xl border border-gray-800 mb-8 focus-within:border-athos-orange transition-colors">
+                            <form onSubmit={handleNewsletterSubmit} className={`flex bg-gray-900 p-2 rounded-xl border mb-8 transition-colors focus-within:border-athos-orange ${newsletterStatus === 'success' ? 'border-green-500' : newsletterStatus === 'error' ? 'border-red-500' : 'border-gray-800'}`}>
                                 <input
                                     type="email"
                                     placeholder="Tu correo electrónico"
-                                    className="bg-transparent border-none text-white w-full px-4 focus:ring-0 placeholder:text-gray-600 font-bold text-base"
+                                    value={newsletterEmail}
+                                    onChange={e => setNewsletterEmail(e.target.value)}
+                                    disabled={newsletterStatus === 'loading' || newsletterStatus === 'success'}
+                                    className="bg-transparent border-none text-white w-full px-4 focus:ring-0 placeholder:text-gray-600 font-bold text-base disabled:opacity-50"
                                 />
-                                <button className="bg-athos-orange text-white px-6 py-2 rounded-lg font-black uppercase text-xs tracking-widest hover:bg-white hover:text-athos-black transition-colors">
-                                    Suscribir
+                                <button
+                                    type="submit"
+                                    disabled={newsletterStatus === 'loading' || newsletterStatus === 'success'}
+                                    className={`flex-shrink-0 px-6 py-2 rounded-lg font-black uppercase text-xs tracking-widest transition-colors flex items-center gap-2 ${
+                                        newsletterStatus === 'success' ? 'bg-green-500 text-white' :
+                                        newsletterStatus === 'error' ? 'bg-red-500 text-white' :
+                                        'bg-athos-orange text-white hover:bg-white hover:text-athos-black'
+                                    }`}
+                                >
+                                    {newsletterStatus === 'loading' && <Loader2 size={14} className="animate-spin" />}
+                                    {newsletterStatus === 'success' && <Check size={14} />}
+                                    {newsletterStatus === 'success' ? '¡Listo!' : newsletterStatus === 'error' ? 'Error' : 'Suscribir'}
                                 </button>
-                            </div>
+                            </form>
                             <div className="space-y-2 text-base font-bold text-gray-500">
                                 <p className="flex items-center gap-2"><MapPin size={16} className="text-athos-orange" /> Cartago, Valle del Cauca</p>
                                 <p className="flex items-center gap-2 mb-6"><Mail size={16} className="text-athos-orange" /> athosrun.co@gmail.com</p>

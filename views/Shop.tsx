@@ -17,11 +17,24 @@ export const Shop = () => {
     const ITEMS_PER_PAGE = 8;
 
     const uniqueCategories = Array.from(new Set(products.map(p => p.category))).filter(Boolean) as string[];
+
+    const CATEGORY_LABELS: Record<string, string> = {
+        shoes: 'Calzado',
+        apparel: 'Ropa Técnica',
+        accessories: 'Accesorios',
+        achievements: 'Logros',
+        relojes: 'Relojes',
+        cinturones: 'Cinturones',
+        gafas: 'Gafas',
+        gorras: 'Gorras',
+        medalleros: 'Medalleros',
+    };
+
     const categories = [
         { id: 'all', label: 'Todo' },
         ...uniqueCategories.map(cat => ({
             id: cat,
-            label: cat.charAt(0).toUpperCase() + cat.slice(1)
+            label: CATEGORY_LABELS[cat] ?? cat.charAt(0).toUpperCase() + cat.slice(1)
         }))
     ];
 
