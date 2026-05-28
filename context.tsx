@@ -190,8 +190,30 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
   const [view, _setView] = useState<ViewState>(() => {
     const path = window.location.pathname;
-    
-    // Path-based routing in English
+
+    // Spanish URL routes (canonical)
+    if (path.startsWith('/tienda/producto/')) return 'product';
+    if (path.startsWith('/eventos/') && path.includes('/registro')) return 'event-registration';
+    if (path.startsWith('/eventos/') && path.includes('/resultados')) return 'event-results';
+    if (path.startsWith('/eventos/') && path.split('/').length >= 3 && path.split('/')[2]) return 'event-detail';
+    if (path === '/tienda') return 'shop';
+    if (path === '/carrito') return 'cart';
+    if (path === '/ingresar') return 'auth';
+    if (path === '/perfil') return 'profile';
+    if (path === '/eventos') return 'events';
+    if (path === '/zona-running') return 'zona-running';
+    if (path === '/admin') return 'admin';
+    if (path === '/checkout') return 'checkout';
+    if (path === '/marcas') return 'marcas';
+    if (path === '/soporte') return 'support';
+    if (path === '/guia-de-tallas') return 'size-guide';
+    if (path === '/desafios') return 'challenges';
+    if (path === '/recuperar-contrasena') return 'forgot-password';
+    if (path === '/actualizar-contrasena') return 'update-password';
+    if (path === '/organizador') return 'organizer';
+    if (path === '/patrocinar-evento') return 'sponsor-event';
+
+    // Legacy English routes (backward compat — Vercel redirects handle these but keep as fallback)
     if (path.startsWith('/product/')) return 'product';
     if (path.startsWith('/event/')) return 'event-detail';
     if (path === '/shop') return 'shop';
@@ -199,10 +221,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     if (path === '/auth') return 'auth';
     if (path === '/profile') return 'profile';
     if (path === '/events') return 'events';
+    if (path === '/support') return 'support';
+    if (path === '/size-guide') return 'size-guide';
+    if (path === '/challenges') return 'challenges';
     if (path === '/zona-running') return 'zona-running';
-    if (path === '/admin') return 'admin';
-    if (path === '/checkout') return 'checkout';
-    if (path === '/marcas') return 'marcas';
 
     // Fallback for old query links
     const params = new URLSearchParams(window.location.search);
@@ -215,18 +237,16 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
   const [selectedProductId, setSelectedProductId] = useState<string | null>(() => {
     const path = window.location.pathname;
-    if (path.startsWith('/product/')) {
-        return path.split('/')[2] || null;
-    }
+    if (path.startsWith('/tienda/producto/')) return path.split('/')[3] || null;
+    if (path.startsWith('/product/')) return path.split('/')[2] || null; // legacy
     const params = new URLSearchParams(window.location.search);
     return params.get('id') || params.get('product') || null;
   });
 
   const [selectedEventId, setSelectedEventId] = useState<string | null>(() => {
     const path = window.location.pathname;
-    if (path.startsWith('/event/')) {
-        return path.split('/')[2] || null;
-    }
+    if (path.startsWith('/eventos/')) return path.split('/')[2] || null;
+    if (path.startsWith('/event/')) return path.split('/')[2] || null; // legacy
     const params = new URLSearchParams(window.location.search);
     return params.get('id') || params.get('event') || null;
   });
@@ -459,14 +479,32 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
 
   const setViewWithHistory = (newView: ViewState, idOrSlug?: string) => {
-    let url = '/';
-    if (newView === 'home') url = '/';
-    else if (newView === 'product' && idOrSlug) url = `/product/${idOrSlug}`;
-    else if (newView === 'event-detail' && idOrSlug) url = `/event/${idOrSlug}`;
-    else if (newView === 'event-registration' && idOrSlug) url = `/event/${idOrSlug}?action=register`;
-    else if (newView === 'event-results' && idOrSlug) url = `/event/${idOrSlug}?action=results`;
-    else if (newView === 'marcas') url = '/marcas';
-    else url = `/${newView}`;
+    const urlMap: Record<string, string> = {
+      home: '/',
+      shop: '/tienda',
+      events: '/eventos',
+      marcas: '/marcas',
+      'zona-running': '/zona-running',
+      challenges: '/desafios',
+      support: '/soporte',
+      'size-guide': '/guia-de-tallas',
+      cart: '/carrito',
+      checkout: '/checkout',
+      profile: '/perfil',
+      auth: '/ingresar',
+      'forgot-password': '/recuperar-contrasena',
+      'update-password': '/actualizar-contrasena',
+      admin: '/admin',
+      organizer: '/organizador',
+      'sponsor-event': '/patrocinar-evento',
+    };
+
+    let url: string;
+    if (newView === 'product' && idOrSlug) url = `/tienda/producto/${idOrSlug}`;
+    else if (newView === 'event-detail' && idOrSlug) url = `/eventos/${idOrSlug}`;
+    else if (newView === 'event-registration' && idOrSlug) url = `/eventos/${idOrSlug}/registro`;
+    else if (newView === 'event-results' && idOrSlug) url = `/eventos/${idOrSlug}/resultados`;
+    else url = urlMap[newView] ?? `/${newView}`;
 
     if (view !== newView || idOrSlug) {
       window.history.pushState({ view: newView, id: idOrSlug }, '', url);
@@ -636,17 +674,35 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  // Browser History Handling
+  // Browser History Handling — supports both state object and URL parsing
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
+      const path = window.location.pathname;
+
       if (event.state && event.state.view) {
         _setView(event.state.view);
         if (event.state.id) {
           if (event.state.view === 'product') setSelectedProductId(event.state.id);
-          if (event.state.view === 'event-detail') setSelectedEventId(event.state.id);
+          if (['event-detail', 'event-registration', 'event-results'].includes(event.state.view))
+            setSelectedEventId(event.state.id);
         }
       } else {
-        _setView('home');
+        // Fallback: parse current URL to restore view and IDs (e.g. direct back navigation)
+        if (path.startsWith('/tienda/producto/')) {
+          setSelectedProductId(path.split('/')[3] || null);
+          _setView('product');
+        } else if (path.startsWith('/eventos/') && path.includes('/registro')) {
+          setSelectedEventId(path.split('/')[2] || null);
+          _setView('event-registration');
+        } else if (path.startsWith('/eventos/') && path.includes('/resultados')) {
+          setSelectedEventId(path.split('/')[2] || null);
+          _setView('event-results');
+        } else if (path.startsWith('/eventos/') && path.split('/').length >= 3 && path.split('/')[2]) {
+          setSelectedEventId(path.split('/')[2] || null);
+          _setView('event-detail');
+        } else {
+          _setView('home');
+        }
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -769,7 +825,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/?view=update-password`,
+        redirectTo: `${window.location.origin}/actualizar-contrasena`,
       });
       if (error) throw error;
       showNotification("Correo de recuperación enviado. Revisa tu bandeja de entrada.", true);

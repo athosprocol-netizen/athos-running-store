@@ -38,7 +38,41 @@ const Notification = () => {
 };
 
 const MainContent = () => {
-  const { view, isLoading } = useApp();
+  const { view, isLoading, products, events, selectedProductId, selectedEventId } = useApp();
+
+  // Dynamic document.title per view
+  React.useEffect(() => {
+    const base = 'ATHOS Running Store';
+    const titleMap: Record<string, string> = {
+      home: `${base} – Tienda de Running en Colombia`,
+      shop: `Tienda | ${base}`,
+      events: `Eventos de Running en Colombia | ${base}`,
+      marcas: `Nuestras Marcas | ${base}`,
+      'zona-running': `Zona Running | ${base}`,
+      challenges: `Desafíos | ${base}`,
+      support: `Soporte y Preguntas Frecuentes | ${base}`,
+      'size-guide': `Guía de Tallas | ${base}`,
+      cart: `Mi Carrito | ${base}`,
+      checkout: `Finalizar Compra | ${base}`,
+      profile: `Mi Perfil | ${base}`,
+      auth: `Iniciar Sesión | ${base}`,
+      'forgot-password': `Recuperar Contraseña | ${base}`,
+      'update-password': `Nueva Contraseña | ${base}`,
+      admin: `Panel Admin | ${base}`,
+      organizer: `Panel Organizador | ${base}`,
+      'sponsor-event': `Patrocina tu Evento | ${base}`,
+    };
+
+    if (view === 'product' && selectedProductId) {
+      const product = products.find(p => p.id === selectedProductId || p.slug === selectedProductId);
+      document.title = product ? `${product.name} | ${base}` : `Producto | ${base}`;
+    } else if ((view === 'event-detail' || view === 'event-registration' || view === 'event-results') && selectedEventId) {
+      const event = events.find(e => e.id === selectedEventId || e.slug === selectedEventId);
+      document.title = event ? `${event.title} | ${base}` : `Evento | ${base}`;
+    } else {
+      document.title = titleMap[view] ?? base;
+    }
+  }, [view, selectedProductId, selectedEventId, products, events]);
   const [displayView, setDisplayView] = React.useState(view);
   const [isTransitioning, setIsTransitioning] = React.useState(false);
   const videoRef = React.useRef<HTMLVideoElement>(null);

@@ -11,7 +11,17 @@
       "has": [{ "type": "header", "key": "x-forwarded-proto", "value": "http" }],
       "destination": "https://www.athosrun.co/$1",
       "permanent": true
-    }
+    },
+    { "source": "/shop", "destination": "/tienda", "permanent": true },
+    { "source": "/events", "destination": "/eventos", "permanent": true },
+    { "source": "/support", "destination": "/soporte", "permanent": true },
+    { "source": "/size-guide", "destination": "/guia-de-tallas", "permanent": true },
+    { "source": "/challenges", "destination": "/desafios", "permanent": true },
+    { "source": "/cart", "destination": "/carrito", "permanent": true },
+    { "source": "/auth", "destination": "/ingresar", "permanent": true },
+    { "source": "/profile", "destination": "/perfil", "permanent": true },
+    { "source": "/product/:slug", "destination": "/tienda/producto/:slug", "permanent": true },
+    { "source": "/event/:slug", "destination": "/eventos/:slug", "permanent": true }
   ],
   "rewrites": [
     {
@@ -28,3 +38,4 @@
     }
   ]
 }
+
