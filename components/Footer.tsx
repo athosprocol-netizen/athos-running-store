@@ -17,7 +17,7 @@ export const Footer = () => {
         setNewsletterStatus('loading');
         try {
             await emailjs.send(
-                'service_athos',
+                'service_w0gw0zj',
                 'template_uo3yssb',
                 {
                     to_name: 'ATHOS',
