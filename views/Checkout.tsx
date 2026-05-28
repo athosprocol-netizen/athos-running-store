@@ -18,7 +18,8 @@ export const Checkout = () => {
         email: '',
         province: '',
         city: '',
-        address: ''
+        address: '',
+        deliveryNotes: ''
     });
     const [errors, setErrors] = useState<Record<string, boolean>>({});
 
@@ -158,6 +159,7 @@ export const Checkout = () => {
                     customer_phone: shipping.phone,
                     customer_email: user?.email || shipping.email || 'Invitado',
                     shipping_address: `${shipping.address}, ${shipping.city}, ${shipping.province}`,
+                    delivery_notes: shipping.deliveryNotes || 'Sin indicaciones adicionales',
                     order_items_html: `<table style="width: 100%; border-collapse: collapse;">${orderItemsHtml}</table>`,
                     subtotal: `$${subtotal.toLocaleString('es-CO')}`,
                     shipping_cost: `$${shippingFee.toLocaleString('es-CO')}`,
@@ -389,6 +391,18 @@ export const Checkout = () => {
                                     placeholder="Calle 123 # 45 - 67, Apto 201"
                                 />
                             </div>
+
+                            <div>
+                                <label className="text-xs font-bold text-athos-black uppercase mb-1 block">Indicaciones de Entrega</label>
+                                <textarea
+                                    value={shipping.deliveryNotes}
+                                    onChange={e => setShipping({ ...shipping, deliveryNotes: e.target.value })}
+                                    className="w-full bg-gray-50 border-2 border-gray-200 rounded-lg p-4 font-bold text-sm focus:bg-white resize-none"
+                                    rows={3}
+                                    placeholder="Ej: Fachada color verde, casa de 2 pisos, unidad residencial El Prado, tocar timbre 3 veces..."
+                                />
+                                <p className="text-[10px] text-gray-400 mt-1">Color de fachada, número de pisos, nombre de unidad, referencias adicionales, etc.</p>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -506,6 +520,12 @@ export const Checkout = () => {
                             <p className="text-sm font-bold text-athos-black">{shipping.fullName}</p>
                             <p className="text-xs text-gray-600">{shipping.address}</p>
                             <p className="text-xs text-gray-600">{shipping.city}, {shipping.province}</p>
+                            {shipping.deliveryNotes && (
+                                <div className="mt-2 pt-2 border-t border-gray-100">
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Indicaciones:</p>
+                                    <p className="text-xs text-gray-600 italic">{shipping.deliveryNotes}</p>
+                                </div>
+                            )}
                         </div>
 
                         {/* Cost Breakdown */}

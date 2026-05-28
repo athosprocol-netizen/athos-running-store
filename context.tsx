@@ -927,7 +927,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         );
       }
 
-      productToSave = { ...updatedProduct, image: mainImg, images: galleryImgs, variants: processedVariants };
+      productToSave = { ...updatedProduct, image: mainImg, images: galleryImgs, variants: processedVariants, slug: updatedProduct.slug || slugify(updatedProduct.name) };
       setProducts(prev => prev.map(p => p.id === updatedProduct.id ? productToSave : p)); // Update with real URLs
 
       const cleanPayload = {
@@ -1000,7 +1000,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         );
       }
 
-      productToSave = { ...newProduct, image: mainImg, images: galleryImgs, variants: processedVariants };
+      productToSave = { ...newProduct, image: mainImg, images: galleryImgs, variants: processedVariants, slug: newProduct.slug || slugify(newProduct.name) };
       setProducts(prev => prev.map(p => p.id === newProduct.id ? productToSave : p)); // Update with real URLs
 
       const cleanPayload = {
@@ -1230,7 +1230,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
       let galleryImgs = await uploadImageArray(event.gallery, event.id, '-event-gallery');
 
-      const eventToSave = { ...event, image: mainImg, gallery: galleryImgs };
+      const eventToSave = { ...event, image: mainImg, gallery: galleryImgs, slug: event.slug || slugify(event.title) };
 
       const cleanPayload = {
         title: eventToSave.title,
@@ -1262,7 +1262,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       const { data, error } = await supabase.from('events').insert(cleanPayload).select().single();
       if (error) throw error;
 
-      setEvents(prev => [...prev, { ...eventToSave, id: data.id }]);
+      setEvents(prev => [...prev, { ...eventToSave, id: data.id, slug: data.slug || eventToSave.slug }]);
       showNotification("Evento creado exitosamente");
     } catch (e: any) {
       console.error("Error creating event:", e);
@@ -1280,7 +1280,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
       let galleryImgs = await uploadImageArray(updatedEvent.gallery, updatedEvent.id, '-event-gallery');
 
-      const eventToSave = { ...updatedEvent, image: mainImg, gallery: galleryImgs };
+      const eventToSave = { ...updatedEvent, image: mainImg, gallery: galleryImgs, slug: updatedEvent.slug || slugify(updatedEvent.title) };
 
       const cleanPayload = {
         title: eventToSave.title,
