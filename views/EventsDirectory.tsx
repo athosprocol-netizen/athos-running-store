@@ -325,7 +325,7 @@ export const EventsDirectory = () => {
                                             Destacado
                                         </span>
                                     )}
-                                    <img src={event.image || '/imagen_bordes_difuminados.png'} alt={event.title} className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${event.gradientColors ? 'mix-blend-overlay opacity-80' : ''}`} style={{ maskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)' }} />
+                                    <img src={event.image || '/imagen_bordes_difuminados.webp'} alt={event.title} loading="lazy" width="800" height="600" className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${event.gradientColors ? 'mix-blend-overlay opacity-80' : ''}`} style={{ maskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse 90% 90% at 50% 50%, black 50%, transparent 100%)' }} />
                                     <div className="absolute bottom-4 left-4 z-20">
                                         <h3 className="text-white text-2xl font-black italic tracking-tight">{event.title}</h3>
                                     </div>

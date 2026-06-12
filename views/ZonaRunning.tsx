@@ -25,7 +25,7 @@ export const ZonaRunning = () => {
       <div 
         className="absolute inset-0 z-0 opacity-20 pointer-events-none"
         style={{
-          backgroundImage: `url('/pexels-runffwpu-10417360.jpg')`,
+          backgroundImage: `url('/pexels-runffwpu-10417360.webp')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center 75%',
           backgroundAttachment: 'fixed'

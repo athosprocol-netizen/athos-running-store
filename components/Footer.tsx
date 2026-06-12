@@ -83,7 +83,10 @@ export const Footer = () => {
                         {/* Brand Column */}
                         <div className="col-span-4 flex flex-col items-center text-center">
                             <div className="flex items-center justify-center gap-2 mb-6 group cursor-pointer" onClick={() => setView('home')}>
-                                <img src="/logo.png" alt="ATHOS" className="h-32 w-auto object-contain hover:brightness-110 transition-all" />
+                                <picture>
+                                    <source srcSet="/logo.webp" type="image/webp" />
+                                    <img src="/logo.png" alt="ATHOS" loading="lazy" width="400" height="100" className="h-32 w-auto object-contain hover:brightness-110 transition-all" />
+                                </picture>
                             </div>
                             <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-sm font-medium">
                                 Rendimiento, estilo y comunidad. Diseñamos equipamiento de running para quienes buscan superar sus propios límites.
@@ -210,7 +213,10 @@ export const Footer = () => {
                 <div className="px-6 flex flex-col items-center gap-8">
                     {/* Brand Lite */}
                     <div className="flex items-center gap-2 opacity-90" onClick={() => setView('home')}>
-                        <img src="/logo.png" alt="ATHOS" className="h-32 w-auto object-contain" />
+                        <picture>
+                            <source srcSet="/logo.webp" type="image/webp" />
+                            <img src="/logo.png" alt="ATHOS" loading="lazy" width="400" height="100" className="h-32 w-auto object-contain" />
+                        </picture>
                     </div>
 
                     {/* Social Grid */}

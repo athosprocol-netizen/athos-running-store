@@ -179,7 +179,10 @@ export const Navbar = () => {
                 <div className="max-w-[1400px] mx-auto px-10 flex items-center justify-between">
                     {/* Logo (ENLARGED VIA CSS SCALE) */}
                     <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setView('home')}>
-                        <img src="/logo.png" alt="ATHOS" className="h-[60px] w-auto object-contain transition-transform duration-300 transform scale-125 md:scale-[1.4] origin-left group-hover:scale-[1.45]" />
+                        <picture>
+                            <source srcSet="/logo.webp" type="image/webp" />
+                            <img src="/logo.png" alt="ATHOS" fetchPriority="high" width="240" height="60" className="h-[60px] w-auto object-contain transition-transform duration-300 transform scale-125 md:scale-[1.4] origin-left group-hover:scale-[1.45]" />
+                        </picture>
                     </div>
 
                     {/* Central Nav */}
@@ -270,7 +273,10 @@ export const Navbar = () => {
                     onClick={() => setView('home')}
                     className="absolute left-1/2 top-2 transform -translate-x-1/2 flex items-center justify-center filter drop-shadow-md"
                 >
-                    <img src="/logo.png" alt="ATHOS" className="h-[60px] w-auto object-contain transform scale-[1.35] origin-center" />
+                    <picture>
+                        <source srcSet="/logo.webp" type="image/webp" />
+                        <img src="/logo.png" alt="ATHOS" fetchPriority="high" width="240" height="60" className="h-[60px] w-auto object-contain transform scale-[1.35] origin-center" />
+                    </picture>
                 </div>
 
                 {/* Right: Actions (Calendario y Carrito) */}
