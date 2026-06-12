@@ -674,6 +674,36 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
+  // After Supabase data loads, resolve selectedEventId/ProductId from the URL slug
+  // This is critical for SEO: Google crawls /eventos/slug and we must display the correct event
+  useEffect(() => {
+    if (events.length === 0) return; // Wait for events to load
+    const path = window.location.pathname;
+    if (path.startsWith('/eventos/') && path.split('/').length >= 3 && path.split('/')[2]) {
+      const slug = path.split('/')[2];
+      if (slug && slug !== 'registro' && slug !== 'resultados') {
+        const ev = events.find(e => e.id === slug || e.slug === slug);
+        if (ev) {
+          setSelectedEventId(ev.slug || ev.id);
+        }
+      }
+    }
+  }, [events]);
+
+  useEffect(() => {
+    if (products.length === 0) return; // Wait for products to load
+    const path = window.location.pathname;
+    if (path.startsWith('/tienda/producto/') && path.split('/')[3]) {
+      const slug = path.split('/')[3];
+      if (slug) {
+        const prod = products.find(p => p.id === slug || p.slug === slug);
+        if (prod) {
+          setSelectedProductId(prod.slug || prod.id);
+        }
+      }
+    }
+  }, [products]);
+
   // Browser History Handling — supports both state object and URL parsing
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
