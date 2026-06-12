@@ -2,8 +2,9 @@
 // Genera un sitemap.xml dinámico con todos los eventos y productos de Supabase.
 // Se ejecuta en el servidor cada vez que Google (u otro crawler) lo solicita.
 
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
-const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY;
+// Anon key is safe to use here — it's already public in the frontend bundle
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://beiatvntfbmdafhjpwyn.supabase.co';
+const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_clvqs8U2OcFaRI7CyB47MQ_cesMJXRf';
 const SITE_URL = 'https://www.athosrun.co';
 
 // Páginas estáticas del sitio
