@@ -14,7 +14,6 @@ const STATIC_PAGES = [
   { loc: '/eventos',          changefreq: 'daily',   priority: '0.9' },
   { loc: '/marcas',           changefreq: 'monthly', priority: '0.7' },
   { loc: '/zona-running',     changefreq: 'weekly',  priority: '0.7' },
-  { loc: '/desafios',         changefreq: 'weekly',  priority: '0.6' },
   { loc: '/patrocinar-evento',changefreq: 'monthly', priority: '0.6' },
   { loc: '/soporte',          changefreq: 'monthly', priority: '0.5' },
   { loc: '/guia-de-tallas',   changefreq: 'monthly', priority: '0.5' },

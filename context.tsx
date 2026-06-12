@@ -207,7 +207,6 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     if (path === '/marcas') return 'marcas';
     if (path === '/soporte') return 'support';
     if (path === '/guia-de-tallas') return 'size-guide';
-    if (path === '/desafios') return 'challenges';
     if (path === '/recuperar-contrasena') return 'forgot-password';
     if (path === '/actualizar-contrasena') return 'update-password';
     if (path === '/organizador') return 'organizer';
@@ -223,7 +222,6 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     if (path === '/events') return 'events';
     if (path === '/support') return 'support';
     if (path === '/size-guide') return 'size-guide';
-    if (path === '/challenges') return 'challenges';
     if (path === '/zona-running') return 'zona-running';
 
     // Fallback for old query links
@@ -485,7 +483,6 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       events: '/eventos',
       marcas: '/marcas',
       'zona-running': '/zona-running',
-      challenges: '/desafios',
       support: '/soporte',
       'size-guide': '/guia-de-tallas',
       cart: '/carrito',

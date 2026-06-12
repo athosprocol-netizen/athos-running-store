@@ -21,7 +21,6 @@ import { OrganizerDashboard } from './views/OrganizerDashboard';
 import { SponsorEvent } from './views/SponsorEvent';
 import { ZonaRunning } from './views/ZonaRunning';
 import { Marcas } from './views/Marcas';
-import { Challenges } from './views/Challenges';
 import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { Marquee } from './components/Marquee';
@@ -54,7 +53,6 @@ const MainContent = () => {
       events: `Eventos de Running en Colombia | ${base}`,
       marcas: `Nuestras Marcas | ${base}`,
       'zona-running': `Zona Running – App para Corredores | ${base}`,
-      challenges: `Desafíos Running | ${base}`,
       support: `Soporte y Preguntas Frecuentes | ${base}`,
       'size-guide': `Guía de Tallas | ${base}`,
       cart: `Mi Carrito | ${base}`,
@@ -74,7 +72,6 @@ const MainContent = () => {
       events: 'Directorio de eventos y carreras de running en Colombia. Encuentra tu próxima carrera: 5K, 10K, media maratón y maratón en todas las ciudades.',
       marcas: 'Conoce las marcas deportivas que confían en ATHOS Running Store. Las mejores marcas de running en Colombia.',
       'zona-running': 'Zona Running: la app de ATHOS para corredores colombianos. Registra tus entrenamientos, sigue eventos y conecta con la comunidad runner.',
-      challenges: 'Desafíos de running para corredores colombianos. Completa retos, gana premios y mejora tu rendimiento con ATHOS.',
       support: 'Soporte, envíos, devoluciones y garantías en ATHOS Running Store. Resolvemos todas tus dudas.',
       'size-guide': 'Guía de tallas de calzado y ropa de running. Encuentra tu talla perfecta en ATHOS.',
     };
@@ -199,7 +196,7 @@ const MainContent = () => {
     } else {
       const urlMap: Record<string, string> = {
         home: '/', shop: '/tienda', events: '/eventos', marcas: '/marcas',
-        'zona-running': '/zona-running', challenges: '/desafios', support: '/soporte',
+        'zona-running': '/zona-running', support: '/soporte',
         'size-guide': '/guia-de-tallas', cart: '/carrito', checkout: '/checkout',
         profile: '/perfil', auth: '/ingresar', admin: '/admin',
         'sponsor-event': '/patrocinar-evento',
@@ -331,7 +328,6 @@ const MainContent = () => {
       case 'sponsor-event': return <SponsorEvent />;
       case 'zona-running': return <ZonaRunning />;
       case 'marcas': return <Marcas />;
-      case 'challenges': return <Challenges />;
       default: return <Home />;
     }
   };

@@ -16,7 +16,6 @@
     { "source": "/events", "destination": "/eventos", "permanent": true },
     { "source": "/support", "destination": "/soporte", "permanent": true },
     { "source": "/size-guide", "destination": "/guia-de-tallas", "permanent": true },
-    { "source": "/challenges", "destination": "/desafios", "permanent": true },
     { "source": "/cart", "destination": "/carrito", "permanent": true },
     { "source": "/auth", "destination": "/ingresar", "permanent": true },
     { "source": "/profile", "destination": "/perfil", "permanent": true },
