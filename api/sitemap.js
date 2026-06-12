@@ -75,7 +75,7 @@ export default async function handler(req, res) {
   // Fetch events and products in parallel
   const [events, products] = await Promise.all([
     fetchFromSupabase('events', 'slug,title,date,status,updated_at'),
-    fetchFromSupabase('products', 'slug,name,updated_at'),
+    fetchFromSupabase('products', 'slug,name,created_at'),
   ]);
 
   // Build URL entries
@@ -106,7 +106,7 @@ export default async function handler(req, res) {
   const productEntries = products.map(p => {
     const slug = p.slug || slugify(p.name || '');
     if (!slug) return '';
-    const lastmod = p.updated_at ? toIso(p.updated_at) : today;
+    const lastmod = p.created_at ? toIso(p.created_at) : today;
     return `
   <url>
     <loc>${SITE_URL}/tienda/producto/${escapeXml(slug)}</loc>
