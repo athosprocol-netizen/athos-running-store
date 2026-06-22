@@ -10,8 +10,8 @@
 
 import { next } from '@vercel/edge';
 
-const SUPABASE_URL = 'https://beiatvntfbmdafhjpwyn.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_clvqs8U2OcFaRI7CyB47MQ_cesMJXRf';
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://beiatvntfbmdafhjpwyn.supabase.co';
+const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_clvqs8U2OcFaRI7CyB47MQ_cesMJXRf';
 const SITE_URL = 'https://www.athosrun.co';
 
 // Bots that we want to serve pre-rendered HTML to
@@ -31,6 +31,226 @@ function formatDate(dateStr) {
       year: 'numeric', month: 'long', day: 'numeric'
     });
   } catch { return dateStr; }
+}
+
+// ── Shared fetch helper ──────────────────────────────────────────────────────
+async function fetchSupabase(path) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+  });
+  if (!res.ok) return [];
+  return res.json();
+}
+
+// ── Home page pre-render ──────────────────────────────────────────────────────
+function generateHomeHTML({ upcomingEvents = [], featuredProducts = [] } = {}) {
+  const pageTitle = 'ATHOS Running Store – Tienda de Running en Colombia';
+  const desc = 'ATHOS Running Store: La Pasión por Correr. Tienda deportiva especializada en productos de running y plataforma para conectar con todos los eventos de running en Colombia.';
+  const img = `${SITE_URL}/screen.png`;
+
+  const orgSchema = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'SportingGoodsStore',
+    name: 'ATHOS Running Store',
+    url: SITE_URL,
+    description: desc,
+    image: img,
+    address: { '@type': 'PostalAddress', addressCountry: 'CO' },
+    sameAs: ['https://www.instagram.com/athosrun_co', 'https://twitter.com/athosrun_co'],
+  });
+
+  const eventListSchema = upcomingEvents.length > 0 ? JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Próximos eventos de running en Colombia',
+    url: `${SITE_URL}/eventos`,
+    numberOfItems: upcomingEvents.length,
+    itemListElement: upcomingEvents.slice(0, 10).map((e, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: e.title,
+      url: `${SITE_URL}/eventos/${e.slug || ''}`,
+    })),
+  }) : null;
+
+  const eventsHtml = upcomingEvents.slice(0, 6).map(e =>
+    `<li><a href="${SITE_URL}/eventos/${escapeHtml(e.slug || '')}">${escapeHtml(e.title)} – ${formatDate(e.date)}</a></li>`
+  ).join('');
+
+  const productsHtml = featuredProducts.slice(0, 6).map(p =>
+    `<li><a href="${SITE_URL}/tienda/producto/${escapeHtml(p.slug || '')}">${escapeHtml(p.name)}</a></li>`
+  ).join('');
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${pageTitle}</title>
+  <meta name="description" content="${escapeHtml(desc)}" />
+  <link rel="canonical" href="${SITE_URL}/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="${escapeHtml(pageTitle)}" />
+  <meta property="og:description" content="${escapeHtml(desc)}" />
+  <meta property="og:image" content="${img}" />
+  <meta property="og:url" content="${SITE_URL}/" />
+  <meta property="og:site_name" content="ATHOS Running Store" />
+  <meta property="og:locale" content="es_CO" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@athosrun_co" />
+  <meta name="twitter:title" content="${escapeHtml(pageTitle)}" />
+  <meta name="twitter:description" content="${escapeHtml(desc)}" />
+  <meta name="twitter:image" content="${img}" />
+  <script type="application/ld+json">${orgSchema}</script>
+  ${eventListSchema ? `<script type="application/ld+json">${eventListSchema}</script>` : ''}
+</head>
+<body>
+  <main style="font-family:sans-serif;max-width:900px;margin:40px auto;padding:0 20px">
+    <h1 style="font-size:2.2rem;margin-bottom:8px">ATHOS Running Store</h1>
+    <p style="color:#FF4D00;font-weight:bold">La Pasión por Correr – Tienda de Running en Colombia</p>
+    <p style="line-height:1.7;color:#333;margin-bottom:32px">${escapeHtml(desc)}</p>
+    ${eventsHtml ? `<section><h2 style="font-size:1.3rem;margin-bottom:12px">Próximos Eventos de Running</h2><ul style="line-height:2">${eventsHtml}</ul><p><a href="${SITE_URL}/eventos">Ver todos los eventos →</a></p></section>` : ''}
+    ${productsHtml ? `<section style="margin-top:32px"><h2 style="font-size:1.3rem;margin-bottom:12px">Tienda ATHOS</h2><ul style="line-height:2">${productsHtml}</ul><p><a href="${SITE_URL}/tienda">Ver toda la tienda →</a></p></section>` : ''}
+  </main>
+  <script>window.location.replace("${SITE_URL}/");</script>
+</body>
+</html>`;
+}
+
+// ── Events listing pre-render ─────────────────────────────────────────────────
+function generateEventsListHTML(events = []) {
+  const pageUrl = `${SITE_URL}/eventos`;
+  const pageTitle = 'Eventos de Running en Colombia 2025 | ATHOS Running Store';
+  const desc = 'Encuentra todos los eventos, carreras y maratones de running en Colombia. Inscríbete en los mejores eventos de running con ATHOS Running Store.';
+  const img = `${SITE_URL}/screen.png`;
+
+  const upcomingEvents = events.filter(e => e.status !== 'past');
+  const pastEvents = events.filter(e => e.status === 'past');
+
+  const eventListSchema = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: pageTitle,
+    url: pageUrl,
+    numberOfItems: upcomingEvents.length,
+    itemListElement: upcomingEvents.slice(0, 20).map((e, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${SITE_URL}/eventos/${e.slug || ''}`,
+      name: e.title,
+    })),
+  });
+
+  const renderList = (arr, label) => arr.length === 0 ? '' : `
+    <section style="margin-bottom:32px">
+      <h2 style="font-size:1.3rem;border-bottom:2px solid #FF4D00;padding-bottom:6px;margin-bottom:16px">${label}</h2>
+      <ul style="list-style:none;padding:0;display:grid;gap:12px">
+        ${arr.slice(0, 20).map(e => `
+          <li style="border:1px solid #eee;border-radius:8px;padding:14px 18px">
+            <a href="${SITE_URL}/eventos/${escapeHtml(e.slug || '')}" style="font-weight:600;color:#111;text-decoration:none">${escapeHtml(e.title)}</a>
+            <span style="display:block;color:#FF4D00;font-size:0.88rem;margin-top:4px">📅 ${formatDate(e.date)}${e.city ? ` &nbsp;|&nbsp; 📍 ${escapeHtml(e.city)}` : ''}</span>
+          </li>`).join('')}
+      </ul>
+    </section>`;
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${pageTitle}</title>
+  <meta name="description" content="${escapeHtml(desc)}" />
+  <link rel="canonical" href="${pageUrl}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="${escapeHtml(pageTitle)}" />
+  <meta property="og:description" content="${escapeHtml(desc)}" />
+  <meta property="og:image" content="${img}" />
+  <meta property="og:url" content="${pageUrl}" />
+  <meta property="og:site_name" content="ATHOS Running Store" />
+  <meta property="og:locale" content="es_CO" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@athosrun_co" />
+  <meta name="twitter:title" content="${escapeHtml(pageTitle)}" />
+  <meta name="twitter:description" content="${escapeHtml(desc)}" />
+  <meta name="twitter:image" content="${img}" />
+  <script type="application/ld+json">${eventListSchema}</script>
+</head>
+<body>
+  <main style="font-family:sans-serif;max-width:900px;margin:40px auto;padding:0 20px">
+    <nav style="margin-bottom:16px;font-size:13px;color:#666">
+      <a href="${SITE_URL}">ATHOS Running</a> &rsaquo; <span>Eventos</span>
+    </nav>
+    <h1 style="font-size:2rem;margin-bottom:8px">Eventos de Running en Colombia</h1>
+    <p style="color:#555;margin-bottom:32px">${escapeHtml(desc)}</p>
+    ${renderList(upcomingEvents, '📅 Próximos Eventos')}
+    ${renderList(pastEvents, '🏁 Eventos Pasados')}
+  </main>
+  <script>window.location.replace("${pageUrl}");</script>
+</body>
+</html>`;
+}
+
+// ── Shop listing pre-render ───────────────────────────────────────────────────
+function generateShopHTML(products = []) {
+  const pageUrl = `${SITE_URL}/tienda`;
+  const pageTitle = 'Tienda de Running – Ropa y Calzado Técnico | ATHOS Running Store';
+  const desc = 'Compra ropa técnica, calzado y accesorios de running en ATHOS Running Store. Productos especializados para corredores en Colombia.';
+  const img = `${SITE_URL}/screen.png`;
+
+  const productListSchema = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: pageTitle,
+    url: pageUrl,
+    numberOfItems: products.length,
+    itemListElement: products.slice(0, 20).map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${SITE_URL}/tienda/producto/${p.slug || ''}`,
+      name: p.name,
+    })),
+  });
+
+  const productsHtml = products.slice(0, 24).map(p => `
+    <li style="border:1px solid #eee;border-radius:8px;padding:14px 18px">
+      <a href="${SITE_URL}/tienda/producto/${escapeHtml(p.slug || '')}" style="font-weight:600;color:#111;text-decoration:none">${escapeHtml(p.name)}</a>
+      ${p.price ? `<span style="display:block;color:#FF4D00;font-size:0.88rem;margin-top:4px">$${Number(p.price).toLocaleString('es-CO')} COP</span>` : ''}
+    </li>`).join('');
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${pageTitle}</title>
+  <meta name="description" content="${escapeHtml(desc)}" />
+  <link rel="canonical" href="${pageUrl}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="${escapeHtml(pageTitle)}" />
+  <meta property="og:description" content="${escapeHtml(desc)}" />
+  <meta property="og:image" content="${img}" />
+  <meta property="og:url" content="${pageUrl}" />
+  <meta property="og:site_name" content="ATHOS Running Store" />
+  <meta property="og:locale" content="es_CO" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@athosrun_co" />
+  <meta name="twitter:title" content="${escapeHtml(pageTitle)}" />
+  <meta name="twitter:description" content="${escapeHtml(desc)}" />
+  <meta name="twitter:image" content="${img}" />
+  <script type="application/ld+json">${productListSchema}</script>
+</head>
+<body>
+  <main style="font-family:sans-serif;max-width:900px;margin:40px auto;padding:0 20px">
+    <nav style="margin-bottom:16px;font-size:13px;color:#666">
+      <a href="${SITE_URL}">ATHOS Running</a> &rsaquo; <span>Tienda</span>
+    </nav>
+    <h1 style="font-size:2rem;margin-bottom:8px">Tienda ATHOS Running</h1>
+    <p style="color:#555;margin-bottom:32px">${escapeHtml(desc)}</p>
+    ${products.length > 0 ? `<ul style="list-style:none;padding:0;display:grid;gap:12px">${productsHtml}</ul>` : ''}
+  </main>
+  <script>window.location.replace("${pageUrl}");</script>
+</body>
+</html>`;
 }
 
 function generateEventHTML(event) {
@@ -211,6 +431,17 @@ function generateProductHTML(product) {
 </html>`;
 }
 
+function botResponse(html) {
+  return new Response(html, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 's-maxage=3600, stale-while-revalidate=86400',
+      'X-Rendered-By': 'athos-edge-middleware',
+    },
+  });
+}
+
 export default async function middleware(request) {
   const ua = request.headers.get('user-agent') || '';
   const { pathname } = new URL(request.url);
@@ -219,53 +450,47 @@ export default async function middleware(request) {
   if (!BOT_REGEX.test(ua)) return next();
 
   try {
-    // ── Event pages: /eventos/[slug] ──────────────────────────────────────
+    // ── Home page: / ──────────────────────────────────────────────────────
+    if (pathname === '/' || pathname === '') {
+      const [events, products] = await Promise.all([
+        fetchSupabase('events?select=slug,title,date,city,status&order=date.asc&limit=12'),
+        fetchSupabase('products?select=slug,name,price&limit=12'),
+      ]);
+      const upcomingEvents = (events || []).filter(e => e.status !== 'past');
+      return botResponse(generateHomeHTML({ upcomingEvents, featuredProducts: products || [] }));
+    }
+
+    // ── Events listing: /eventos ──────────────────────────────────────────
+    if (pathname === '/eventos') {
+      const events = await fetchSupabase('events?select=slug,title,date,city,status&order=date.asc&limit=100');
+      return botResponse(generateEventsListHTML(events || []));
+    }
+
+    // ── Event detail: /eventos/[slug] ──────────────────────────────────────
     if (pathname.startsWith('/eventos/')) {
       const parts = pathname.split('/').filter(Boolean);
-      const slug = parts[1]; // ['eventos', 'slug']
+      const slug = parts[1];
       if (slug && slug !== 'registro' && slug !== 'resultados') {
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/events?slug=eq.${encodeURIComponent(slug)}&limit=1`,
-          { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
-        );
-        if (res.ok) {
-          const [event] = await res.json();
-          if (event) {
-            return new Response(generateEventHTML(event), {
-              status: 200,
-              headers: {
-                'Content-Type': 'text/html; charset=utf-8',
-                'Cache-Control': 's-maxage=3600, stale-while-revalidate=86400',
-                'X-Rendered-By': 'athos-edge-middleware',
-              },
-            });
-          }
-        }
+        const data = await fetchSupabase(`events?slug=eq.${encodeURIComponent(slug)}&limit=1`);
+        const event = data?.[0];
+        if (event) return botResponse(generateEventHTML(event));
       }
     }
 
-    // ── Product pages: /tienda/producto/[slug] ────────────────────────────
+    // ── Shop listing: /tienda ─────────────────────────────────────────────
+    if (pathname === '/tienda') {
+      const products = await fetchSupabase('products?select=slug,name,price&limit=100');
+      return botResponse(generateShopHTML(products || []));
+    }
+
+    // ── Product detail: /tienda/producto/[slug] ────────────────────────────
     if (pathname.startsWith('/tienda/producto/')) {
       const parts = pathname.split('/').filter(Boolean);
-      const slug = parts[2]; // ['tienda', 'producto', 'slug']
+      const slug = parts[2];
       if (slug) {
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/products?slug=eq.${encodeURIComponent(slug)}&limit=1`,
-          { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
-        );
-        if (res.ok) {
-          const [product] = await res.json();
-          if (product) {
-            return new Response(generateProductHTML(product), {
-              status: 200,
-              headers: {
-                'Content-Type': 'text/html; charset=utf-8',
-                'Cache-Control': 's-maxage=3600, stale-while-revalidate=86400',
-                'X-Rendered-By': 'athos-edge-middleware',
-              },
-            });
-          }
-        }
+        const data = await fetchSupabase(`products?slug=eq.${encodeURIComponent(slug)}&limit=1`);
+        const product = data?.[0];
+        if (product) return botResponse(generateProductHTML(product));
       }
     }
   } catch (err) {
@@ -277,6 +502,6 @@ export default async function middleware(request) {
 }
 
 export const config = {
-  // Only run on event and product paths to avoid unnecessary overhead
-  matcher: ['/eventos/:slug*', '/tienda/producto/:slug*'],
+  // Run on all key SEO pages
+  matcher: ['/', '/eventos', '/eventos/:slug*', '/tienda', '/tienda/producto/:slug*'],
 };

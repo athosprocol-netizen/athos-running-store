@@ -1,4 +1,11 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /ingresar
+Disallow: /perfil
+Disallow: /carrito
+Disallow: /checkout
+Disallow: /api/
 
+# Sitemap
 Sitemap: https://www.athosrun.co/sitemap.xml
